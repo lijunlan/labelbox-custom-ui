@@ -106,6 +106,7 @@
       }
     ]
   };
+  console.log("defaultConfiguration:", defaultConfiguration);
 
   function createOptionQuestion({ type, name, options, instructions }, answer) {
     const createOption = ({ value, label }) => {
@@ -172,7 +173,40 @@
     console.log("Unknown question type", question);
   }
 
-  let classifications = defaultConfiguration.classifications;;
+  // let classifications = defaultConfiguration.classifications;;
+  const classifications = [
+    {
+      type: "text",
+      name: "competitor_listing",
+      instructions: "Competitor Listing",
+      required: false
+    },
+    {
+      type: "radio",
+      name: "specify_the_listing_match_type",
+      instructions: "Specify the listing match type",
+      uiMode: "hotkey",
+      required: true,
+      options: [
+        {
+          "value": "listing",
+          "label": "Listing"
+        },
+        {
+          "value": "n_a",
+          "label": "N/A"
+        }
+      ]
+    },
+    {
+      type: "text",
+      name: "comment",
+      instructions: "Comment",
+      required: false
+    }
+  ];
+  console.log("const classifications:", classifications);
+
   let markQuestionsAsLoaded;
   new Promise(resolve => {
     markQuestionsAsLoaded = resolve;
