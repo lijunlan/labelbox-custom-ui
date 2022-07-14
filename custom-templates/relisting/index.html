@@ -1,0 +1,284 @@
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+/>
+<link
+  href="https://fonts.googleapis.com/icon?family=Material+Icons"
+  rel="stylesheet"
+/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script src="https://api.labelbox.com/static/labeling-api.js"></script>
+<link rel="stylesheet" href="styles.css" />
+
+<div class="app flex-grow">
+  <div class="flex-column sidebar">
+    <div class="navbar">
+      <i
+        class="material-icons"
+        style="color: #9b9b9b; cursor: pointer;"
+        onclick="goHome()"
+        >home</i
+      >
+    </div>
+
+    <div id="questions"></div>
+
+    <div class="flex-grow"></div>
+    <div style="display: flex;">
+      <a
+        class="waves-effect waves-light btn-large"
+        style="background-color: #03a9f4; width: 100%;"
+        onclick="submit()"
+        >Submit</a
+      >
+    </div>
+  </div>
+
+  <div class="flex-grow flex-column content">
+    <div style="display: flex; align-items: center; padding: 10px 0px">
+      
+      <div style="color: #717171; padding: 0px 10px;" id="externalid">
+        <p>
+          <strong>
+            Find the match for the following Airbnb listings
+          </strong>
+        </p>
+      </div>
+      
+    </div>
+    <div id="asset">loading...</div>
+  </div>
+</div>
+
+<script>
+  let state = {
+    projectId: new URL(window.location.href).searchParams.get("project"),
+    currentAsset: undefined
+  };
+  const defaultConfiguration = {
+    classifications: [
+      {
+       type: "text",
+       name: "competitor_listing",
+       instructions: "Competitor Listing",
+       required: false,
+       archived: false,
+       options: []
+      },
+      {
+       type: "radio",
+       name: "specify_the_listing_match_type",
+       instructions: "Specify the listing match type",
+       uiMode: "hotkey",
+       scope: "global",
+       required: true,
+       archived: false,
+       options: [
+        {
+         value: "listing",
+         label: "Listing",
+         options: []
+        },
+        {
+         value: "n_a",
+         label: "N/A",
+         options: []
+        }
+       ]
+      },
+      {
+       type: "text",
+       name: "comment",
+       instructions: "Comment ",
+       scope: "global",
+       required: false,
+       archived: false,
+       options: []
+      }
+    ]
+  };
+
+  function createOptionQuestion({ type, name, options, instructions }, answer) {
+    const createOption = ({ value, label }) => {
+      return `
+      <p value=${value}>
+        <label>
+          ${
+            type == "radio"
+              ? `<input class="with-gap" type="radio" name="group-${name}" valuetosubmit="${value}" ${
+                  answer === value ? "checked" : ""
+                } />`
+              : `<input type="checkbox" class="filled-in" valuetosubmit="${value}" ${
+                  (answer || []).indexOf(value) !== -1 ? "checked" : ""
+                } />`
+          }
+          <span>${label}</span>
+        </label>
+      </p>
+    `;
+    };
+    return `
+    <div class="question" id="${name}" questiontype="${type}">
+      <div class="label">${instructions}</div>
+      <form action="#">
+        ${options.map(createOption).join("")}
+      </form>
+    </div>
+  `;
+  }
+
+  function createTextInput({ id, label }, answer) {
+    console.log(answer);
+    if (answer) {
+      answer.replace(/"/g,'\'');
+    }
+    console.log(answer);
+    return `
+    <div class="question" id="${id}" questiontype="text">
+      <div class="input-field col s12">
+        <div class="label">${label}</div>
+        <input class="materialize-textarea" data-length="120" value="${answer ||
+          ""}"></input>
+      </div>
+    </div>
+  `;
+  }
+
+  function createQuestion(question, answers) {
+    const optionalAnswer = (answers || {})[question.name];
+    if (question.type === "text") {
+      return createTextInput(
+        {
+          id: question.name,
+          label: question.instructions
+        },
+        optionalAnswer
+      );
+    }
+
+    if (question.type === "radio" || question.type === "checklist") {
+      return createOptionQuestion(question, optionalAnswer);
+    }
+
+    console.log("Unknown question type", question);
+  }
+
+  let classifications = [];
+  let markQuestionsAsLoaded;
+  new Promise(resolve => {
+    markQuestionsAsLoaded = resolve;
+  }).then(() => {
+    Labelbox.currentAsset().subscribe(asset => {
+      if (asset) {
+        drawAsset(asset);
+      }
+    });
+  });
+
+  function drawQuestions(classifications, answers) {
+    document.querySelector("#questions").innerHTML = classifications
+      .map(classification => createQuestion(classification, answers))
+      .join("");
+  }
+
+  Labelbox.getTemplateCustomization().subscribe(customization => {
+    classifications =
+      (customization && customization.classifications) ||
+      defaultConfiguration.classifications;
+    drawQuestions(classifications);
+    markQuestionsAsLoaded();
+  });
+
+  function goHome() {
+    window.location.href =
+      "https://app.labelbox.com/projects/" + state.projectId;
+  }
+
+  function getLabel() {
+    const getAnswer = node => {
+      const key = node.getAttribute("id");
+      const type = node.getAttribute("questiontype");
+      if (type === "text") {
+        return {
+          [key]: node.querySelector("input").value
+        };
+      }
+
+      if (type === "radio") {
+        const inputs = Array.from(node.querySelectorAll("input"));
+        const selected = inputs.find(child => child.checked);
+        return {
+          [key]: selected && selected.getAttribute("valuetosubmit")
+        };
+      }
+
+      if (type === "checklist") {
+        const inputs = Array.from(node.querySelectorAll("input"));
+        const value = inputs
+          .filter(child => child.checked)
+          .map(child => child.getAttribute("valuetosubmit"));
+        return {
+          [key]: value
+        };
+      }
+
+      console.log("Unable to find type for", node);
+    };
+
+    const answers = Array.from(
+      document.querySelector("#questions").children
+    ).map(getAnswer);
+
+    return Object.assign({}, ...answers);
+  }
+
+  function submit() {
+    const label = JSON.stringify(getLabel());
+    const jumpToNext = Boolean(!state.currentAsset.label);
+    // Progress is this asset is new
+    Labelbox.setLabelForAsset(label).then(() => {
+      if (jumpToNext) {
+        Labelbox.fetchNextAssetToLabel();
+      }
+    });
+    if (jumpToNext) {
+      document.querySelector("#asset").innerHTML = "loading...";
+    }
+  }
+
+  
+  function getHtmlForAsset(data) {
+    const info = data.toLowerCase();
+
+    return `
+            <a class="asset" href="https://admin.airbnb.com/rooms/${data}" target="_blank">
+            Airbnb Listing
+          </a>
+    `;
+  }
+  // <div class="text">${data}</div>
+
+  function drawAsset(asset) {
+
+    if ((state.currentAsset && state.currentAsset.data) !== asset.data) {
+      document.querySelector("#asset").innerHTML = getHtmlForAsset(asset.data);
+    }
+    if ((state.currentAsset && state.currentAsset.id) !== asset.id) {
+      if (asset.label) {
+        try {
+          const label = JSON.parse(asset.label);
+          drawQuestions(classifications, label);
+        } catch (e) {
+          console.log("failed to read label", e);
+        }
+      } else {
+        drawQuestions(classifications);
+      }
+    }
+    state = {
+      ...state,
+      currentAsset: asset
+    };
+  }
+</script>
+
