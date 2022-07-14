@@ -326,7 +326,10 @@
     console.log("S3 asset link", asset.data);
 
     const assetDataStr = get(asset.data).replace(/NaN/g, "null");
+    console.log("Asset data string", assetDataStr);
+
     const assetData = JSON.parse(assetDataStr);
+    console.log("Asset data", assetData);
 
     if ((state.currentAsset && state.currentAsset.data) !== asset.data) {
       document.querySelector("#asset").innerHTML = getHtmlForAsset(assetData);
