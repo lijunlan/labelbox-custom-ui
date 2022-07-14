@@ -278,9 +278,10 @@
     }
   }
   
-  function getHtmlForAsset(data) {
+  function getHtmlForAsset(parsedData) {
+    console.log(parsedData);
     return `
-      <div class="text">${data}</div>
+      <div class="parsed_data">${parsedData}</div>
     `
 
     return `
@@ -321,15 +322,14 @@
     nextButton.style.opacity = hasNext ? 1 : 0.2;
     nextButton.style.cursor = hasNext ? "pointer" : "inherit";
 
-    console.log("original asset:", asset);
+    console.log("Asset", asset);
+    console.log("S3 asset link", asset.data);
 
     const assetDataStr = get(asset.data).replace(/NaN/g, "null");
     const assetData = JSON.parse(assetDataStr);
 
-    console.log("original data:", asset.data);
-
     if ((state.currentAsset && state.currentAsset.data) !== asset.data) {
-      document.querySelector("#asset").innerHTML = getHtmlForAsset(asset.data);
+      document.querySelector("#asset").innerHTML = getHtmlForAsset(assetData);
     }
     if ((state.currentAsset && state.currentAsset.id) !== asset.id) {
       if (asset.label) {
@@ -345,7 +345,8 @@
     }
     state = {
       ...state,
-      currentAsset: asset
+      currentAsset: asset,
+      currentAssetData: assetData,
     };
   }
 </script>
