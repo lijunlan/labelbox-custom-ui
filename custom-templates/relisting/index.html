@@ -290,6 +290,28 @@
     `;
   }
 
+  const successCb = (resp) => {
+      console.log(resp);
+  };
+
+  const errorCb = (err) => {
+      console.error('Error:', err);
+  };
+
+  function downloadObject(url, successCb, errorCb) {
+      fetch(url)
+        .then(response => response.json())
+        .then(successCb)
+        .catch(errorCb);
+  }
+
+  function get(url){
+    var Httpreq = new XMLHttpRequest();
+    Httpreq.open("GET", url, false);
+    Httpreq.send(null);
+    return Httpreq.responseText;
+  }
+
   function drawAsset(asset) {
     const backButton = document.querySelector("#back");
     backButton.style.opacity = asset.previous ? 1 : 0.2;
@@ -300,6 +322,10 @@
     nextButton.style.cursor = hasNext ? "pointer" : "inherit";
 
     console.log("original asset:", asset);
+
+    const assetDataStr = get(asset.data).replace(/NaN/g, "null");
+    const assetData = JSON.parse(assetDataStr);
+
     console.log("original data:", asset.data);
 
     if ((state.currentAsset && state.currentAsset.data) !== asset.data) {
