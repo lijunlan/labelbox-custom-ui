@@ -172,7 +172,7 @@
     console.log("Unknown question type", question);
   }
 
-  let classifications = [];
+  let classifications = defaultConfiguration.classifications;;
   let markQuestionsAsLoaded;
   new Promise(resolve => {
     markQuestionsAsLoaded = resolve;
@@ -192,8 +192,8 @@
   }
 
   Labelbox.getTemplateCustomization().subscribe(customization => {
-    classifications =
-      (customization && customization.classifications) || defaultConfiguration.classifications;
+    classifications = defaultConfiguration.classifications;
+      // (customization && customization.classifications) || defaultConfiguration.classifications;
     drawQuestions(classifications);
     markQuestionsAsLoaded();
   });
@@ -356,6 +356,7 @@
         }
       } else {
         console.log("drawing questions...");
+        console.log("classifications", classifications);
         drawQuestions(classifications);
       }
     }
