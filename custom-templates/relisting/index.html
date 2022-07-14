@@ -195,8 +195,7 @@
 
   Labelbox.getTemplateCustomization().subscribe(customization => {
     classifications =
-      (customization && customization.classifications) ||
-      defaultConfiguration.classifications;
+      (customization && customization.classifications) || defaultConfiguration.classifications;
     drawQuestions(classifications);
     markQuestionsAsLoaded();
   });
@@ -204,12 +203,6 @@
   function goHome() {
     window.location.href =
       "https://app.labelbox.com/projects/" + state.projectId;
-  }
-
-  function skip() {
-    Labelbox.skip().then(() => {
-      Labelbox.fetchNextAssetToLabel();
-    });
   }
 
   function getLabel() {
@@ -250,27 +243,42 @@
     return Object.assign({}, ...answers);
   }
 
+  function showLoadingAssets() {
+    document.querySelector("#asset").innerHTML = "loading...";
+    document.querySelector('.content').scrollTo(0,0);
+  }
+
   function submit() {
     const label = JSON.stringify(getLabel());
     const jumpToNext = Boolean(!state.currentAsset.label);
-    // Progress is this asset is new
-    Labelbox.setLabelForAsset(label).then(() => {
+    console.log("jumpToNext:", jumpToNext)
+    // Progress if this asset is new
+    if (jumpToNext) {
+      showLoadingAssets();
+    }
+    Labelbox.setLabelForAsset(label, 'ANY').then(() => {
       if (jumpToNext) {
         Labelbox.fetchNextAssetToLabel();
       }
     });
-    if (jumpToNext) {
-      document.querySelector("#asset").innerHTML = "loading...";
-    }
+  }
+
+  function skip() {
+    showLoadingAssets();
+    Labelbox.skip().then(() => {
+      Labelbox.fetchNextAssetToLabel();
+    });
   }
 
   function goBack() {
+    showLoadingAssets();
     if (state.currentAsset.previous) {
       Labelbox.setLabelAsCurrentAsset(state.currentAsset.previous);
     }
   }
 
   function goNext() {
+    showLoadingAssets();
     if (state.currentAsset.next) {
       Labelbox.setLabelAsCurrentAsset(state.currentAsset.next);
     } else {
@@ -281,7 +289,13 @@
   function getHtmlForAsset(parsedData) {
     console.log(parsedData);
     return `
-      <div class="parsed_data">${parsedData}</div>
+    <div class="parsed_data">${parsedData}
+      <pre>
+        <code>
+          ${JSON.stringify(parsedData, null, 4)}
+        </code>
+      </pre>
+    </div>
     `
 
     return `
@@ -322,8 +336,8 @@
     nextButton.style.opacity = hasNext ? 1 : 0.2;
     nextButton.style.cursor = hasNext ? "pointer" : "inherit";
 
-    console.log("Asset", asset);
-    console.log("S3 asset link", asset.data);
+    // console.log("Asset", asset);
+    // console.log("S3 asset link", asset.data);
 
     const assetDataStr = get(asset.data).replace(/NaN/g, "null");
     console.log("Asset data string", assetDataStr);
@@ -343,6 +357,7 @@
           console.log("failed to read label", e);
         }
       } else {
+        console.log("drawing questions...");
         drawQuestions(classifications);
       }
     }
