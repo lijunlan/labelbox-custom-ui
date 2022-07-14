@@ -89,14 +89,12 @@
         required: true,
         options: [
           {
-            value: "listing",
-            label: "Listing",
-            options: []
+            "value": "listing",
+            "label": "Listing"
           },
           {
-            value: "n_a",
-            label: "N/A",
-            options: []
+            "value": "n_a",
+            "label": "N/A"
           }
         ]
       },
@@ -104,8 +102,7 @@
         type: "text",
         name: "comment",
         instructions: "Comment",
-        required: false,
-        options: []
+        required: false
       }
     ]
   };
@@ -140,23 +137,23 @@
   }
 
   function createTextInput({ id, label }, answer) {
-    console.log(answer);
-    if (answer) {
-      answer.replace(/"/g,'\'');
-    }
-    console.log(answer);
+    // console.log(answer);
+    // if (answer) {
+    //   answer.replace(/"/g,'\'');
+    // }
+    console.log("answer", answer);
     return `
     <div class="question" id="${id}" questiontype="text">
       <div class="input-field col s12">
         <div class="label">${label}</div>
-        <input class="materialize-textarea" data-length="120" value="${answer ||
-          ""}"></input>
+        <input class="materialize-textarea" data-length="120" value="${answer || ""}"></input>
       </div>
     </div>
   `;
   }
 
   function createQuestion(question, answers) {
+    console.log("question", question);
     const optionalAnswer = (answers || {})[question.name];
     if (question.type === "text") {
       return createTextInput(
@@ -188,6 +185,7 @@
   });
 
   function drawQuestions(classifications, answers) {
+    console.log("drawQuestions (classifications):", classifications);
     document.querySelector("#questions").innerHTML = classifications
       .map(classification => createQuestion(classification, answers))
       .join("");
@@ -287,9 +285,8 @@
   }
   
   function getHtmlForAsset(parsedData) {
-    console.log(parsedData);
     return `
-    <div class="parsed_data">${parsedData}
+    <div class="parsed_data">
       <pre>
         <code>
           ${JSON.stringify(parsedData, null, 4)}
@@ -298,6 +295,7 @@
     </div>
     `
 
+    // TODO (rajnish): update this section to show a list of the proper listing links
     return `
       <a class="asset" href="https://admin.airbnb.com/rooms/${data}" target="_blank">
         Airbnb Listing
