@@ -277,13 +277,32 @@
     document.querySelector('.content').scrollTo(0,0);
   }
 
-  function test_cases(lables) {
+  function test_cases() {
+
+    const labels = getLabel()
+    
+    competitor_listing = labels.competitor_listing
+    listing_match_type = labels.specify_the_listing_match_type
+    comment = labels.comment
 
     // test 1: check if match type is defined
-    if (getLabel().specify_the_listing_match_type == null) {
+    if (listing_match_type == null) {
       alert("Please select the required matching type: Listing or N/A")
       return false;
     }
+
+    // test 2: URL Starts with http
+    if (!competitor_listing.startsWith("http")) {
+      alert("URL must have prefix http")
+      return false;
+    }
+
+    // test 3: When Competitor Listing provided, user must select Listing Match Type
+    if (labels.competitor_listing != null && listing_match_type == "n_a") {
+      alert("When Competitor Listing provided, user must select Listing Match Type")
+      return false;
+    }
+
 
     return true;
 
@@ -294,7 +313,7 @@
     const label = JSON.stringify(getLabel());
 
     // run the testcases
-    if (!test_cases(label)) {
+    if (!test_cases()) {
       return;
     }
 
@@ -320,11 +339,11 @@
       </a>
     `;
   }
-
+  
   const successCb = (resp) => {
       console.log(resp);
   };
-
+  
   const errorCb = (err) => {
       console.error('Error:', err);
   };
