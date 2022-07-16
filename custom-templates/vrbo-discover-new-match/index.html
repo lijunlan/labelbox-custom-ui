@@ -292,7 +292,7 @@
     }
 
     // test 2: URL Starts with http
-    if (!competitor_listing.startsWith("http")) {
+    if (listing_match_type == "listing" && !competitor_listing.startsWith("http")) {
       alert("URL must have prefix http")
       return false;
     }
@@ -339,11 +339,11 @@
       </a>
     `;
   }
-  
+
   const successCb = (resp) => {
       console.log(resp);
   };
-  
+
   const errorCb = (err) => {
       console.error('Error:', err);
   };
