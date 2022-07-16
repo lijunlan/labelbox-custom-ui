@@ -75,7 +75,7 @@
       {
         type: "text",
         name: "competitor_listing",
-        instructions: "Competitor Listing",
+        instructions: "Competitor Listing (Vrbo)",
         required: false
       },
       {
@@ -298,7 +298,7 @@
     }
 
     // test 3: When Competitor Listing provided, user must select Listing Match Type
-    if (labels.competitor_listing != null && listing_match_type == "n_a") {
+    if (competitor_listing != "" && listing_match_type == "n_a") {
       alert("When Competitor Listing provided, user must select Listing Match Type")
       return false;
     }
