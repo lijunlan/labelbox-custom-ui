@@ -60,6 +60,8 @@
       >
     </div>
     <div id="asset">loading...</div>
+    <br>
+    <div id="errorBox"></div>
   </div>
 </div>
 
@@ -179,7 +181,7 @@
     {
       type: "radio",
       name: "specify_the_listing_match_type",
-      instructions: "Specify the listing match type",
+      instructions: "Specify the listing match type (Required)",
       uiMode: "hotkey",
       required: true,
       options: [
@@ -275,8 +277,27 @@
     document.querySelector('.content').scrollTo(0,0);
   }
 
+  function test_cases(lables) {
+
+    // test 1: check if match type is defined
+    if (getLabel().specify_the_listing_match_type == null) {
+      alert("Please select the required matching type: Listing or N/A")
+      return false;
+    }
+
+    return true;
+
+
+  }
+
   function submit() {
     const label = JSON.stringify(getLabel());
+
+    // run the testcases
+    if (!test_cases(label)) {
+      return;
+    }
+
     const jumpToNext = Boolean(!state.currentAsset.label);
     console.log("jumpToNext:", jumpToNext)
     // Progress if this asset is new
@@ -289,7 +310,6 @@
       }
     });
   }
-
 
   
   function getHtmlForAsset(parsedData) {
