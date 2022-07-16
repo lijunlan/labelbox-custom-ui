@@ -25,12 +25,7 @@
 
     <div class="flex-grow"></div>
     <div style="display: flex;">
-      <a
-        class="waves-effect waves-light btn-large"
-        style="background-color: white; color: black; width: 100%;"
-        onclick="skip()"
-        >Skip</a
-      >
+      
       <a
         class="waves-effect waves-light btn-large"
         style="background-color: #03a9f4; width: 100%;"
@@ -295,28 +290,7 @@
     });
   }
 
-  function skip() {
-    showLoadingAssets();
-    Labelbox.skip().then(() => {
-      Labelbox.fetchNextAssetToLabel();
-    });
-  }
 
-  function goBack() {
-    showLoadingAssets();
-    if (state.currentAsset.previous) {
-      Labelbox.setLabelAsCurrentAsset(state.currentAsset.previous);
-    }
-  }
-
-  function goNext() {
-    showLoadingAssets();
-    if (state.currentAsset.next) {
-      Labelbox.setLabelAsCurrentAsset(state.currentAsset.next);
-    } else {
-      Labelbox.fetchNextAssetToLabel();
-    }
-  }
   
   function getHtmlForAsset(parsedData) {
     
