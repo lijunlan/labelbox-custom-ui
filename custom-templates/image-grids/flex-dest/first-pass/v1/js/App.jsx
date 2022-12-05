@@ -49,6 +49,7 @@ export default function App() {
           assetNext.current = asset.next;
           assetPrev.current = asset.previous;
           const assetDataStr = get(asset.metadata[0].metaValue).replace(/NaN/g, 'null');
+          console.log(assetDataStr);
           const parsedAssetData = JSON.parse(assetDataStr);
 
           setCurrentAsset(asset);
