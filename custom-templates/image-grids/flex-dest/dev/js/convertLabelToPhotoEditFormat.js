@@ -7,6 +7,7 @@
 
 export default function convertLabelToPhotoEditFormat(labels) {
   if (!Array.isArray(labels)) return [];
+
   return labels.map((label) => {
     const { id_listing, photo_id, photo_quality } = label;
 
