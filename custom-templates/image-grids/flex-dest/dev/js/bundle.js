@@ -8408,7 +8408,8 @@
 	      if ((currentAsset === null || currentAsset === void 0 ? void 0 : currentAsset.id) !== asset.id && (currentAsset === null || currentAsset === void 0 ? void 0 : currentAsset.data) !== asset.data && (assetNext.current !== asset.next || assetPrev.current !== asset.previous)) {
 	        assetNext.current = asset.next;
 	        assetPrev.current = asset.previous;
-	        var assetDataStr = get(asset.data).replace(/NaN/g, 'null');
+	        var assetDataStr = get(asset.metadata[0].metaValue).replace(/NaN/g, 'null');
+	        console.log(assetDataStr);
 	        var parsedAssetData = JSON.parse(assetDataStr);
 	        setCurrentAsset(asset);
 	        setAssetData(parsedAssetData);
