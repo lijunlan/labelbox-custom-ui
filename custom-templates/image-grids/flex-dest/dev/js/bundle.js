@@ -8472,6 +8472,7 @@
 	        assetPrev.current = asset.previous;
 	        var assetDataStr = get(asset.metadata[0].metaValue);
 	        var parsedAssetData = parseHtmlInput(assetDataStr);
+	        console.log(parsedAssetData);
 	        setCurrentAsset(asset);
 	        setAssetData(parsedAssetData);
 	      }
