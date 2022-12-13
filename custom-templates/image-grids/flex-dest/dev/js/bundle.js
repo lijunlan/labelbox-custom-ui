@@ -8409,7 +8409,9 @@
 	        assetNext.current = asset.next;
 	        assetPrev.current = asset.previous;
 	        var assetDataStr = get(asset.metadata[0].metaValue).replace(/NaN/g, 'null');
-	        console.log(assetDataStr);
+	        var html = document.createElement('html');
+	        html.innerHTML = assetDataStr;
+	        console.log(html);
 	        var parsedAssetData = JSON.parse(assetDataStr);
 	        setCurrentAsset(asset);
 	        setAssetData(parsedAssetData);
