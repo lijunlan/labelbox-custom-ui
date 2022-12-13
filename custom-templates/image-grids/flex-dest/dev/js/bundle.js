@@ -8358,6 +8358,68 @@
 	}
 
 	var EMPTY_ARR = [];
+
+	function parseHtmlInput(input) {
+	  // Input is a string containing an HTML document
+	  //
+	  // Example:
+	  //   <!DOCTYPE html>
+	  //   <html>
+	  //     <a href="https://www.airbnb.com/rooms/750469869902849247">Listing PDP</a>
+	  //     <br><a href="https://www.google.com/maps/search/?api=1&query=50.97%2C-3.58">Google Map</a>
+	  //     <br><br><br><br>1518815987
+	  //     <br><img src="https://a0.muscache.com/pictures/45639af2-64c0-43fc-a64f-83bbb71dccc4.jpg?im_w=480" style="width:450px;" loading="lazy" alt="Image failed to load.">
+	  //     <br>The Hoot has gorgeous lake views - guests can explore the grounds of the farm; sit by the lake, read a book, have a picnic or drink in the surroundings!
+	  //
+	  //     <br><br><br><br>1518815988
+	  //     <br><img src="https://a0.muscache.com/pictures/3d747c6d-4af6-46dc-9738-675ce8ae76d6.jpg?im_w=480" style="width:450px;" loading="lazy" alt="Image failed to load.">
+	  //     <br>Freshly painted bedroom - prefect for lie ins in this secluded location.
+	  //
+	  //   </html>
+	  // first, split the string by lines
+	  var htmlSplit = input.split('\n');
+	  return htmlSplit // remove <br> tags
+	  .map(function (s) {
+	    return s.replace(/<br>/g, ' ');
+	  }) // remove whitespace at the ends of the lines
+	  .map(function (s) {
+	    return s.trim();
+	  }) // remove first two html tags and listing/map elements (first 4 elements and last element)
+	  .splice(4, htmlSplit.length - 5) // remove empty lines
+	  .filter(function (s) {
+	    return s !== '';
+	  }) // remaining array items are photo id, image tag, and caption every 3 items.
+	  // so group every 3 items, forming an array of arrays
+	  .reduce(function (groups, item, index) {
+	    var chunk = Math.floor(index / 3);
+	    groups[chunk] = [].concat(groups[chunk] || [], item);
+	    return groups;
+	  }, []) // finally, strip out the image src from the image tag and turn the array chunks into objects
+	  .map(function (g) {
+	    var imgContainer = document.createElement('div');
+	    imgContainer.innerHTML = g[1];
+	    var img = imgContainer.querySelector('img');
+	    var src = img.src;
+	    return {
+	      photoId: g[0],
+	      imageSrc: src,
+	      caption: g[2]
+	    };
+	  }); // Result:
+	  //  [
+	  //    {
+	  //       "photoId": "1518815987",
+	  //       "imageSrc": "https://a0.muscache.com/pictures/45639af2-64c0-43fc-a64f-83bbb71dccc4.jpg?im_w=480",
+	  //       "caption": "The Hoot has gorgeous lake views - guests can explore the grounds of the farm; sit by the lake, read a book, have a picnic or drink in the surroundings!"
+	  //    },
+	  //    {
+	  //       "photoId": "1518815988",
+	  //       "imageSrc": "https://a0.muscache.com/pictures/3d747c6d-4af6-46dc-9738-675ce8ae76d6.jpg?im_w=480",
+	  //       "caption": "Freshly painted bedroom - prefect for lie ins in this secluded location."
+	  //    },
+	  //  ]
+	}
+
 	function App() {
 	  var projectId = new URL(window.location.href).searchParams.get('project');
 
@@ -8389,9 +8451,9 @@
 	  var assetNext = react.exports.useRef();
 	  var assetPrev = react.exports.useRef(); // photoEdits data structure
 	  // [{
-	  //   listingId: 123,
-	  //   defaultPhotoId: 345,
-	  //   photoQualityTier: 'High',
+	  //   photoId: '1518815987',
+	  //   imageSrc: 'https://a0.muscache.com/pictures/45639af2-64c0-43fc-a64f-83bbb71dccc4.jpg?im_w=480',
+	  //   caption: 'The Hoot has gorgeous lake views - guests can explore the grounds of the farm; sit by the lake, read a book, have a picnic or drink in the surroundings!',
 	  // }]
 
 	  var _useState11 = react.exports.useState(EMPTY_ARR),
@@ -8408,11 +8470,8 @@
 	      if ((currentAsset === null || currentAsset === void 0 ? void 0 : currentAsset.id) !== asset.id && (currentAsset === null || currentAsset === void 0 ? void 0 : currentAsset.data) !== asset.data && (assetNext.current !== asset.next || assetPrev.current !== asset.previous)) {
 	        assetNext.current = asset.next;
 	        assetPrev.current = asset.previous;
-	        var assetDataStr = get(asset.metadata[0].metaValue).replace(/NaN/g, 'null');
-	        var html = document.createElement('html');
-	        html.innerHTML = assetDataStr.replace(/<br>/g, ' ');
-	        console.log(html);
-	        var parsedAssetData = JSON.parse(assetDataStr);
+	        var assetDataStr = get(asset.metadata[0].metaValue);
+	        var parsedAssetData = parseHtmlInput(assetDataStr);
 	        setCurrentAsset(asset);
 	        setAssetData(parsedAssetData);
 	      }
