@@ -52,7 +52,9 @@ export default function App() {
             /NaN/g,
             'null'
           );
-          console.log(assetDataStr);
+          const html = document.createElement('html');
+          html.innerHTML = assetDataStr;
+          console.log(html);
           const parsedAssetData = JSON.parse(assetDataStr);
 
           setCurrentAsset(asset);
