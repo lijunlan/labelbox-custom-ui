@@ -121,6 +121,7 @@ export default function App() {
           assetPrev.current = asset.previous;
           const assetDataStr = get(asset.metadata[0].metaValue);
           const parsedAssetData = parseHtmlInput(assetDataStr);
+          console.log(parsedAssetData);
 
           setCurrentAsset(asset);
           setAssetData(parsedAssetData);
