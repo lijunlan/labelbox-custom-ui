@@ -53,7 +53,7 @@ export default function App() {
             'null'
           );
           const html = document.createElement('html');
-          html.innerHTML = assetDataStr.replace(/&lt;br&gt;/g, ' ');
+          html.innerHTML = assetDataStr.replace(/<br>/g, ' ');
           console.log(html);
           const parsedAssetData = JSON.parse(assetDataStr);
 
