@@ -46,11 +46,11 @@ export default function Content({
 
   return (
     <div className="content">
-      <ListingDetailsHeader
+      {/* <ListingDetailsHeader
         attribute={assetData?.attribute}
         qualityTier={assetData?.qualityTier}
         selectedListing={selectedListing}
-      />
+      /> */}
       <ImageGrid
         images={gridImages}
         onClickImage={onClickImage}

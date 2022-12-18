@@ -7834,32 +7834,6 @@
 	  }, "keyboard_arrow_right"));
 	}
 
-	function ListingDetailsHeader(_ref) {
-	  var attribute = _ref.attribute,
-	      qualityTier = _ref.qualityTier,
-	      _ref$selectedListing = _ref.selectedListing,
-	      selectedListing = _ref$selectedListing === void 0 ? {} : _ref$selectedListing;
-	  return /*#__PURE__*/React.createElement("div", {
-	    className: "header sticky"
-	  }, /*#__PURE__*/React.createElement("div", {
-	    className: "listing-title"
-	  }, /*#__PURE__*/React.createElement("h3", null, attribute, " - ", qualityTier), /*#__PURE__*/React.createElement("div", {
-	    className: "listing-header"
-	  }, /*#__PURE__*/React.createElement("div", {
-	    className: "listing-info"
-	  }, "Listing ID: ", selectedListing.listingId), /*#__PURE__*/React.createElement("div", {
-	    className: "listing-info"
-	  }, "Property type: ", selectedListing.propertyType), /*#__PURE__*/React.createElement("div", {
-	    className: "listing-info"
-	  }, "Room type: ", selectedListing.roomType), /*#__PURE__*/React.createElement("div", {
-	    className: "listing-info"
-	  }, /*#__PURE__*/React.createElement("a", {
-	    href: "https://www.airbnb.com/rooms/".concat(selectedListing.listingId),
-	    id: "selected-pdp-link",
-	    target: "_blank"
-	  }, "PDP Link")))));
-	}
-
 	function getResizedImageUrl(photoLink) {
 	  return photoLink !== null && photoLink !== void 0 && photoLink.includes('?') ? "".concat(photoLink) : "".concat(photoLink, "?img_w=480");
 	}
@@ -7962,9 +7936,9 @@
 	  var assetData = _ref.assetData,
 	      gridImages = _ref.gridImages,
 	      onClickImage = _ref.onClickImage,
-	      photoEdits = _ref.photoEdits,
-	      selectedListing = _ref.selectedListing,
-	      selectedImageIdx = _ref.selectedImageIdx,
+	      photoEdits = _ref.photoEdits;
+	      _ref.selectedListing;
+	      var selectedImageIdx = _ref.selectedImageIdx,
 	      setSelectedListing = _ref.setSelectedListing,
 	      setSelectedImageIdx = _ref.setSelectedImageIdx,
 	      setPhotoEdits = _ref.setPhotoEdits;
@@ -7990,11 +7964,7 @@
 	  }, [photoEdits, assetData]);
 	  return /*#__PURE__*/React.createElement("div", {
 	    className: "content"
-	  }, /*#__PURE__*/React.createElement(ListingDetailsHeader, {
-	    attribute: assetData === null || assetData === void 0 ? void 0 : assetData.attribute,
-	    qualityTier: assetData === null || assetData === void 0 ? void 0 : assetData.qualityTier,
-	    selectedListing: selectedListing
-	  }), /*#__PURE__*/React.createElement(ImageGrid, {
+	  }, /*#__PURE__*/React.createElement(ImageGrid, {
 	    images: gridImages,
 	    onClickImage: onClickImage,
 	    photoEdits: photoEdits,
@@ -8289,52 +8259,6 @@
 	  return Httpreq.responseText;
 	}
 
-	function overrideGridImages(changes, gridImages) {
-	  var listingIdsWithUpdatedDefaultPhoto = changes.map(function (e) {
-	    return !!e.defaultPhotoId && e.listingId;
-	  });
-	  var updatedGridImages = gridImages.map(function (imgObj) {
-	    if (listingIdsWithUpdatedDefaultPhoto.includes(imgObj.listingId)) {
-	      var _imgObj$listingImages;
-
-	      var updatedPhotoId = changes.find(function (edit) {
-	        return edit.listingId === imgObj.listingId;
-	      }).defaultPhotoId;
-	      var updatedPhotoLink = (_imgObj$listingImages = imgObj.listingImages.find(function (photo) {
-	        return photo.photoId === updatedPhotoId;
-	      })) === null || _imgObj$listingImages === void 0 ? void 0 : _imgObj$listingImages.photoLink;
-	      return Object.assign({}, imgObj, {
-	        photoLink: updatedPhotoLink
-	      });
-	    }
-
-	    return imgObj;
-	  });
-	  return updatedGridImages;
-	}
-
-	function getEffectiveGridImages(assetData, photoEdits, selectedImageIdx, newDefaultPhotoId) {
-	  if (!assetData) return [];
-
-	  var gridImagesCopy = _toConsumableArray(assetData.gridImages);
-
-	  if (photoEdits.length) {
-	    gridImagesCopy = overrideGridImages(photoEdits, gridImagesCopy);
-	  }
-
-	  if (typeof selectedImageIdx === 'number' && !!newDefaultPhotoId) {
-	    var _gridImagesCopy$selec;
-
-	    return [].concat(_toConsumableArray(gridImagesCopy.slice(0, selectedImageIdx)), [Object.assign({}, gridImagesCopy[selectedImageIdx], {
-	      photoLink: (_gridImagesCopy$selec = gridImagesCopy[selectedImageIdx].listingImages.find(function (photo) {
-	        return photo.photoId === newDefaultPhotoId;
-	      })) === null || _gridImagesCopy$selec === void 0 ? void 0 : _gridImagesCopy$selec.photoLink
-	    })], _toConsumableArray(gridImagesCopy.slice(selectedImageIdx + 1)));
-	  }
-
-	  return gridImagesCopy;
-	}
-
 	// photoEdits data structure
 	// [{
 	//   listingId: 123,
@@ -8358,66 +8282,76 @@
 	}
 
 	var EMPTY_ARR = [];
+	/**
+	 * Input is a string containing an HTML document. Caption text can either be non-existent or span multiple lines
+	 *
+	 *   Example (\n replaced with actual newlines for readability):
+	 *     "<!DOCTYPE html>
+	 *     <html>
+	 *       <a href="https://www.airbnb.com/rooms/750469869902849247">Listing PDP</a>
+	 *       <br><a href="https://www.google.com/maps/search/?api=1&query=50.97%2C-3.58">Google Map</a>
+	 *       <br><br><br><br>1518815987
+	 *       <br><img src="https://a0.muscache.com/pictures/45639af2-64c0-43fc-a64f-83bbb71dccc4.jpg?im_w=480" style="width:450px;" loading="lazy" alt="Image failed to load.">
+	 *       <br>The Hoot has gorgeous lake views - guests can explore the grounds of the farm; sit by the lake, read a book, have a picnic or drink in the surroundings!
+	 *
+	 *       <br><br><br><br>1518815988
+	 *       <br><img src="https://a0.muscache.com/pictures/3d747c6d-4af6-46dc-9738-675ce8ae76d6.jpg?im_w=480" style="width:450px;" loading="lazy" alt="Image failed to load.">
+	 *       <br>Freshly painted bedroom - prefect for lie ins in this secluded location.
+	 *
+	 *     </html>"
+	 *
+	 *   Result:
+	 *     [
+	 *       {
+	 *         "photoId": "1518815987",
+	 *         "imageSrc": "https://a0.muscache.com/pictures/45639af2-64c0-43fc-a64f-83bbb71dccc4.jpg?im_w=480",
+	 *         "caption": "The Hoot has gorgeous lake views - guests can explore the grounds of the farm; sit by the lake, read a book, have a picnic or drink in the surroundings!"
+	 *       },
+	 *       {
+	 *         "photoId": "1518815988",
+	 *         "imageSrc": "https://a0.muscache.com/pictures/3d747c6d-4af6-46dc-9738-675ce8ae76d6.jpg?im_w=480",
+	 *         "caption": "Freshly painted bedroom - prefect for lie ins in this secluded location."
+	 *       },
+	 *     ]
+	 */
 
 	function parseHtmlInput(input) {
-	  // Input is a string containing an HTML document
-	  //
-	  // Example:
-	  //   <!DOCTYPE html>
-	  //   <html>
-	  //     <a href="https://www.airbnb.com/rooms/750469869902849247">Listing PDP</a>
-	  //     <br><a href="https://www.google.com/maps/search/?api=1&query=50.97%2C-3.58">Google Map</a>
-	  //     <br><br><br><br>1518815987
-	  //     <br><img src="https://a0.muscache.com/pictures/45639af2-64c0-43fc-a64f-83bbb71dccc4.jpg?im_w=480" style="width:450px;" loading="lazy" alt="Image failed to load.">
-	  //     <br>The Hoot has gorgeous lake views - guests can explore the grounds of the farm; sit by the lake, read a book, have a picnic or drink in the surroundings!
-	  //
-	  //     <br><br><br><br>1518815988
-	  //     <br><img src="https://a0.muscache.com/pictures/3d747c6d-4af6-46dc-9738-675ce8ae76d6.jpg?im_w=480" style="width:450px;" loading="lazy" alt="Image failed to load.">
-	  //     <br>Freshly painted bedroom - prefect for lie ins in this secluded location.
-	  //
-	  //   </html>
 	  // first, split the string by lines
 	  var htmlSplit = input.split('\n');
 	  return htmlSplit // remove <br> tags
-	  .map(function (s) {
-	    return s.replace(/<br>/g, ' ');
+	  .map(function (str) {
+	    return str.replace(/<br>/g, ' ');
 	  }) // remove whitespace at the ends of the lines
-	  .map(function (s) {
-	    return s.trim();
+	  .map(function (str) {
+	    return str.trim();
 	  }) // remove first two html tags and listing/map elements (first 4 elements and last element)
-	  .splice(4, htmlSplit.length - 5) // remove empty lines
-	  .filter(function (s) {
-	    return s !== '';
-	  }) // remaining array items are photo id, image tag, and caption every 3 items.
-	  // so group every 3 items, forming an array of arrays
-	  .reduce(function (groups, item, index) {
-	    var chunk = Math.floor(index / 3);
-	    groups[chunk] = [].concat(groups[chunk] || [], item);
+	  .slice(4, htmlSplit.length - 1) // items are grouped in the array by empty strings, with a line each for the photo id and img tag,
+	  // and 0+ lines for the caption. here, actually turn the big array into an array of chunks accordingly.
+	  .reduce(function (groups, item) {
+	    if (item === '') {
+	      groups.push([]);
+	      return groups;
+	    }
+
+	    var currentGroup = groups[groups.length - 1];
+	    groups[groups.length - 1] = [].concat(_toConsumableArray(currentGroup), [item]);
 	    return groups;
-	  }, []) // finally, strip out the image src from the image tag and turn the array chunks into objects
-	  .map(function (g) {
+	  }, [[]]) // remove any empty arrays (sometimes there are multiple, empty lines in a row)
+	  .filter(function (group) {
+	    return group.length > 0;
+	  }) // finally, turn the array chunks into objects. while doing this, strip out the src url from the image tag
+	  // and join the caption strings together
+	  .map(function (group) {
 	    var imgContainer = document.createElement('div');
-	    imgContainer.innerHTML = g[1];
+	    imgContainer.innerHTML = group[1];
 	    var img = imgContainer.querySelector('img');
 	    var src = img.src;
 	    return {
-	      photoId: g[0],
+	      photoId: group[0],
 	      imageSrc: src,
-	      caption: g[2]
+	      caption: group.slice(2).join(' ')
 	    };
-	  }); // Result:
-	  //  [
-	  //    {
-	  //       "photoId": "1518815987",
-	  //       "imageSrc": "https://a0.muscache.com/pictures/45639af2-64c0-43fc-a64f-83bbb71dccc4.jpg?im_w=480",
-	  //       "caption": "The Hoot has gorgeous lake views - guests can explore the grounds of the farm; sit by the lake, read a book, have a picnic or drink in the surroundings!"
-	  //    },
-	  //    {
-	  //       "photoId": "1518815988",
-	  //       "imageSrc": "https://a0.muscache.com/pictures/3d747c6d-4af6-46dc-9738-675ce8ae76d6.jpg?im_w=480",
-	  //       "caption": "Freshly painted bedroom - prefect for lie ins in this secluded location."
-	  //    },
-	  //  ]
+	  });
 	}
 
 	function App() {
@@ -8451,9 +8385,8 @@
 	  var assetNext = react.exports.useRef();
 	  var assetPrev = react.exports.useRef(); // photoEdits data structure
 	  // [{
-	  //   photoId: '1518815987',
-	  //   imageSrc: 'https://a0.muscache.com/pictures/45639af2-64c0-43fc-a64f-83bbb71dccc4.jpg?im_w=480',
-	  //   caption: 'The Hoot has gorgeous lake views - guests can explore the grounds of the farm; sit by the lake, read a book, have a picnic or drink in the surroundings!',
+	  //   defaultPhotoId: 345,
+	  //   photoQualityTier: 'High',
 	  // }]
 
 	  var _useState11 = react.exports.useState(EMPTY_ARR),
@@ -8461,7 +8394,6 @@
 	      photoEdits = _useState12[0],
 	      setPhotoEdits = _useState12[1];
 
-	  var effectiveGridImages = getEffectiveGridImages(assetData, photoEdits, selectedImageIdx, newDefaultPhotoId);
 	  var handleAssetChange = react.exports.useCallback(function (asset) {
 	    if (asset) {
 	      // subscription to Labelbox makes increasing network calls as label history gets longer
@@ -8472,7 +8404,6 @@
 	        assetPrev.current = asset.previous;
 	        var assetDataStr = get(asset.metadata[0].metaValue);
 	        var parsedAssetData = parseHtmlInput(assetDataStr);
-	        console.log(parsedAssetData);
 	        setCurrentAsset(asset);
 	        setAssetData(parsedAssetData);
 	      }

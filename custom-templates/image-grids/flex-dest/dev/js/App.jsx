@@ -9,75 +9,86 @@ import convertLabelToPhotoEditFormat from './convertLabelToPhotoEditFormat';
 
 const EMPTY_ARR = [];
 
+/**
+ * Input is a string containing an HTML document. Caption text can either be non-existent or span multiple lines
+ *
+ *   Example (\n replaced with actual newlines for readability):
+ *     "<!DOCTYPE html>
+ *     <html>
+ *       <a href="https://www.airbnb.com/rooms/750469869902849247">Listing PDP</a>
+ *       <br><a href="https://www.google.com/maps/search/?api=1&query=50.97%2C-3.58">Google Map</a>
+ *       <br><br><br><br>1518815987
+ *       <br><img src="https://a0.muscache.com/pictures/45639af2-64c0-43fc-a64f-83bbb71dccc4.jpg?im_w=480" style="width:450px;" loading="lazy" alt="Image failed to load.">
+ *       <br>The Hoot has gorgeous lake views - guests can explore the grounds of the farm; sit by the lake, read a book, have a picnic or drink in the surroundings!
+ *
+ *       <br><br><br><br>1518815988
+ *       <br><img src="https://a0.muscache.com/pictures/3d747c6d-4af6-46dc-9738-675ce8ae76d6.jpg?im_w=480" style="width:450px;" loading="lazy" alt="Image failed to load.">
+ *       <br>Freshly painted bedroom - prefect for lie ins in this secluded location.
+ *
+ *     </html>"
+ *
+ *   Result:
+ *     [
+ *       {
+ *         "photoId": "1518815987",
+ *         "imageSrc": "https://a0.muscache.com/pictures/45639af2-64c0-43fc-a64f-83bbb71dccc4.jpg?im_w=480",
+ *         "caption": "The Hoot has gorgeous lake views - guests can explore the grounds of the farm; sit by the lake, read a book, have a picnic or drink in the surroundings!"
+ *       },
+ *       {
+ *         "photoId": "1518815988",
+ *         "imageSrc": "https://a0.muscache.com/pictures/3d747c6d-4af6-46dc-9738-675ce8ae76d6.jpg?im_w=480",
+ *         "caption": "Freshly painted bedroom - prefect for lie ins in this secluded location."
+ *       },
+ *     ]
+ */
 function parseHtmlInput(input) {
-  // Input is a string containing an HTML document
-  //
-  // Example:
-  //   <!DOCTYPE html>
-  //   <html>
-  //     <a href="https://www.airbnb.com/rooms/750469869902849247">Listing PDP</a>
-  //     <br><a href="https://www.google.com/maps/search/?api=1&query=50.97%2C-3.58">Google Map</a>
-  //     <br><br><br><br>1518815987
-  //     <br><img src="https://a0.muscache.com/pictures/45639af2-64c0-43fc-a64f-83bbb71dccc4.jpg?im_w=480" style="width:450px;" loading="lazy" alt="Image failed to load.">
-  //     <br>The Hoot has gorgeous lake views - guests can explore the grounds of the farm; sit by the lake, read a book, have a picnic or drink in the surroundings!
-  //
-  //     <br><br><br><br>1518815988
-  //     <br><img src="https://a0.muscache.com/pictures/3d747c6d-4af6-46dc-9738-675ce8ae76d6.jpg?im_w=480" style="width:450px;" loading="lazy" alt="Image failed to load.">
-  //     <br>Freshly painted bedroom - prefect for lie ins in this secluded location.
-  //
-  //   </html>
-
   // first, split the string by lines
   const htmlSplit = input.split('\n');
   return (
     htmlSplit
       // remove <br> tags
-      .map((s) => s.replace(/<br>/g, ' '))
+      .map((str) => str.replace(/<br>/g, ' '))
 
       // remove whitespace at the ends of the lines
-      .map((s) => s.trim())
+      .map((str) => str.trim())
 
       // remove first two html tags and listing/map elements (first 4 elements and last element)
-      .splice(4, htmlSplit.length - 5)
+      .slice(4, htmlSplit.length - 1)
 
-      // remove empty lines
-      .filter((s) => s !== '')
+      // items are grouped in the array by empty strings, with a line each for the photo id and img tag,
+      // and 0+ lines for the caption. here, actually turn the big array into an array of chunks accordingly.
+      .reduce(
+        (groups, item) => {
+          if (item === '') {
+            groups.push([]);
+            return groups;
+          }
 
-      // remaining array items are photo id, image tag, and caption every 3 items.
-      // so group every 3 items, forming an array of arrays
-      .reduce((groups, item, index) => {
-        const chunk = Math.floor(index / 3);
-        groups[chunk] = [].concat(groups[chunk] || [], item);
-        return groups;
-      }, [])
+          const currentGroup = groups[groups.length - 1];
+          groups[groups.length - 1] = [...currentGroup, item];
 
-      // finally, strip out the image src from the image tag and turn the array chunks into objects
-      .map((g) => {
+          return groups;
+        },
+        [[]]
+      )
+
+      // remove any empty arrays (sometimes there are multiple, empty lines in a row)
+      .filter((group) => group.length > 0)
+
+      // finally, turn the array chunks into objects. while doing this, strip out the src url from the image tag
+      // and join the caption strings together
+      .map((group) => {
         const imgContainer = document.createElement('div');
-        imgContainer.innerHTML = g[1];
+        imgContainer.innerHTML = group[1];
         const img = imgContainer.querySelector('img');
         const src = img.src;
         return {
-          photoId: g[0],
+          photoId: group[0],
           imageSrc: src,
-          caption: g[2],
+          caption: group.slice(2).join(' '),
         };
       })
   );
-
-  // Result:
-  //  [
-  //    {
-  //       "photoId": "1518815987",
-  //       "imageSrc": "https://a0.muscache.com/pictures/45639af2-64c0-43fc-a64f-83bbb71dccc4.jpg?im_w=480",
-  //       "caption": "The Hoot has gorgeous lake views - guests can explore the grounds of the farm; sit by the lake, read a book, have a picnic or drink in the surroundings!"
-  //    },
-  //    {
-  //       "photoId": "1518815988",
-  //       "imageSrc": "https://a0.muscache.com/pictures/3d747c6d-4af6-46dc-9738-675ce8ae76d6.jpg?im_w=480",
-  //       "caption": "Freshly painted bedroom - prefect for lie ins in this secluded location."
-  //    },
-  //  ]
 }
 
 export default function App() {
@@ -92,18 +103,10 @@ export default function App() {
 
   // photoEdits data structure
   // [{
-  //   photoId: '1518815987',
-  //   imageSrc: 'https://a0.muscache.com/pictures/45639af2-64c0-43fc-a64f-83bbb71dccc4.jpg?im_w=480',
-  //   caption: 'The Hoot has gorgeous lake views - guests can explore the grounds of the farm; sit by the lake, read a book, have a picnic or drink in the surroundings!',
+  //   defaultPhotoId: 345,
+  //   photoQualityTier: 'High',
   // }]
   const [photoEdits, setPhotoEdits] = useState(EMPTY_ARR);
-
-  const effectiveGridImages = getEffectiveGridImages(
-    assetData,
-    photoEdits,
-    selectedImageIdx,
-    newDefaultPhotoId
-  );
 
   const handleAssetChange = useCallback(
     (asset) => {
@@ -121,7 +124,6 @@ export default function App() {
           assetPrev.current = asset.previous;
           const assetDataStr = get(asset.metadata[0].metaValue);
           const parsedAssetData = parseHtmlInput(assetDataStr);
-          console.log(parsedAssetData);
 
           setCurrentAsset(asset);
           setAssetData(parsedAssetData);
