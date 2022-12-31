@@ -7791,118 +7791,138 @@
 	  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 	}
 
-	function Header(_ref) {
-	  var currentAsset = _ref.currentAsset,
-	      hasPrev = _ref.hasPrev,
-	      hasNext = _ref.hasNext,
-	      projectId = _ref.projectId,
-	      setSelectedListing = _ref.setSelectedListing,
-	      setSelectedImageIdx = _ref.setSelectedImageIdx;
-	  var handleGoHome = react.exports.useCallback(function () {
-	    window.location.href = 'https://app.labelbox.com/projects/' + projectId;
-	  }, [projectId]);
-	  var handleGoBack = react.exports.useCallback(function () {
-	    setSelectedListing();
-	    setSelectedImageIdx();
-
-	    if (hasPrev) {
-	      Labelbox.setLabelAsCurrentAsset(currentAsset.previous);
-	    }
-	  }, [currentAsset]);
-	  var handleGoNext = react.exports.useCallback(function () {
-	    setSelectedListing();
-	    setSelectedImageIdx();
-
-	    if (hasNext) {
-	      Labelbox.setLabelAsCurrentAsset(currentAsset.next);
-	    }
-	  }, [currentAsset]);
-	  return /*#__PURE__*/React.createElement("div", {
-	    className: "header-container"
-	  }, /*#__PURE__*/React.createElement("i", {
-	    className: "material-icons home-icon",
-	    onClick: handleGoHome
-	  }, "home"), /*#__PURE__*/React.createElement("i", {
-	    className: "material-icons back-icon ".concat(hasPrev ? 'button-default' : ''),
-	    onClick: handleGoBack
-	  }, "keyboard_arrow_left"), /*#__PURE__*/React.createElement("div", {
-	    className: "header-title",
-	    id: "externalid"
-	  }, "Label this asset"), /*#__PURE__*/React.createElement("i", {
-	    className: "material-icons next-icon ".concat(hasNext ? 'button-default' : ''),
-	    onClick: hasNext ? handleGoNext : undefined
-	  }, "keyboard_arrow_right"));
+	function get(url) {
+	  var Httpreq = new XMLHttpRequest();
+	  Httpreq.open('GET', url, false);
+	  Httpreq.send(null);
+	  return Httpreq.responseText;
 	}
+	/**
+	 * Input is a string containing an HTML document. Caption text can either be non-existent or span multiple lines
+	 *
+	 *   Example (\n replaced with actual newlines for readability):
+	 *     "<!DOCTYPE html>
+	 *     <html>
+	 *       <a href="https://www.airbnb.com/rooms/750469869902849247">Listing PDP</a>
+	 *       <br><a href="https://www.google.com/maps/search/?api=1&query=50.97%2C-3.58">Google Map</a>
+	 *       <br><br><br><br>1518815987
+	 *       <br><img src="https://a0.muscache.com/pictures/45639af2-64c0-43fc-a64f-83bbb71dccc4.jpg?im_w=480" style="width:450px;" loading="lazy" alt="Image failed to load.">
+	 *       <br>The Hoot has gorgeous lake views - guests can explore the grounds of the farm; sit by the lake, read a book, have a picnic or drink in the surroundings!
+	 *
+	 *       <br><br><br><br>1518815988
+	 *       <br><img src="https://a0.muscache.com/pictures/3d747c6d-4af6-46dc-9738-675ce8ae76d6.jpg?im_w=480" style="width:450px;" loading="lazy" alt="Image failed to load.">
+	 *       <br>Freshly painted bedroom - prefect for lie ins in this secluded location.
+	 *
+	 *     </html>"
+	 *
+	 *   Result:
+	 *     [
+	 *       {
+	 *         "photoId": "1518815987",
+	 *         "imageSrc": "https://a0.muscache.com/pictures/45639af2-64c0-43fc-a64f-83bbb71dccc4.jpg?im_w=480",
+	 *         "caption": "The Hoot has gorgeous lake views - guests can explore the grounds of the farm; sit by the lake, read a book, have a picnic or drink in the surroundings!"
+	 *       },
+	 *       {
+	 *         "photoId": "1518815988",
+	 *         "imageSrc": "https://a0.muscache.com/pictures/3d747c6d-4af6-46dc-9738-675ce8ae76d6.jpg?im_w=480",
+	 *         "caption": "Freshly painted bedroom - prefect for lie ins in this secluded location."
+	 *       },
+	 *     ]
+	 */
 
-	function ListingDetailsHeader(_ref) {
-	  var attribute = _ref.attribute,
-	      qualityTier = _ref.qualityTier,
-	      _ref$selectedListing = _ref.selectedListing,
-	      selectedListing = _ref$selectedListing === void 0 ? {} : _ref$selectedListing;
-	  return /*#__PURE__*/React.createElement("div", {
-	    className: "header sticky"
-	  }, /*#__PURE__*/React.createElement("div", {
-	    className: "listing-title"
-	  }, /*#__PURE__*/React.createElement("h3", null, attribute, " - ", qualityTier), /*#__PURE__*/React.createElement("div", {
-	    className: "listing-header"
-	  }, /*#__PURE__*/React.createElement("div", {
-	    className: "listing-info"
-	  }, "Listing ID: ", selectedListing.listingId), /*#__PURE__*/React.createElement("div", {
-	    className: "listing-info"
-	  }, "Property type: ", selectedListing.propertyType), /*#__PURE__*/React.createElement("div", {
-	    className: "listing-info"
-	  }, "Room type: ", selectedListing.roomType), /*#__PURE__*/React.createElement("div", {
-	    className: "listing-info"
-	  }, /*#__PURE__*/React.createElement("a", {
-	    href: "https://www.airbnb.com/rooms/".concat(selectedListing.listingId),
-	    id: "selected-pdp-link",
-	    target: "_blank"
-	  }, "PDP Link")))));
-	}
+	function parseHtmlInput(input) {
+	  // first, split the string by lines
+	  var htmlSplit = input.split('\n');
+	  return htmlSplit // remove <br> tags
+	  .map(function (str) {
+	    return str.replace(/<br>/g, ' ');
+	  }) // remove whitespace at the ends of the lines
+	  .map(function (str) {
+	    return str.trim();
+	  }) // remove first two html tags and listing/map elements (first 4 elements and last element)
+	  .slice(4, htmlSplit.length - 1) // items are grouped in the array by empty strings, with a line each for the photo id and img tag,
+	  // and 0+ lines for the caption. here, actually turn the big array into an array of chunks accordingly.
+	  .reduce(function (groups, item) {
+	    if (item === '') {
+	      groups.push([]);
+	      return groups;
+	    }
+
+	    var currentGroup = groups[groups.length - 1];
+	    groups[groups.length - 1] = [].concat(_toConsumableArray(currentGroup), [item]);
+	    return groups;
+	  }, [[]]) // remove any empty arrays (sometimes there are multiple, empty lines in a row)
+	  .filter(function (group) {
+	    return group.length > 0;
+	  }) // finally, turn the array chunks into objects. while doing this, strip out the src url from the image tag
+	  // and join the caption strings together
+	  .map(function (group) {
+	    var imgContainer = document.createElement('div');
+	    imgContainer.innerHTML = group[1];
+	    var img = imgContainer.querySelector('img');
+	    var src = img.src;
+	    return {
+	      photoId: group[0],
+	      imageSrc: src,
+	      caption: group.slice(2).join(' ')
+	    };
+	  });
+	} // TODO: double check that im_w is okay too
 
 	function getResizedImageUrl(photoLink) {
 	  return photoLink !== null && photoLink !== void 0 && photoLink.includes('?') ? "".concat(photoLink) : "".concat(photoLink, "?img_w=480");
 	}
 
+	// photoEdits data structure
+	// [{
+	//   listingId: 123,
+	//   defaultPhotoId: 345,
+	//   photoQualityTier: 'High',
+	// }]
+	function convertLabelToPhotoEditFormat(labels) {
+	  if (!Array.isArray(labels)) return [];
+	  return labels.map(function (label) {
+	    var id_listing = label.id_listing,
+	        photo_id = label.photo_id,
+	        photo_quality = label.photo_quality;
+	    return _objectSpread2(_objectSpread2({
+	      listingId: id_listing
+	    }, photo_id ? {
+	      defaultPhotoId: photo_id
+	    } : undefined), photo_quality ? {
+	      photoQualityTier: photo_quality
+	    } : undefined);
+	  });
+	}
+
 	function DefaultImage(_ref) {
-	  var hasQualityTierChanged = _ref.hasQualityTierChanged,
-	      imgObj = _ref.imgObj,
+	  var imgObj = _ref.imgObj,
 	      idx = _ref.idx,
-	      isEdited = _ref.isEdited,
 	      isSelected = _ref.isSelected,
 	      onClickImage = _ref.onClickImage;
-	  var listingId = imgObj.listingId;
-	  var imageUrl = getResizedImageUrl(imgObj.photoLink);
+	  var imageUrl = getResizedImageUrl(imgObj.imageSrc);
 	  return /*#__PURE__*/React.createElement("div", {
 	    className: "image-container",
 	    onClick: function onClick() {
 	      return onClickImage(idx);
 	    },
-	    id: "image-container-".concat(listingId)
+	    id: "image-container-".concat(imgObj.photoId)
 	  }, /*#__PURE__*/React.createElement("img", {
 	    src: imageUrl,
-	    className: "default-image ".concat(hasQualityTierChanged ? 'image-quality-changed' : '', " ").concat(isEdited ? 'image-edited' : '', " ").concat(isSelected ? 'image-selected' : '')
-	  }));
+	    className: "default-image ".concat(isSelected ? 'image-selected' : '')
+	  }), /*#__PURE__*/React.createElement("p", null, imgObj.caption));
 	}
 
 	function ImageGrid(_ref) {
 	  var images = _ref.images,
 	      _onClickImage = _ref.onClickImage,
-	      photoEdits = _ref.photoEdits,
-	      qualityTier = _ref.qualityTier,
 	      selectedImageIdx = _ref.selectedImageIdx;
 	  return /*#__PURE__*/React.createElement("div", {
 	    className: "photo-grid"
 	  }, images.map(function (imgObj, idx) {
-	    var listingEdit = photoEdits.find(function (edit) {
-	      return edit.listingId === imgObj.listingId;
-	    });
-	    var hasQualiterTierChanged = !!(listingEdit !== null && listingEdit !== void 0 && listingEdit.photoQualityTier) && (listingEdit === null || listingEdit === void 0 ? void 0 : listingEdit.photoQualityTier) !== qualityTier;
 	    return /*#__PURE__*/React.createElement(DefaultImage, {
-	      hasQualityTierChanged: hasQualiterTierChanged,
 	      imgObj: imgObj,
 	      idx: idx,
-	      isEdited: !!listingEdit,
 	      isSelected: selectedImageIdx === idx,
 	      key: imgObj.photoId,
 	      onClickImage: function onClickImage(photoIdx) {
@@ -7912,253 +7932,33 @@
 	  }));
 	}
 
-	function getUpdateReason(edit, originalDefaultPhotoId, originalPhotoQualityTier) {
-	  var defaultPhotoId = edit.defaultPhotoId,
-	      photoQualityTier = edit.photoQualityTier;
-	  var defaultPhotoIdChanged = !!defaultPhotoId && defaultPhotoId !== originalDefaultPhotoId;
-	  var photoQualityTierChanged = !!photoQualityTier && photoQualityTier !== originalPhotoQualityTier;
-
-	  if (photoQualityTierChanged && photoQualityTier === 'Remove') {
-	    return 'remove category';
-	  }
-
-	  if (defaultPhotoIdChanged && photoQualityTierChanged) {
-	    return 'update photo + quality';
-	  }
-
-	  if (photoQualityTierChanged) {
-	    return 'update quality';
-	  }
-
-	  if (defaultPhotoIdChanged) {
-	    return 'update photo';
-	  }
-
-	  return '';
-	}
-
-	function formatEditDataForSubmission(photoEdits, attribute, originalPhotoQualityTier, gridImages) {
-	  var formatted = photoEdits.map(function (edit) {
-	    var listingId = edit.listingId,
-	        defaultPhotoId = edit.defaultPhotoId,
-	        photoQualityTier = edit.photoQualityTier;
-	    var listingInfo = gridImages.find(function (listing) {
-	      return listing.listingId === listingId;
-	    });
-	    var originalDefaultPhotoId = listingInfo === null || listingInfo === void 0 ? void 0 : listingInfo.photoId;
-	    var data = {
-	      id_listing: listingId,
-	      listing_category: attribute,
-	      photo_id: defaultPhotoId,
-	      photo_quality: photoQualityTier,
-	      update_reason: getUpdateReason(edit, originalDefaultPhotoId, originalPhotoQualityTier)
-	    };
-	    return data;
-	  });
-	  return JSON.stringify(formatted);
-	}
-
-	function Content(_ref) {
+	function LeftPanel(_ref) {
 	  var assetData = _ref.assetData,
-	      gridImages = _ref.gridImages,
-	      onClickImage = _ref.onClickImage,
-	      photoEdits = _ref.photoEdits,
-	      selectedListing = _ref.selectedListing,
-	      selectedImageIdx = _ref.selectedImageIdx,
-	      setSelectedListing = _ref.setSelectedListing,
-	      setSelectedImageIdx = _ref.setSelectedImageIdx,
-	      setPhotoEdits = _ref.setPhotoEdits;
-	  react.exports.useEffect(function () {
-	    document.querySelector('.content').scrollTo(0, 0);
-	  }, [assetData]);
+	      photoEdits = _ref.photoEdits;
+
+	  var _useState = react.exports.useState(),
+	      _useState2 = _slicedToArray(_useState, 2),
+	      photoQualityTier = _useState2[0],
+	      setPhotoQualityTier = _useState2[1];
+
+	  var handlePhotoQualityChange = react.exports.useCallback(function (e) {
+	    setPhotoQualityTier(e.target.value);
+	  }, []);
 	  var handleSkip = react.exports.useCallback(function () {
-	    setSelectedListing();
-	    setSelectedImageIdx();
-	    setPhotoEdits([]);
+	    // setSelectedImageIdx();
+	    // setPhotoEdits([]);
 	    Labelbox.skip().then(function () {
 	      Labelbox.fetchNextAssetToLabel();
 	    });
 	  }, []);
 	  var handleSubmit = react.exports.useCallback(function () {
-	    setSelectedListing();
-	    setSelectedImageIdx();
+	    // setSelectedImageIdx();
 	    var formattedData = formatEditDataForSubmission(photoEdits, assetData === null || assetData === void 0 ? void 0 : assetData.attribute, assetData === null || assetData === void 0 ? void 0 : assetData.qualityTier, assetData === null || assetData === void 0 ? void 0 : assetData.gridImages);
 	    Labelbox.setLabelForAsset(formattedData, 'ANY').then(function () {
-	      setPhotoEdits([]);
+	      // setPhotoEdits([]);
 	      Labelbox.fetchNextAssetToLabel();
 	    });
 	  }, [photoEdits, assetData]);
-	  return /*#__PURE__*/React.createElement("div", {
-	    className: "content"
-	  }, /*#__PURE__*/React.createElement(ListingDetailsHeader, {
-	    attribute: assetData === null || assetData === void 0 ? void 0 : assetData.attribute,
-	    qualityTier: assetData === null || assetData === void 0 ? void 0 : assetData.qualityTier,
-	    selectedListing: selectedListing
-	  }), /*#__PURE__*/React.createElement(ImageGrid, {
-	    images: gridImages,
-	    onClickImage: onClickImage,
-	    photoEdits: photoEdits,
-	    qualityTier: assetData === null || assetData === void 0 ? void 0 : assetData.qualityTier,
-	    selectedImageIdx: selectedImageIdx
-	  }), /*#__PURE__*/React.createElement("div", {
-	    className: "cta-container"
-	  }, /*#__PURE__*/React.createElement("a", {
-	    className: "cta skip-cta",
-	    onClick: handleSkip
-	  }, "Skip"), /*#__PURE__*/React.createElement("a", {
-	    className: "cta submit-cta",
-	    onClick: handleSubmit
-	  }, "Submit")));
-	}
-
-	function getUpdatedDefaultPhotoInfo(photoEdits, listing) {
-	  return photoEdits.find(function (edit) {
-	    return edit.listingId === listing.listingId;
-	  });
-	}
-
-	function LeftPanel(_ref) {
-	  var assetData = _ref.assetData,
-	      newDefaultPhotoId = _ref.newDefaultPhotoId,
-	      photoEdits = _ref.photoEdits,
-	      selectedListing = _ref.selectedListing,
-	      setNewDefaultPhotoId = _ref.setNewDefaultPhotoId,
-	      setPhotoEdits = _ref.setPhotoEdits;
-	  var originalPhotoQualityTier = assetData.qualityTier;
-	  var originalDefaultPhotoId = selectedListing.photoId;
-	  var updatedDefaultPhotoInfo = getUpdatedDefaultPhotoInfo(photoEdits, selectedListing);
-	  var updatedDefaultPhotoId = updatedDefaultPhotoInfo === null || updatedDefaultPhotoInfo === void 0 ? void 0 : updatedDefaultPhotoInfo.defaultPhotoId;
-	  var updatedDefaultPhotoQualityTier = updatedDefaultPhotoInfo === null || updatedDefaultPhotoInfo === void 0 ? void 0 : updatedDefaultPhotoInfo.photoQualityTier;
-
-	  var _useState = react.exports.useState(updatedDefaultPhotoQualityTier || originalPhotoQualityTier),
-	      _useState2 = _slicedToArray(_useState, 2),
-	      photoQualityTier = _useState2[0],
-	      setPhotoQualityTier = _useState2[1];
-
-	  react.exports.useEffect(function () {
-	    setPhotoQualityTier(updatedDefaultPhotoQualityTier || originalPhotoQualityTier);
-	  }, [selectedListing]);
-
-	  function handlePhotoQualityChange(e) {
-	    setPhotoQualityTier(e.target.value);
-	  }
-
-	  function clearUnsavedChanges() {
-	    setNewDefaultPhotoId('');
-	    setPhotoQualityTier(assetData.qualityTier);
-	  }
-
-	  function handleResetChanges() {
-	    clearUnsavedChanges(); // delete saved change entry from photoEdits
-
-	    setPhotoEdits(function (prevEdits) {
-	      var prevChangeIndex = prevEdits.findIndex(function (edit) {
-	        return edit.listingId === selectedListing.listingId;
-	      });
-
-	      if (prevChangeIndex !== -1) {
-	        return [].concat(_toConsumableArray(prevEdits.slice(0, prevChangeIndex)), _toConsumableArray(prevEdits.slice(prevChangeIndex + 1)));
-	      } else {
-	        return prevEdits;
-	      }
-	    });
-	  }
-
-	  function handleSubmit(e) {
-	    e.preventDefault(); // photo id and quality tier both same as original data
-
-	    if ((!newDefaultPhotoId || newDefaultPhotoId === originalDefaultPhotoId) && photoQualityTier === originalPhotoQualityTier) {
-	      return setPhotoEdits(function (prevEdits) {
-	        var prevChangeIndex = prevEdits.findIndex(function (edit) {
-	          return edit.listingId === selectedListing.listingId;
-	        });
-
-	        if (prevChangeIndex !== -1) {
-	          // delete previous edit
-	          return [].concat(_toConsumableArray(prevEdits.slice(0, prevChangeIndex)), _toConsumableArray(prevEdits.slice(prevChangeIndex + 1)));
-	        }
-
-	        return prevEdits;
-	      });
-	    } // change in photo id
-
-
-	    if (!!newDefaultPhotoId) {
-	      if (newDefaultPhotoId !== originalDefaultPhotoId) {
-	        setPhotoEdits(function (prevEdits) {
-	          var prevChangeIndex = prevEdits.findIndex(function (edit) {
-	            return edit.listingId === selectedListing.listingId;
-	          });
-
-	          if (prevChangeIndex !== -1) {
-	            // override previous edit
-	            return [].concat(_toConsumableArray(prevEdits.slice(0, prevChangeIndex)), [Object.assign({}, prevEdits[prevChangeIndex], {
-	              defaultPhotoId: newDefaultPhotoId
-	            })], _toConsumableArray(prevEdits.slice(prevChangeIndex + 1)));
-	          } else {
-	            // add to photoEdits
-	            return [].concat(_toConsumableArray(prevEdits), [{
-	              listingId: selectedListing.listingId,
-	              defaultPhotoId: newDefaultPhotoId,
-	              photoQualityTier: photoQualityTier
-	            }]);
-	          }
-	        });
-	      } else {
-	        setPhotoEdits(function (prevEdits) {
-	          var prevChangeIndex = prevEdits.findIndex(function (edit) {
-	            return edit.listingId === selectedListing.listingId;
-	          });
-
-	          if (prevChangeIndex !== -1) {
-	            var copy = Object.assign({}, prevEdits[prevChangeIndex], {
-	              defaultPhotoId: newDefaultPhotoId
-	            });
-	            return [].concat(_toConsumableArray(prevEdits.slice(0, prevChangeIndex)), [copy], _toConsumableArray(prevEdits.slice(prevChangeIndex + 1)));
-	          }
-
-	          return prevEdits;
-	        });
-	      }
-	    } // change photo quality tier
-
-
-	    if (photoQualityTier !== originalPhotoQualityTier) {
-	      setPhotoEdits(function (prevEdits) {
-	        var prevChangeIndex = prevEdits.findIndex(function (edit) {
-	          return edit.listingId === selectedListing.listingId;
-	        });
-
-	        if (prevChangeIndex !== -1) {
-	          return [].concat(_toConsumableArray(prevEdits.slice(0, prevChangeIndex)), [Object.assign({}, prevEdits[prevChangeIndex], {
-	            photoQualityTier: photoQualityTier
-	          })], _toConsumableArray(prevEdits.slice(prevChangeIndex + 1)));
-	        } else {
-	          return [].concat(_toConsumableArray(prevEdits), [{
-	            listingId: selectedListing.listingId,
-	            defaultPhotoId: originalDefaultPhotoId || updatedDefaultPhotoId || originalDefaultPhotoId,
-	            photoQualityTier: photoQualityTier
-	          }]);
-	        }
-	      });
-	    } else {
-	      // if photo edit exists for the listing, update the photoQualityTier
-	      setPhotoEdits(function (prevEdits) {
-	        var prevChangeIndex = prevEdits.findIndex(function (edit) {
-	          return edit.listingId === selectedListing.listingId;
-	        });
-
-	        if (prevChangeIndex !== -1) {
-	          return [].concat(_toConsumableArray(prevEdits.slice(0, prevChangeIndex)), [Object.assign({}, prevEdits[prevChangeIndex], {
-	            photoQualityTier: photoQualityTier
-	          })], _toConsumableArray(prevEdits.slice(prevChangeIndex + 1)));
-	        }
-
-	        return prevEdits;
-	      });
-	    }
-	  }
-
 	  return /*#__PURE__*/React.createElement("form", {
 	    onSubmit: handleSubmit
 	  }, /*#__PURE__*/React.createElement("label", null, "Photo id:", /*#__PURE__*/React.createElement("input", {
@@ -8186,242 +7986,18 @@
 	  }, "Remove"))), /*#__PURE__*/React.createElement("div", {
 	    className: "left-panel-ctas-wrapper"
 	  }, /*#__PURE__*/React.createElement("button", {
-	    onClick: handleResetChanges,
-	    className: "cta clear-cta"
-	  }, "Reset"), /*#__PURE__*/React.createElement("input", {
+	    onClick: handleSkip,
+	    className: "cta skip-cta"
+	  }, "Skip"), /*#__PURE__*/React.createElement("input", {
 	    className: "cta save-cta",
 	    type: "submit",
-	    value: "Save"
+	    value: "Submit"
 	  })));
-	}
-
-	function AdditionalImage(_ref) {
-	  var isSelected = _ref.isSelected,
-	      listingImage = _ref.listingImage,
-	      _onClick = _ref.onClick;
-	  var imageUrl = getResizedImageUrl(listingImage.photoLink);
-	  return /*#__PURE__*/React.createElement("div", {
-	    className: "additional-image-wrapper"
-	  }, /*#__PURE__*/React.createElement("div", null, "Photo ID: ", listingImage.photoId), /*#__PURE__*/React.createElement("button", {
-	    className: "additional-image ".concat(isSelected ? 'image-selected' : ''),
-	    onClick: function onClick() {
-	      return _onClick(listingImage.photoId);
-	    }
-	  }, /*#__PURE__*/React.createElement("img", {
-	    src: imageUrl,
-	    width: "100%"
-	  })));
-	}
-
-	function AdditionalPhotos(_ref) {
-	  var selectedListing = _ref.selectedListing,
-	      onClickImage = _ref.onClickImage,
-	      newDefaultPhotoId = _ref.newDefaultPhotoId;
-	  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h5", null, "Other pictures"), selectedListing.listingImages.map(function (image) {
-	    return /*#__PURE__*/React.createElement(AdditionalImage, {
-	      key: image.photoId,
-	      isSelected: newDefaultPhotoId === image.photoId,
-	      listingImage: image,
-	      onClick: onClickImage
-	    });
-	  }));
-	}
-
-	function RightPanel(_ref) {
-	  var selectedListing = _ref.selectedListing,
-	      newDefaultPhotoId = _ref.newDefaultPhotoId,
-	      onClickImage = _ref.onClickImage;
-	  var scrollToTop = react.exports.useCallback(function (node) {
-	    node === null || node === void 0 ? void 0 : node.scrollTo(0, 0);
-	  }, [selectedListing]);
-	  if (!selectedListing) return null;
-	  var title = selectedListing.listingTitle,
-	      description = selectedListing.listingDescription,
-	      location = selectedListing.listingLocation,
-	      where = selectedListing.listingNeighborhood,
-	      lat = selectedListing.lat,
-	      lng = selectedListing.lng; // https://www.google.com/maps/search/?api=1&query={lat}%2C{lng}
-	  // src="https://maps.google.com/maps?q=${lat},${lng}&hl=es&z=14&amp;output=embed"
-	  // href="https://maps.google.com/maps?q=${lat},${lng};z=14&amp;output=embed"
-
-	  return /*#__PURE__*/React.createElement("div", {
-	    className: "flex-column right-side-panel",
-	    ref: scrollToTop
-	  }, /*#__PURE__*/React.createElement("h5", null, "Listing Info"), /*#__PURE__*/React.createElement("div", {
-	    className: "listing-info-container"
-	  }, /*#__PURE__*/React.createElement("div", {
-	    className: "listing-info"
-	  }, /*#__PURE__*/React.createElement("b", null, "Title"), ": ", title)), /*#__PURE__*/React.createElement("div", {
-	    className: "listing-info-container"
-	  }, /*#__PURE__*/React.createElement("div", {
-	    className: "listing-info"
-	  }, /*#__PURE__*/React.createElement("b", null, "Description"), ": ", description)), /*#__PURE__*/React.createElement("div", {
-	    className: "listing-info-container"
-	  }, /*#__PURE__*/React.createElement("div", {
-	    className: "listing-info"
-	  }, /*#__PURE__*/React.createElement("b", null, "Location"), ": ", location)), /*#__PURE__*/React.createElement("div", {
-	    className: "listing-info-container"
-	  }, /*#__PURE__*/React.createElement("div", {
-	    className: "listing-info"
-	  }, /*#__PURE__*/React.createElement("b", null, "Where You'll Be"), ": ", where)), /*#__PURE__*/React.createElement("div", {
-	    className: "listing-info-container"
-	  }, /*#__PURE__*/React.createElement("div", {
-	    className: "listing-info"
-	  }, /*#__PURE__*/React.createElement("iframe", {
-	    width: "450",
-	    height: "450",
-	    frameBorder: "0",
-	    scrolling: "yes",
-	    marginHeight: "0",
-	    marginWidth: "0",
-	    src: "https://maps.google.com/maps?q=".concat(lat, ",").concat(lng, "&z=14&output=embed")
-	  }))), /*#__PURE__*/React.createElement(AdditionalPhotos, {
-	    selectedListing: selectedListing,
-	    onClickImage: onClickImage,
-	    newDefaultPhotoId: newDefaultPhotoId
-	  }));
-	}
-
-	function get(url) {
-	  var Httpreq = new XMLHttpRequest();
-	  Httpreq.open('GET', url, false);
-	  Httpreq.send(null);
-	  return Httpreq.responseText;
-	}
-
-	function overrideGridImages(changes, gridImages) {
-	  var listingIdsWithUpdatedDefaultPhoto = changes.map(function (e) {
-	    return !!e.defaultPhotoId && e.listingId;
-	  });
-	  var updatedGridImages = gridImages.map(function (imgObj) {
-	    if (listingIdsWithUpdatedDefaultPhoto.includes(imgObj.listingId)) {
-	      var _imgObj$listingImages;
-
-	      var updatedPhotoId = changes.find(function (edit) {
-	        return edit.listingId === imgObj.listingId;
-	      }).defaultPhotoId;
-	      var updatedPhotoLink = (_imgObj$listingImages = imgObj.listingImages.find(function (photo) {
-	        return photo.photoId === updatedPhotoId;
-	      })) === null || _imgObj$listingImages === void 0 ? void 0 : _imgObj$listingImages.photoLink;
-	      return Object.assign({}, imgObj, {
-	        photoLink: updatedPhotoLink
-	      });
-	    }
-
-	    return imgObj;
-	  });
-	  return updatedGridImages;
-	}
-
-	function getEffectiveGridImages(assetData, photoEdits, selectedImageIdx, newDefaultPhotoId) {
-	  if (!assetData) return [];
-
-	  var gridImagesCopy = _toConsumableArray(assetData.gridImages);
-
-	  if (photoEdits.length) {
-	    gridImagesCopy = overrideGridImages(photoEdits, gridImagesCopy);
-	  }
-
-	  if (typeof selectedImageIdx === 'number' && !!newDefaultPhotoId) {
-	    var _gridImagesCopy$selec;
-
-	    return [].concat(_toConsumableArray(gridImagesCopy.slice(0, selectedImageIdx)), [Object.assign({}, gridImagesCopy[selectedImageIdx], {
-	      photoLink: (_gridImagesCopy$selec = gridImagesCopy[selectedImageIdx].listingImages.find(function (photo) {
-	        return photo.photoId === newDefaultPhotoId;
-	      })) === null || _gridImagesCopy$selec === void 0 ? void 0 : _gridImagesCopy$selec.photoLink
-	    })], _toConsumableArray(gridImagesCopy.slice(selectedImageIdx + 1)));
-	  }
-
-	  return gridImagesCopy;
-	}
-
-	// photoEdits data structure
-	// [{
-	//   listingId: 123,
-	//   defaultPhotoId: 345,
-	//   photoQualityTier: 'High',
-	// }]
-	function convertLabelToPhotoEditFormat(labels) {
-	  if (!Array.isArray(labels)) return [];
-	  return labels.map(function (label) {
-	    var id_listing = label.id_listing,
-	        photo_id = label.photo_id,
-	        photo_quality = label.photo_quality;
-	    return _objectSpread2(_objectSpread2({
-	      listingId: id_listing
-	    }, photo_id ? {
-	      defaultPhotoId: photo_id
-	    } : undefined), photo_quality ? {
-	      photoQualityTier: photo_quality
-	    } : undefined);
-	  });
 	}
 
 	var EMPTY_ARR = [];
-
-	function parseHtmlInput(input) {
-	  // Input is a string containing an HTML document
-	  //
-	  // Example:
-	  //   <!DOCTYPE html>
-	  //   <html>
-	  //     <a href="https://www.airbnb.com/rooms/750469869902849247">Listing PDP</a>
-	  //     <br><a href="https://www.google.com/maps/search/?api=1&query=50.97%2C-3.58">Google Map</a>
-	  //     <br><br><br><br>1518815987
-	  //     <br><img src="https://a0.muscache.com/pictures/45639af2-64c0-43fc-a64f-83bbb71dccc4.jpg?im_w=480" style="width:450px;" loading="lazy" alt="Image failed to load.">
-	  //     <br>The Hoot has gorgeous lake views - guests can explore the grounds of the farm; sit by the lake, read a book, have a picnic or drink in the surroundings!
-	  //
-	  //     <br><br><br><br>1518815988
-	  //     <br><img src="https://a0.muscache.com/pictures/3d747c6d-4af6-46dc-9738-675ce8ae76d6.jpg?im_w=480" style="width:450px;" loading="lazy" alt="Image failed to load.">
-	  //     <br>Freshly painted bedroom - prefect for lie ins in this secluded location.
-	  //
-	  //   </html>
-	  // first, split the string by lines
-	  var htmlSplit = input.split('\n');
-	  return htmlSplit // remove <br> tags
-	  .map(function (s) {
-	    return s.replace(/<br>/g, ' ');
-	  }) // remove whitespace at the ends of the lines
-	  .map(function (s) {
-	    return s.trim();
-	  }) // remove first two html tags and listing/map elements (first 4 elements and last element)
-	  .splice(4, htmlSplit.length - 5) // remove empty lines
-	  .filter(function (s) {
-	    return s !== '';
-	  }) // remaining array items are photo id, image tag, and caption every 3 items.
-	  // so group every 3 items, forming an array of arrays
-	  .reduce(function (groups, item, index) {
-	    var chunk = Math.floor(index / 3);
-	    groups[chunk] = [].concat(groups[chunk] || [], item);
-	    return groups;
-	  }, []) // finally, strip out the image src from the image tag and turn the array chunks into objects
-	  .map(function (g) {
-	    var imgContainer = document.createElement('div');
-	    imgContainer.innerHTML = g[1];
-	    var img = imgContainer.querySelector('img');
-	    var src = img.src;
-	    return {
-	      photoId: g[0],
-	      imageSrc: src,
-	      caption: g[2]
-	    };
-	  }); // Result:
-	  //  [
-	  //    {
-	  //       "photoId": "1518815987",
-	  //       "imageSrc": "https://a0.muscache.com/pictures/45639af2-64c0-43fc-a64f-83bbb71dccc4.jpg?im_w=480",
-	  //       "caption": "The Hoot has gorgeous lake views - guests can explore the grounds of the farm; sit by the lake, read a book, have a picnic or drink in the surroundings!"
-	  //    },
-	  //    {
-	  //       "photoId": "1518815988",
-	  //       "imageSrc": "https://a0.muscache.com/pictures/3d747c6d-4af6-46dc-9738-675ce8ae76d6.jpg?im_w=480",
-	  //       "caption": "Freshly painted bedroom - prefect for lie ins in this secluded location."
-	  //    },
-	  //  ]
-	}
-
 	function App() {
-	  var projectId = new URL(window.location.href).searchParams.get('project');
+	  new URL(window.location.href).searchParams.get('project');
 
 	  var _useState = react.exports.useState(),
 	      _useState2 = _slicedToArray(_useState, 2),
@@ -8435,33 +8011,24 @@
 
 	  var _useState5 = react.exports.useState(),
 	      _useState6 = _slicedToArray(_useState5, 2),
-	      selectedListing = _useState6[0],
-	      setSelectedListing = _useState6[1];
-
-	  var _useState7 = react.exports.useState(),
-	      _useState8 = _slicedToArray(_useState7, 2),
-	      selectedImageIdx = _useState8[0],
-	      setSelectedImageIdx = _useState8[1];
-
-	  var _useState9 = react.exports.useState(''),
-	      _useState10 = _slicedToArray(_useState9, 2),
-	      newDefaultPhotoId = _useState10[0],
-	      setNewDefaultPhotoId = _useState10[1];
+	      selectedImageIdx = _useState6[0],
+	      setSelectedImageIdx = _useState6[1];
 
 	  var assetNext = react.exports.useRef();
-	  var assetPrev = react.exports.useRef(); // photoEdits data structure
+	  var assetPrev = react.exports.useRef();
+	  react.exports.useEffect(function () {
+	    document.querySelector('.content').scrollTo(0, 0);
+	  }, [assetData]); // photoEdits data structure
 	  // [{
-	  //   photoId: '1518815987',
-	  //   imageSrc: 'https://a0.muscache.com/pictures/45639af2-64c0-43fc-a64f-83bbb71dccc4.jpg?im_w=480',
-	  //   caption: 'The Hoot has gorgeous lake views - guests can explore the grounds of the farm; sit by the lake, read a book, have a picnic or drink in the surroundings!',
+	  //   defaultPhotoId: 345,
+	  //   photoQualityTier: 'High',
 	  // }]
 
-	  var _useState11 = react.exports.useState(EMPTY_ARR),
-	      _useState12 = _slicedToArray(_useState11, 2),
-	      photoEdits = _useState12[0],
-	      setPhotoEdits = _useState12[1];
+	  var _useState7 = react.exports.useState(EMPTY_ARR),
+	      _useState8 = _slicedToArray(_useState7, 2);
+	      _useState8[0];
+	      var setPhotoEdits = _useState8[1];
 
-	  var effectiveGridImages = getEffectiveGridImages(assetData, photoEdits, selectedImageIdx, newDefaultPhotoId);
 	  var handleAssetChange = react.exports.useCallback(function (asset) {
 	    if (asset) {
 	      // subscription to Labelbox makes increasing network calls as label history gets longer
@@ -8472,7 +8039,6 @@
 	        assetPrev.current = asset.previous;
 	        var assetDataStr = get(asset.metadata[0].metaValue);
 	        var parsedAssetData = parseHtmlInput(assetDataStr);
-	        console.log(parsedAssetData);
 	        setCurrentAsset(asset);
 	        setAssetData(parsedAssetData);
 	      }
@@ -8485,7 +8051,8 @@
 	          labels = JSON.parse(asset.label);
 	        } catch (e) {
 	          console.error(e);
-	        }
+	        } // TODO: figure out what a label is formatted like and fix this
+
 
 	        var formattedLabels = convertLabelToPhotoEditFormat(labels); // store labels in photoEdits mutable data structure
 
@@ -8493,11 +8060,9 @@
 	      }
 	    }
 	  }, [currentAsset, setCurrentAsset, setAssetData]);
-	  var handleClickDefaultImage = react.exports.useCallback(function (imageIdx) {
+	  var handleClickImage = react.exports.useCallback(function (imageIdx) {
 	    setSelectedImageIdx(imageIdx);
-	    setSelectedListing(assetData.gridImages[imageIdx]);
-	    setNewDefaultPhotoId('');
-	  }, [assetData, setSelectedImageIdx, setSelectedListing, setNewDefaultPhotoId]);
+	  }, [assetData, setSelectedImageIdx]);
 	  react.exports.useEffect(function () {
 	    Labelbox.currentAsset().subscribe(function (asset) {
 	      handleAssetChange(asset);
@@ -8505,37 +8070,15 @@
 	  }, [handleAssetChange]);
 	  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
 	    className: "flex-column left-side-panel"
-	  }, selectedListing ? /*#__PURE__*/React.createElement(LeftPanel, {
-	    assetData: assetData,
-	    newDefaultPhotoId: newDefaultPhotoId,
-	    photoEdits: photoEdits,
-	    selectedListing: selectedListing,
-	    setNewDefaultPhotoId: setNewDefaultPhotoId,
-	    setPhotoEdits: setPhotoEdits
-	  }) : null), /*#__PURE__*/React.createElement("div", {
+	  }, /*#__PURE__*/React.createElement(LeftPanel, null)), /*#__PURE__*/React.createElement("div", {
 	    className: "flex-grow flex-column"
-	  }, /*#__PURE__*/React.createElement(Header, {
-	    currentAsset: currentAsset,
-	    hasNext: !!(currentAsset !== null && currentAsset !== void 0 && currentAsset.next),
-	    hasPrev: !!(currentAsset !== null && currentAsset !== void 0 && currentAsset.previous),
-	    projectId: projectId,
-	    setSelectedListing: setSelectedListing,
-	    setSelectedImageIdx: setSelectedImageIdx
-	  }), /*#__PURE__*/React.createElement(Content, {
-	    assetData: assetData,
-	    gridImages: effectiveGridImages,
-	    onClickImage: handleClickDefaultImage,
-	    photoEdits: photoEdits,
-	    selectedListing: selectedListing,
-	    selectedImageIdx: selectedImageIdx,
-	    setSelectedListing: setSelectedListing,
-	    setSelectedImageIdx: setSelectedImageIdx,
-	    setPhotoEdits: setPhotoEdits
-	  })), /*#__PURE__*/React.createElement(RightPanel, {
-	    selectedListing: selectedListing,
-	    onClickImage: setNewDefaultPhotoId,
-	    newDefaultPhotoId: newDefaultPhotoId
-	  }));
+	  }, /*#__PURE__*/React.createElement("div", {
+	    className: "content"
+	  }, /*#__PURE__*/React.createElement(ImageGrid, {
+	    images: assetData,
+	    onClickImage: handleClickImage,
+	    selectedImageIdx: selectedImageIdx
+	  }))));
 	}
 
 	ReactDOM.render( /*#__PURE__*/React.createElement(App, null), document.getElementById('root'));
