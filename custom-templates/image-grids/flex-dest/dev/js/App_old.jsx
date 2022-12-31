@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import Header from './Header';
+import Content from './Content';
+import LeftPanel from './LeftPanel';
+import RightPanel from './RightPanel';
 import { get, parseHtmlInput } from './utils';
+import getEffectiveGridImages from './getEffectiveGridImages';
 import convertLabelToPhotoEditFormat from './convertLabelToPhotoEditFormat';
-import ImageGrid from './newEditor/ImageGrid';
-import LeftPanel from './newEditor/LeftPanel';
-// import Header from './newEditor/Header';
 
 const EMPTY_ARR = [];
 
@@ -11,13 +13,11 @@ export default function App() {
   const projectId = new URL(window.location.href).searchParams.get('project');
   const [currentAsset, setCurrentAsset] = useState();
   const [assetData, setAssetData] = useState();
+  const [selectedListing, setSelectedListing] = useState();
   const [selectedImageIdx, setSelectedImageIdx] = useState();
+  const [newDefaultPhotoId, setNewDefaultPhotoId] = useState('');
   const assetNext = useRef();
   const assetPrev = useRef();
-
-  useEffect(() => {
-    document.querySelector('.content').scrollTo(0, 0);
-  }, [assetData]);
 
   // photoEdits data structure
   // [{
@@ -55,8 +55,6 @@ export default function App() {
           } catch (e) {
             console.error(e);
           }
-
-          // TODO: figure out what a label is formatted like and fix this
           const formattedLabels = convertLabelToPhotoEditFormat(labels);
 
           // store labels in photoEdits mutable data structure
@@ -67,11 +65,13 @@ export default function App() {
     [currentAsset, setCurrentAsset, setAssetData]
   );
 
-  const handleClickImage = useCallback(
+  const handleClickDefaultImage = useCallback(
     (imageIdx) => {
       setSelectedImageIdx(imageIdx);
+      setSelectedListing(assetData.gridImages[imageIdx]);
+      setNewDefaultPhotoId('');
     },
-    [assetData, setSelectedImageIdx]
+    [assetData, setSelectedImageIdx, setSelectedListing, setNewDefaultPhotoId]
   );
 
   useEffect(() => {
@@ -83,25 +83,43 @@ export default function App() {
   return (
     <>
       <div className="flex-column left-side-panel">
-        <LeftPanel />
+        {selectedListing ? (
+          <LeftPanel
+            assetData={assetData}
+            newDefaultPhotoId={newDefaultPhotoId}
+            photoEdits={photoEdits}
+            selectedListing={selectedListing}
+            setNewDefaultPhotoId={setNewDefaultPhotoId}
+            setPhotoEdits={setPhotoEdits}
+          />
+        ) : null}
       </div>
       <div className="flex-grow flex-column">
-        {/* <Header
+        <Header
           currentAsset={currentAsset}
           hasNext={!!currentAsset?.next}
           hasPrev={!!currentAsset?.previous}
           projectId={projectId}
           setSelectedListing={setSelectedListing}
           setSelectedImageIdx={setSelectedImageIdx}
-        /> */}
-        <div className="content">
-          <ImageGrid
-            images={assetData}
-            onClickImage={handleClickImage}
-            selectedImageIdx={selectedImageIdx}
-          />
-        </div>
+        />
+        <Content
+          assetData={assetData}
+          gridImages={effectiveGridImages}
+          onClickImage={handleClickDefaultImage}
+          photoEdits={photoEdits}
+          selectedListing={selectedListing}
+          selectedImageIdx={selectedImageIdx}
+          setSelectedListing={setSelectedListing}
+          setSelectedImageIdx={setSelectedImageIdx}
+          setPhotoEdits={setPhotoEdits}
+        />
       </div>
+      <RightPanel
+        selectedListing={selectedListing}
+        onClickImage={setNewDefaultPhotoId}
+        newDefaultPhotoId={newDefaultPhotoId}
+      />
     </>
   );
 }
