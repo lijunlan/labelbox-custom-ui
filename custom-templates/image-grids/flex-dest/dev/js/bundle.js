@@ -7932,69 +7932,6 @@
 	  }));
 	}
 
-	function LeftPanel(_ref) {
-	  var assetData = _ref.assetData,
-	      photoEdits = _ref.photoEdits;
-
-	  var _useState = react.exports.useState(),
-	      _useState2 = _slicedToArray(_useState, 2),
-	      photoQualityTier = _useState2[0],
-	      setPhotoQualityTier = _useState2[1];
-
-	  var handlePhotoQualityChange = react.exports.useCallback(function (e) {
-	    setPhotoQualityTier(e.target.value);
-	  }, []);
-	  var handleSkip = react.exports.useCallback(function () {
-	    // setSelectedImageIdx();
-	    // setPhotoEdits([]);
-	    Labelbox.skip().then(function () {
-	      Labelbox.fetchNextAssetToLabel();
-	    });
-	  }, []);
-	  var handleSubmit = react.exports.useCallback(function () {
-	    // setSelectedImageIdx();
-	    var formattedData = formatEditDataForSubmission(photoEdits, assetData === null || assetData === void 0 ? void 0 : assetData.attribute, assetData === null || assetData === void 0 ? void 0 : assetData.qualityTier, assetData === null || assetData === void 0 ? void 0 : assetData.gridImages);
-	    Labelbox.setLabelForAsset(formattedData, 'ANY').then(function () {
-	      // setPhotoEdits([]);
-	      Labelbox.fetchNextAssetToLabel();
-	    });
-	  }, [photoEdits, assetData]);
-	  return /*#__PURE__*/React.createElement("form", {
-	    onSubmit: handleSubmit
-	  }, /*#__PURE__*/React.createElement("label", null, "Photo id:", /*#__PURE__*/React.createElement("input", {
-	    type: "text",
-	    name: "photo-id",
-	    readOnly: true,
-	    value: newDefaultPhotoId || updatedDefaultPhotoId || originalDefaultPhotoId
-	  })), /*#__PURE__*/React.createElement("label", null, /*#__PURE__*/React.createElement("div", {
-	    className: "label"
-	  }, "Photo quality:"), /*#__PURE__*/React.createElement("select", {
-	    value: photoQualityTier,
-	    onChange: handlePhotoQualityChange
-	  }, /*#__PURE__*/React.createElement("option", {
-	    value: "Most Inspiring"
-	  }, "Most Inspiring"), /*#__PURE__*/React.createElement("option", {
-	    value: "High"
-	  }, "High"), /*#__PURE__*/React.createElement("option", {
-	    value: "Acceptable"
-	  }, "Acceptable"), /*#__PURE__*/React.createElement("option", {
-	    value: "Low Quality"
-	  }, "Low Quality"), /*#__PURE__*/React.createElement("option", {
-	    value: "Unacceptable"
-	  }, "Unacceptable"), /*#__PURE__*/React.createElement("option", {
-	    value: "Remove"
-	  }, "Remove"))), /*#__PURE__*/React.createElement("div", {
-	    className: "left-panel-ctas-wrapper"
-	  }, /*#__PURE__*/React.createElement("button", {
-	    onClick: handleSkip,
-	    className: "cta skip-cta"
-	  }, "Skip"), /*#__PURE__*/React.createElement("input", {
-	    className: "cta save-cta",
-	    type: "submit",
-	    value: "Submit"
-	  })));
-	}
-
 	var EMPTY_ARR = [];
 	function App() {
 	  new URL(window.location.href).searchParams.get('project');
@@ -8004,7 +7941,7 @@
 	      currentAsset = _useState2[0],
 	      setCurrentAsset = _useState2[1];
 
-	  var _useState3 = react.exports.useState(),
+	  var _useState3 = react.exports.useState([]),
 	      _useState4 = _slicedToArray(_useState3, 2),
 	      assetData = _useState4[0],
 	      setAssetData = _useState4[1];
@@ -8070,7 +8007,7 @@
 	  }, [handleAssetChange]);
 	  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
 	    className: "flex-column left-side-panel"
-	  }, /*#__PURE__*/React.createElement(LeftPanel, null)), /*#__PURE__*/React.createElement("div", {
+	  }), /*#__PURE__*/React.createElement("div", {
 	    className: "flex-grow flex-column"
 	  }, /*#__PURE__*/React.createElement("div", {
 	    className: "content"

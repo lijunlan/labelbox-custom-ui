@@ -10,7 +10,7 @@ const EMPTY_ARR = [];
 export default function App() {
   const projectId = new URL(window.location.href).searchParams.get('project');
   const [currentAsset, setCurrentAsset] = useState();
-  const [assetData, setAssetData] = useState();
+  const [assetData, setAssetData] = useState([]);
   const [selectedImageIdx, setSelectedImageIdx] = useState();
   const assetNext = useRef();
   const assetPrev = useRef();
@@ -82,9 +82,7 @@ export default function App() {
 
   return (
     <>
-      <div className="flex-column left-side-panel">
-        <LeftPanel />
-      </div>
+      <div className="flex-column left-side-panel">{/* <LeftPanel /> */}</div>
       <div className="flex-grow flex-column">
         {/* <Header
           currentAsset={currentAsset}
