@@ -1,5 +1,6 @@
 import React from 'react';
 import { getResizedImageUrl } from '../utils';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 export default function DefaultImage({
   imgObj,
@@ -15,11 +16,12 @@ export default function DefaultImage({
       onClick={() => onClickImage(idx)}
       id={`image-container-${imgObj.photoId}`}
     >
-      <img
+      <LazyLoadImage
         src={imageUrl}
         className={`default-image ${isSelected ? 'image-selected' : ''}`}
+        effect="blur"
       />
-      <p>{imgObj.caption}</p>
+      <span>{imgObj.caption}</span>
     </div>
   );
 }
