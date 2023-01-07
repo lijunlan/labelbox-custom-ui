@@ -89,5 +89,5 @@ export function parseHtmlInput(input) {
 
 // TODO: double check that im_w is okay too
 export function getResizedImageUrl(photoLink) {
-  return photoLink?.includes('?') ? `${photoLink}` : `${photoLink}?img_w=480`;
+  return photoLink?.includes('?') ? `${photoLink}` : `${photoLink}?im_w=480`;
 }

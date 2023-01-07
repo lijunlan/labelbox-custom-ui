@@ -9,9 +9,11 @@ const EMPTY_ARR = [];
 
 export default function App() {
   const projectId = new URL(window.location.href).searchParams.get('project');
+  const [listingId, setListingId] = useState();
   const [currentAsset, setCurrentAsset] = useState();
   const [assetData, setAssetData] = useState([]);
   const [selectedImageIdx, setSelectedImageIdx] = useState();
+  const [selectedPhotoId, setSelectedPhotoId] = useState();
   const assetNext = useRef();
   const assetPrev = useRef();
 
@@ -43,6 +45,13 @@ export default function App() {
           const assetDataStr = get(asset.metadata[0].metaValue);
           const parsedAssetData = parseHtmlInput(assetDataStr);
 
+          // Full match will be first element, listing ID will be second
+          setListingId(
+            assetDataStr.match(
+              /href="https:\/\/www.airbnb.com\/rooms\/(.*?)"/
+            )[1]
+          );
+
           setCurrentAsset(asset);
           setAssetData(parsedAssetData);
         }
@@ -70,8 +79,9 @@ export default function App() {
   const handleClickImage = useCallback(
     (imageIdx) => {
       setSelectedImageIdx(imageIdx);
+      setSelectedPhotoId(assetData[imageIdx].photoId);
     },
-    [assetData, setSelectedImageIdx]
+    [assetData, setSelectedImageIdx, setSelectedPhotoId]
   );
 
   useEffect(() => {
@@ -82,7 +92,9 @@ export default function App() {
 
   return (
     <>
-      <div className="flex-column left-side-panel">{/* <LeftPanel /> */}</div>
+      <div className="flex-column left-side-panel">
+        {<LeftPanel listingId={listingId} photoId={selectedPhotoId} />}
+      </div>
       <div className="flex-grow flex-column">
         {/* <Header
           currentAsset={currentAsset}

@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 
-export default function LeftPanel({ assetData, photoEdits }) {
+export default function LeftPanel({ listingId, photoId }) {
   const [photoQualityTier, setPhotoQualityTier] = useState();
 
   const handlePhotoQualityChange = useCallback((e) => {
@@ -18,31 +18,23 @@ export default function LeftPanel({ assetData, photoEdits }) {
   const handleSubmit = useCallback(() => {
     // setSelectedImageIdx();
 
-    const formattedData = formatEditDataForSubmission(
-      photoEdits,
-      assetData?.attribute,
-      assetData?.qualityTier,
-      assetData?.gridImages
-    );
+    const formattedData = {
+      id_listing: listingId,
+      photo_id: photoId,
+      photo_quality: photoQualityTier,
+    };
 
     Labelbox.setLabelForAsset(formattedData, 'ANY').then(() => {
       // setPhotoEdits([]);
       Labelbox.fetchNextAssetToLabel();
     });
-  }, [photoEdits, assetData]);
+  }, [listingId, photoId, photoQualityTier]);
 
   return (
     <form onSubmit={handleSubmit}>
       <label>
         Photo id:
-        <input
-          type="text"
-          name="photo-id"
-          readOnly
-          value={
-            newDefaultPhotoId || updatedDefaultPhotoId || originalDefaultPhotoId
-          }
-        />
+        <input type="text" name="photo-id" readOnly value={photoId} />
       </label>
       <label>
         <div className="label">Photo quality:</div>

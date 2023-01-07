@@ -7870,7 +7870,7 @@
 	} // TODO: double check that im_w is okay too
 
 	function getResizedImageUrl(photoLink) {
-	  return photoLink !== null && photoLink !== void 0 && photoLink.includes('?') ? "".concat(photoLink) : "".concat(photoLink, "?img_w=480");
+	  return photoLink !== null && photoLink !== void 0 && photoLink.includes('?') ? "".concat(photoLink) : "".concat(photoLink, "?im_w=480");
 	}
 
 	// photoEdits data structure
@@ -9237,24 +9237,101 @@
 	  }));
 	}
 
+	function LeftPanel(_ref) {
+	  var listingId = _ref.listingId,
+	      photoId = _ref.photoId;
+
+	  var _useState = react.exports.useState(),
+	      _useState2 = _slicedToArray(_useState, 2),
+	      photoQualityTier = _useState2[0],
+	      setPhotoQualityTier = _useState2[1];
+
+	  var handlePhotoQualityChange = react.exports.useCallback(function (e) {
+	    setPhotoQualityTier(e.target.value);
+	  }, []);
+	  var handleSkip = react.exports.useCallback(function () {
+	    // setSelectedImageIdx();
+	    // setPhotoEdits([]);
+	    Labelbox.skip().then(function () {
+	      Labelbox.fetchNextAssetToLabel();
+	    });
+	  }, []);
+	  var handleSubmit = react.exports.useCallback(function () {
+	    // setSelectedImageIdx();
+	    var formattedData = {
+	      id_listing: listingId,
+	      photo_id: photoId,
+	      photo_quality: photoQualityTier
+	    };
+	    Labelbox.setLabelForAsset(formattedData, 'ANY').then(function () {
+	      // setPhotoEdits([]);
+	      Labelbox.fetchNextAssetToLabel();
+	    });
+	  }, [listingId, photoId, photoQualityTier]);
+	  return /*#__PURE__*/React.createElement("form", {
+	    onSubmit: handleSubmit
+	  }, /*#__PURE__*/React.createElement("label", null, "Photo id:", /*#__PURE__*/React.createElement("input", {
+	    type: "text",
+	    name: "photo-id",
+	    readOnly: true,
+	    value: photoId
+	  })), /*#__PURE__*/React.createElement("label", null, /*#__PURE__*/React.createElement("div", {
+	    className: "label"
+	  }, "Photo quality:"), /*#__PURE__*/React.createElement("select", {
+	    value: photoQualityTier,
+	    onChange: handlePhotoQualityChange
+	  }, /*#__PURE__*/React.createElement("option", {
+	    value: "Most Inspiring"
+	  }, "Most Inspiring"), /*#__PURE__*/React.createElement("option", {
+	    value: "High"
+	  }, "High"), /*#__PURE__*/React.createElement("option", {
+	    value: "Acceptable"
+	  }, "Acceptable"), /*#__PURE__*/React.createElement("option", {
+	    value: "Low Quality"
+	  }, "Low Quality"), /*#__PURE__*/React.createElement("option", {
+	    value: "Unacceptable"
+	  }, "Unacceptable"), /*#__PURE__*/React.createElement("option", {
+	    value: "Remove"
+	  }, "Remove"))), /*#__PURE__*/React.createElement("div", {
+	    className: "left-panel-ctas-wrapper"
+	  }, /*#__PURE__*/React.createElement("button", {
+	    onClick: handleSkip,
+	    className: "cta skip-cta"
+	  }, "Skip"), /*#__PURE__*/React.createElement("input", {
+	    className: "cta save-cta",
+	    type: "submit",
+	    value: "Submit"
+	  })));
+	}
+
 	var EMPTY_ARR = [];
 	function App() {
 	  new URL(window.location.href).searchParams.get('project');
 
 	  var _useState = react.exports.useState(),
 	      _useState2 = _slicedToArray(_useState, 2),
-	      currentAsset = _useState2[0],
-	      setCurrentAsset = _useState2[1];
+	      listingId = _useState2[0],
+	      setListingId = _useState2[1];
 
-	  var _useState3 = react.exports.useState([]),
+	  var _useState3 = react.exports.useState(),
 	      _useState4 = _slicedToArray(_useState3, 2),
-	      assetData = _useState4[0],
-	      setAssetData = _useState4[1];
+	      currentAsset = _useState4[0],
+	      setCurrentAsset = _useState4[1];
 
-	  var _useState5 = react.exports.useState(),
+	  var _useState5 = react.exports.useState([]),
 	      _useState6 = _slicedToArray(_useState5, 2),
-	      selectedImageIdx = _useState6[0],
-	      setSelectedImageIdx = _useState6[1];
+	      assetData = _useState6[0],
+	      setAssetData = _useState6[1];
+
+	  var _useState7 = react.exports.useState(),
+	      _useState8 = _slicedToArray(_useState7, 2),
+	      selectedImageIdx = _useState8[0],
+	      setSelectedImageIdx = _useState8[1];
+
+	  var _useState9 = react.exports.useState(),
+	      _useState10 = _slicedToArray(_useState9, 2),
+	      selectedPhotoId = _useState10[0],
+	      setSelectedPhotoId = _useState10[1];
 
 	  var assetNext = react.exports.useRef();
 	  var assetPrev = react.exports.useRef();
@@ -9266,10 +9343,10 @@
 	  //   photoQualityTier: 'High',
 	  // }]
 
-	  var _useState7 = react.exports.useState(EMPTY_ARR),
-	      _useState8 = _slicedToArray(_useState7, 2);
-	      _useState8[0];
-	      var setPhotoEdits = _useState8[1];
+	  var _useState11 = react.exports.useState(EMPTY_ARR),
+	      _useState12 = _slicedToArray(_useState11, 2);
+	      _useState12[0];
+	      var setPhotoEdits = _useState12[1];
 
 	  var handleAssetChange = react.exports.useCallback(function (asset) {
 	    if (asset) {
@@ -9280,7 +9357,9 @@
 	        assetNext.current = asset.next;
 	        assetPrev.current = asset.previous;
 	        var assetDataStr = get(asset.metadata[0].metaValue);
-	        var parsedAssetData = parseHtmlInput(assetDataStr);
+	        var parsedAssetData = parseHtmlInput(assetDataStr); // Full match will be first element, listing ID will be second
+
+	        setListingId(assetDataStr.match(/href="https:\/\/www.airbnb.com\/rooms\/(.*?)"/)[1]);
 	        setCurrentAsset(asset);
 	        setAssetData(parsedAssetData);
 	      }
@@ -9304,7 +9383,8 @@
 	  }, [currentAsset, setCurrentAsset, setAssetData]);
 	  var handleClickImage = react.exports.useCallback(function (imageIdx) {
 	    setSelectedImageIdx(imageIdx);
-	  }, [assetData, setSelectedImageIdx]);
+	    setSelectedPhotoId(assetData[imageIdx].photoId);
+	  }, [assetData, setSelectedImageIdx, setSelectedPhotoId]);
 	  react.exports.useEffect(function () {
 	    Labelbox.currentAsset().subscribe(function (asset) {
 	      handleAssetChange(asset);
@@ -9312,7 +9392,10 @@
 	  }, [handleAssetChange]);
 	  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
 	    className: "flex-column left-side-panel"
-	  }), /*#__PURE__*/React.createElement("div", {
+	  }, /*#__PURE__*/React.createElement(LeftPanel, {
+	    listingId: listingId,
+	    photoId: selectedPhotoId
+	  })), /*#__PURE__*/React.createElement("div", {
 	    className: "flex-grow flex-column"
 	  }, /*#__PURE__*/React.createElement("div", {
 	    className: "content"
