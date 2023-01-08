@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { get, parseHtmlInput } from './utils';
-import convertLabelToPhotoEditFormat from './convertLabelToPhotoEditFormat';
 import ImageGrid from './newEditor/ImageGrid';
 import LeftPanel from './newEditor/LeftPanel';
 import Header from './newEditor/Header';
@@ -14,19 +13,14 @@ export default function App() {
   const [assetData, setAssetData] = useState([]);
   const [selectedImageIdx, setSelectedImageIdx] = useState();
   const [selectedPhotoId, setSelectedPhotoId] = useState();
+  const [labeledPhotoId, setLabeledPhotoId] = useState();
+  const [labeledPhotoQualityTier, setLabeledPhotoQualityTier] = useState();
   const assetNext = useRef();
   const assetPrev = useRef();
 
   useEffect(() => {
     document.querySelector('.content').scrollTo(0, 0);
   }, [assetData]);
-
-  // photoEdits data structure
-  // [{
-  //   defaultPhotoId: 345,
-  //   photoQualityTier: 'High',
-  // }]
-  const [photoEdits, setPhotoEdits] = useState(EMPTY_ARR);
 
   const handleAssetChange = useCallback(
     (asset) => {
@@ -62,18 +56,15 @@ export default function App() {
 
         if (asset.label) {
           if (asset.label === 'Skip') return;
-          let labels = [];
+          let label = {};
           try {
-            labels = JSON.parse(asset.label);
+            label = JSON.parse(asset.label);
           } catch (e) {
             console.error(e);
           }
 
-          // TODO: figure out what a label is formatted like and fix this
-          const formattedLabels = convertLabelToPhotoEditFormat(labels);
-
-          // store labels in photoEdits mutable data structure
-          setPhotoEdits(formattedLabels);
+          setLabeledPhotoId(label.photo_id);
+          setLabeledPhotoQualityTier(label.photo_quality);
         }
       }
     },
@@ -97,7 +88,14 @@ export default function App() {
   return (
     <>
       <div className="flex-column left-side-panel">
-        {<LeftPanel listingId={listingId} photoId={selectedPhotoId} />}
+        {
+          <LeftPanel
+            listingId={listingId}
+            photoId={selectedPhotoId}
+            labeledPhotoId={labeledPhotoId}
+            labeledPhotoQualityTier={labeledPhotoQualityTier}
+          />
+        }
       </div>
       <div className="flex-grow flex-column">
         <Header

@@ -7675,47 +7675,6 @@
 
 	var ReactDOM = reactDom.exports;
 
-	function ownKeys(object, enumerableOnly) {
-	  var keys = Object.keys(object);
-
-	  if (Object.getOwnPropertySymbols) {
-	    var symbols = Object.getOwnPropertySymbols(object);
-	    enumerableOnly && (symbols = symbols.filter(function (sym) {
-	      return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-	    })), keys.push.apply(keys, symbols);
-	  }
-
-	  return keys;
-	}
-
-	function _objectSpread2(target) {
-	  for (var i = 1; i < arguments.length; i++) {
-	    var source = null != arguments[i] ? arguments[i] : {};
-	    i % 2 ? ownKeys(Object(source), !0).forEach(function (key) {
-	      _defineProperty(target, key, source[key]);
-	    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) {
-	      Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-	    });
-	  }
-
-	  return target;
-	}
-
-	function _defineProperty(obj, key, value) {
-	  if (key in obj) {
-	    Object.defineProperty(obj, key, {
-	      value: value,
-	      enumerable: true,
-	      configurable: true,
-	      writable: true
-	    });
-	  } else {
-	    obj[key] = value;
-	  }
-
-	  return obj;
-	}
-
 	function _slicedToArray(arr, i) {
 	  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
 	}
@@ -7871,28 +7830,6 @@
 
 	function getResizedImageUrl(photoLink) {
 	  return photoLink !== null && photoLink !== void 0 && photoLink.includes('?') ? "".concat(photoLink) : "".concat(photoLink, "?im_w=480");
-	}
-
-	// photoEdits data structure
-	// [{
-	//   listingId: 123,
-	//   defaultPhotoId: 345,
-	//   photoQualityTier: 'High',
-	// }]
-	function convertLabelToPhotoEditFormat(labels) {
-	  if (!Array.isArray(labels)) return [];
-	  return labels.map(function (label) {
-	    var id_listing = label.id_listing,
-	        photo_id = label.photo_id,
-	        photo_quality = label.photo_quality;
-	    return _objectSpread2(_objectSpread2({
-	      listingId: id_listing
-	    }, photo_id ? {
-	      defaultPhotoId: photo_id
-	    } : undefined), photo_quality ? {
-	      photoQualityTier: photo_quality
-	    } : undefined);
-	  });
 	}
 
 	var build = {exports: {}};
@@ -9239,7 +9176,9 @@
 
 	function LeftPanel(_ref) {
 	  var listingId = _ref.listingId,
-	      photoId = _ref.photoId;
+	      photoId = _ref.photoId,
+	      labeledPhotoId = _ref.labeledPhotoId,
+	      labeledPhotoQualityTier = _ref.labeledPhotoQualityTier;
 
 	  var _useState = react.exports.useState(),
 	      _useState2 = _slicedToArray(_useState, 2),
@@ -9250,21 +9189,19 @@
 	    setPhotoQualityTier(e.target.value);
 	  }, []);
 	  var handleSkip = react.exports.useCallback(function () {
-	    // setSelectedImageIdx();
-	    // setPhotoEdits([]);
 	    Labelbox.skip().then(function () {
+	      setPhotoQualityTier('Most Inspiring');
 	      Labelbox.fetchNextAssetToLabel();
 	    });
 	  }, []);
 	  var handleSubmit = react.exports.useCallback(function () {
-	    // setSelectedImageIdx();
 	    var formattedData = {
 	      id_listing: listingId,
 	      photo_id: photoId,
 	      photo_quality: photoQualityTier
 	    };
 	    Labelbox.setLabelForAsset(JSON.stringify(formattedData), 'ANY').then(function () {
-	      // setPhotoEdits([]);
+	      setPhotoQualityTier('Most Inspiring');
 	      Labelbox.fetchNextAssetToLabel();
 	    });
 	  }, [listingId, photoId, photoQualityTier]);
@@ -9345,7 +9282,7 @@
 	    className: "cta save-cta",
 	    type: "submit",
 	    value: "Submit"
-	  })));
+	  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", null, "Labeled Photo ID: ", labeledPhotoId), /*#__PURE__*/React.createElement("span", null, "Labeled Photo Quality: ", labeledPhotoQualityTier)));
 	}
 
 	function Header(_ref) {
@@ -9383,7 +9320,6 @@
 	  }, "keyboard_arrow_right"));
 	}
 
-	var EMPTY_ARR = [];
 	function App() {
 	  var projectId = new URL(window.location.href).searchParams.get('project');
 
@@ -9412,21 +9348,21 @@
 	      selectedPhotoId = _useState10[0],
 	      setSelectedPhotoId = _useState10[1];
 
+	  var _useState11 = react.exports.useState(),
+	      _useState12 = _slicedToArray(_useState11, 2),
+	      labeledPhotoId = _useState12[0],
+	      setLabeledPhotoId = _useState12[1];
+
+	  var _useState13 = react.exports.useState(),
+	      _useState14 = _slicedToArray(_useState13, 2),
+	      labeledPhotoQualityTier = _useState14[0],
+	      setLabeledPhotoQualityTier = _useState14[1];
+
 	  var assetNext = react.exports.useRef();
 	  var assetPrev = react.exports.useRef();
 	  react.exports.useEffect(function () {
 	    document.querySelector('.content').scrollTo(0, 0);
-	  }, [assetData]); // photoEdits data structure
-	  // [{
-	  //   defaultPhotoId: 345,
-	  //   photoQualityTier: 'High',
-	  // }]
-
-	  var _useState11 = react.exports.useState(EMPTY_ARR),
-	      _useState12 = _slicedToArray(_useState11, 2);
-	      _useState12[0];
-	      var setPhotoEdits = _useState12[1];
-
+	  }, [assetData]);
 	  var handleAssetChange = react.exports.useCallback(function (asset) {
 	    if (asset) {
 	      // subscription to Labelbox makes increasing network calls as label history gets longer
@@ -9448,18 +9384,16 @@
 
 	      if (asset.label) {
 	        if (asset.label === 'Skip') return;
-	        var labels = [];
+	        var label = {};
 
 	        try {
-	          labels = JSON.parse(asset.label);
+	          label = JSON.parse(asset.label);
 	        } catch (e) {
 	          console.error(e);
-	        } // TODO: figure out what a label is formatted like and fix this
+	        }
 
-
-	        var formattedLabels = convertLabelToPhotoEditFormat(labels); // store labels in photoEdits mutable data structure
-
-	        setPhotoEdits(formattedLabels);
+	        setLabeledPhotoId(label.photo_id);
+	        setLabeledPhotoQualityTier(label.photo_quality);
 	      }
 	    }
 	  }, [currentAsset, setCurrentAsset, setAssetData]);
@@ -9476,7 +9410,9 @@
 	    className: "flex-column left-side-panel"
 	  }, /*#__PURE__*/React.createElement(LeftPanel, {
 	    listingId: listingId,
-	    photoId: selectedPhotoId
+	    photoId: selectedPhotoId,
+	    labeledPhotoId: labeledPhotoId,
+	    labeledPhotoQualityTier: labeledPhotoQualityTier
 	  })), /*#__PURE__*/React.createElement("div", {
 	    className: "flex-grow flex-column"
 	  }, /*#__PURE__*/React.createElement(Header, {
