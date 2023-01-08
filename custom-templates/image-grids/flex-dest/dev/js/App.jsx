@@ -55,7 +55,10 @@ export default function App() {
         }
 
         if (asset.label) {
-          if (asset.label === 'Skip') return;
+          if (asset.label === 'Skip') {
+            setLabeledPhotoId('Skipped');
+            setLabeledPhotoQualityTier('Skipped');
+          }
           let label = {};
           try {
             label = JSON.parse(asset.label);
@@ -65,6 +68,9 @@ export default function App() {
 
           setLabeledPhotoId(label.photo_id);
           setLabeledPhotoQualityTier(label.photo_quality);
+          setSelectedImageIdx(
+            assetData.findIndex((image) => label.photo_id === image.photoId)
+          );
         }
       }
     },
