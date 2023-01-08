@@ -2,6 +2,8 @@ import babel from '@rollup/plugin-babel';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import replace from '@rollup/plugin-replace';
+import css from 'rollup-plugin-css-only'
+
 
 export default {
   input: "custom-templates/image-grids/flex-dest/dev/js/index.js",
@@ -22,6 +24,7 @@ export default {
       babelHelpers: 'bundled',
       presets: ["@babel/preset-react"],
     }),
-    commonjs()
+    commonjs(),
+    css()
   ]
 };

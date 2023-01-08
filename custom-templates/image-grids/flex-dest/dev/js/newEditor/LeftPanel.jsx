@@ -24,11 +24,53 @@ export default function LeftPanel({ listingId, photoId }) {
       photo_quality: photoQualityTier,
     };
 
-    Labelbox.setLabelForAsset(formattedData, 'ANY').then(() => {
+    Labelbox.setLabelForAsset(JSON.stringify(formattedData), 'ANY').then(() => {
       // setPhotoEdits([]);
       Labelbox.fetchNextAssetToLabel();
     });
   }, [listingId, photoId, photoQualityTier]);
+
+  document.addEventListener('keydown', (e) => {
+    switch (e.key.toLowerCase()) {
+      case '1':
+        e.preventDefault();
+        setPhotoQualityTier('Most Inspiring');
+        break;
+
+      case '2':
+        e.preventDefault();
+        setPhotoQualityTier('High');
+        break;
+
+      case '3':
+        e.preventDefault();
+        setPhotoQualityTier('Acceptable');
+        break;
+
+      case '4':
+        e.preventDefault();
+        setPhotoQualityTier('Low Quality');
+        break;
+
+      case '5':
+        e.preventDefault();
+        setPhotoQualityTier('Unacceptable');
+        break;
+
+      case 's':
+        e.preventDefault();
+        handleSkip();
+        break;
+
+      case 'enter':
+        e.preventDefault();
+        handleSubmit();
+        break;
+
+      default:
+        return;
+    }
+  });
 
   return (
     <form onSubmit={handleSubmit}>
@@ -48,7 +90,7 @@ export default function LeftPanel({ listingId, photoId }) {
           <option value="Acceptable">Acceptable</option>
           <option value="Low Quality">Low Quality</option>
           <option value="Unacceptable">Unacceptable</option>
-          <option value="Remove">Remove</option>
+          {/* <option value="Remove">Remove</option> */}
         </select>
       </label>
       <div className="left-panel-ctas-wrapper">
