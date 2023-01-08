@@ -9257,10 +9257,10 @@
 	    type: "text",
 	    name: "photo-id",
 	    readOnly: true,
-	    value: photoId
+	    value: labeledPhotoId ? labeledPhotoId : photoId
 	  })), /*#__PURE__*/React.createElement("label", null, /*#__PURE__*/React.createElement("div", {
 	    className: "label"
-	  }, "Photo Quality:"), /*#__PURE__*/React.createElement("select", {
+	  }, "Photo Quality:"), !labeledPhotoQualityTier && /*#__PURE__*/React.createElement("select", {
 	    value: photoQualityTier,
 	    onChange: handlePhotoQualityChange
 	  }, /*#__PURE__*/React.createElement("option", {
@@ -9273,7 +9273,11 @@
 	    value: "Low Quality"
 	  }, "Low Quality"), /*#__PURE__*/React.createElement("option", {
 	    value: "Unacceptable"
-	  }, "Unacceptable"))), /*#__PURE__*/React.createElement("div", {
+	  }, "Unacceptable")), labeledPhotoQualityTier && /*#__PURE__*/React.createElement("input", {
+	    type: "text",
+	    readOnly: true,
+	    value: labeledPhotoQualityTier
+	  })), !labeledPhotoQualityTier && /*#__PURE__*/React.createElement("div", {
 	    className: "left-panel-ctas-wrapper"
 	  }, /*#__PURE__*/React.createElement("button", {
 	    onClick: handleSkip,
@@ -9282,7 +9286,7 @@
 	    className: "cta save-cta",
 	    type: "submit",
 	    value: "Submit"
-	  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", null, "Labeled Photo ID: ", labeledPhotoId), /*#__PURE__*/React.createElement("span", null, "Labeled Photo Quality: ", labeledPhotoQualityTier)));
+	  })));
 	}
 
 	function Header(_ref) {
@@ -9424,7 +9428,7 @@
 	    className: "content"
 	  }, /*#__PURE__*/React.createElement(ImageGrid, {
 	    images: assetData,
-	    onClickImage: handleClickImage,
+	    onClickImage: labeledPhotoQualityTier ? function () {} : handleClickImage,
 	    selectedImageIdx: selectedImageIdx
 	  }))));
 	}

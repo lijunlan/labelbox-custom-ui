@@ -107,7 +107,7 @@ export default function App() {
         <div className="content">
           <ImageGrid
             images={assetData}
-            onClickImage={handleClickImage}
+            onClickImage={labeledPhotoQualityTier ? () => {} : handleClickImage}
             selectedImageIdx={selectedImageIdx}
           />
         </div>

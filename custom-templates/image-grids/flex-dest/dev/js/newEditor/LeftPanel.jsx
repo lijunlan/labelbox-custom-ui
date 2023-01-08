@@ -82,28 +82,36 @@ export default function LeftPanel({
       </label>
       <label>
         Photo ID:
-        <input type="text" name="photo-id" readOnly value={photoId} />
+        <input
+          type="text"
+          name="photo-id"
+          readOnly
+          value={labeledPhotoId ? labeledPhotoId : photoId}
+        />
       </label>
       <label>
         <div className="label">Photo Quality:</div>
-        <select value={photoQualityTier} onChange={handlePhotoQualityChange}>
-          <option value="Most Inspiring">Most Inspiring</option>
-          <option value="High">High</option>
-          <option value="Acceptable">Acceptable</option>
-          <option value="Low Quality">Low Quality</option>
-          <option value="Unacceptable">Unacceptable</option>
-        </select>
+        {!labeledPhotoQualityTier && (
+          <select value={photoQualityTier} onChange={handlePhotoQualityChange}>
+            <option value="Most Inspiring">Most Inspiring</option>
+            <option value="High">High</option>
+            <option value="Acceptable">Acceptable</option>
+            <option value="Low Quality">Low Quality</option>
+            <option value="Unacceptable">Unacceptable</option>
+          </select>
+        )}
+        {labeledPhotoQualityTier && (
+          <input type="text" readOnly value={labeledPhotoQualityTier} />
+        )}
       </label>
-      <div className="left-panel-ctas-wrapper">
-        <button onClick={handleSkip} className="cta skip-cta">
-          Skip Listing
-        </button>
-        <input className="cta save-cta" type="submit" value="Submit" />
-      </div>
-      <div>
-        <span>Labeled Photo ID: {labeledPhotoId}</span>
-        <span>Labeled Photo Quality: {labeledPhotoQualityTier}</span>
-      </div>
+      {!labeledPhotoQualityTier && (
+        <div className="left-panel-ctas-wrapper">
+          <button onClick={handleSkip} className="cta skip-cta">
+            Skip Listing
+          </button>
+          <input className="cta save-cta" type="submit" value="Submit" />
+        </div>
+      )}
     </form>
   );
 }
