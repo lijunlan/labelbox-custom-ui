@@ -58,6 +58,7 @@ export default function App() {
           if (asset.label === 'Skip') {
             setLabeledPhotoId('Skipped');
             setLabeledPhotoQualityTier('Skipped');
+            return;
           }
           let label = {};
           try {

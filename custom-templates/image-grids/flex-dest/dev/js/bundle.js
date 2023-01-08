@@ -9392,6 +9392,7 @@
 	        if (asset.label === 'Skip') {
 	          setLabeledPhotoId('Skipped');
 	          setLabeledPhotoQualityTier('Skipped');
+	          return;
 	        }
 
 	        var label = {};
