@@ -76,7 +76,7 @@ export default function App() {
         }
       }
     },
-    [currentAsset, setCurrentAsset, setAssetData]
+    [currentAsset, setCurrentAsset, setAssetData, assetData]
   );
 
   const handleClickImage = useCallback(

@@ -9205,7 +9205,7 @@
 	      Labelbox.fetchNextAssetToLabel();
 	    });
 	  }, [listingId, photoId, photoQualityTier]);
-	  document.addEventListener('keydown', function (e) {
+	  var handleKeydownEvent = react.exports.useCallback(function (e) {
 	    if (labeledPhotoId) {
 	      return;
 	    }
@@ -9249,7 +9249,8 @@
 	      default:
 	        return;
 	    }
-	  });
+	  }, [labeledPhotoId]);
+	  document.addEventListener('keydown', handleKeydownEvent);
 	  return /*#__PURE__*/React.createElement("form", {
 	    onSubmit: handleSubmit
 	  }, /*#__PURE__*/React.createElement("label", null, "Listing ID:", /*#__PURE__*/React.createElement("input", {
@@ -9413,7 +9414,7 @@
 	        }));
 	      }
 	    }
-	  }, [currentAsset, setCurrentAsset, setAssetData]);
+	  }, [currentAsset, setCurrentAsset, setAssetData, assetData]);
 	  var handleClickImage = react.exports.useCallback(function (imageIdx) {
 	    setSelectedImageIdx(imageIdx);
 	    setSelectedPhotoId(assetData[imageIdx].photoId);

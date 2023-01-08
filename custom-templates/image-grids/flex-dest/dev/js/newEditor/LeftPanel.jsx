@@ -32,50 +32,55 @@ export default function LeftPanel({
     });
   }, [listingId, photoId, photoQualityTier]);
 
-  document.addEventListener('keydown', (e) => {
-    if (labeledPhotoId) {
-      return;
-    }
-    switch (e.key.toLowerCase()) {
-      case '1':
-        e.preventDefault();
-        setPhotoQualityTier('Most Inspiring');
-        break;
-
-      case '2':
-        e.preventDefault();
-        setPhotoQualityTier('High');
-        break;
-
-      case '3':
-        e.preventDefault();
-        setPhotoQualityTier('Acceptable');
-        break;
-
-      case '4':
-        e.preventDefault();
-        setPhotoQualityTier('Low Quality');
-        break;
-
-      case '5':
-        e.preventDefault();
-        setPhotoQualityTier('Unacceptable');
-        break;
-
-      case 's':
-        e.preventDefault();
-        handleSkip();
-        break;
-
-      case 'enter':
-        e.preventDefault();
-        handleSubmit();
-        break;
-
-      default:
+  const handleKeydownEvent = useCallback(
+    (e) => {
+      if (labeledPhotoId) {
         return;
-    }
-  });
+      }
+      switch (e.key.toLowerCase()) {
+        case '1':
+          e.preventDefault();
+          setPhotoQualityTier('Most Inspiring');
+          break;
+
+        case '2':
+          e.preventDefault();
+          setPhotoQualityTier('High');
+          break;
+
+        case '3':
+          e.preventDefault();
+          setPhotoQualityTier('Acceptable');
+          break;
+
+        case '4':
+          e.preventDefault();
+          setPhotoQualityTier('Low Quality');
+          break;
+
+        case '5':
+          e.preventDefault();
+          setPhotoQualityTier('Unacceptable');
+          break;
+
+        case 's':
+          e.preventDefault();
+          handleSkip();
+          break;
+
+        case 'enter':
+          e.preventDefault();
+          handleSubmit();
+          break;
+
+        default:
+          return;
+      }
+    },
+    [labeledPhotoId]
+  );
+
+  document.addEventListener('keydown', handleKeydownEvent);
 
   return (
     <form onSubmit={handleSubmit}>
