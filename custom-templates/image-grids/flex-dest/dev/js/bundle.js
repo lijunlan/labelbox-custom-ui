@@ -9206,46 +9206,48 @@
 	    });
 	  }, [listingId, photoId, photoQualityTier]);
 	  document.addEventListener('keydown', function (e) {
-	    if (!labeledPhotoId) {
-	      switch (e.key.toLowerCase()) {
-	        case '1':
-	          e.preventDefault();
-	          setPhotoQualityTier('Most Inspiring');
-	          break;
+	    if (labeledPhotoId) {
+	      return;
+	    }
 
-	        case '2':
-	          e.preventDefault();
-	          setPhotoQualityTier('High');
-	          break;
+	    switch (e.key.toLowerCase()) {
+	      case '1':
+	        e.preventDefault();
+	        setPhotoQualityTier('Most Inspiring');
+	        break;
 
-	        case '3':
-	          e.preventDefault();
-	          setPhotoQualityTier('Acceptable');
-	          break;
+	      case '2':
+	        e.preventDefault();
+	        setPhotoQualityTier('High');
+	        break;
 
-	        case '4':
-	          e.preventDefault();
-	          setPhotoQualityTier('Low Quality');
-	          break;
+	      case '3':
+	        e.preventDefault();
+	        setPhotoQualityTier('Acceptable');
+	        break;
 
-	        case '5':
-	          e.preventDefault();
-	          setPhotoQualityTier('Unacceptable');
-	          break;
+	      case '4':
+	        e.preventDefault();
+	        setPhotoQualityTier('Low Quality');
+	        break;
 
-	        case 's':
-	          e.preventDefault();
-	          handleSkip();
-	          break;
+	      case '5':
+	        e.preventDefault();
+	        setPhotoQualityTier('Unacceptable');
+	        break;
 
-	        case 'enter':
-	          e.preventDefault();
-	          handleSubmit();
-	          break;
+	      case 's':
+	        e.preventDefault();
+	        handleSkip();
+	        break;
 
-	        default:
-	          return;
-	      }
+	      case 'enter':
+	        e.preventDefault();
+	        handleSubmit();
+	        break;
+
+	      default:
+	        return;
 	    }
 	  });
 	  return /*#__PURE__*/React.createElement("form", {
@@ -9392,6 +9394,7 @@
 	        if (asset.label === 'Skip') {
 	          setLabeledPhotoId('Skipped');
 	          setLabeledPhotoQualityTier('Skipped');
+	          setSelectedImageIdx(undefined);
 	          return;
 	        }
 
