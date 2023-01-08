@@ -9263,11 +9263,52 @@
 	      photo_id: photoId,
 	      photo_quality: photoQualityTier
 	    };
-	    Labelbox.setLabelForAsset(formattedData, 'ANY').then(function () {
+	    Labelbox.setLabelForAsset(JSON.stringify(formattedData), 'ANY').then(function () {
 	      // setPhotoEdits([]);
 	      Labelbox.fetchNextAssetToLabel();
 	    });
 	  }, [listingId, photoId, photoQualityTier]);
+	  document.addEventListener('keydown', function (e) {
+	    switch (e.key.toLowerCase()) {
+	      case '1':
+	        e.preventDefault();
+	        setPhotoQualityTier('Most Inspiring');
+	        break;
+
+	      case '2':
+	        e.preventDefault();
+	        setPhotoQualityTier('High');
+	        break;
+
+	      case '3':
+	        e.preventDefault();
+	        setPhotoQualityTier('Acceptable');
+	        break;
+
+	      case '4':
+	        e.preventDefault();
+	        setPhotoQualityTier('Low Quality');
+	        break;
+
+	      case '5':
+	        e.preventDefault();
+	        setPhotoQualityTier('Unacceptable');
+	        break;
+
+	      case 's':
+	        e.preventDefault();
+	        handleSkip();
+	        break;
+
+	      case 'enter':
+	        e.preventDefault();
+	        handleSubmit();
+	        break;
+
+	      default:
+	        return;
+	    }
+	  });
 	  return /*#__PURE__*/React.createElement("form", {
 	    onSubmit: handleSubmit
 	  }, /*#__PURE__*/React.createElement("label", null, "Listing ID:", /*#__PURE__*/React.createElement("input", {
@@ -9295,9 +9336,7 @@
 	    value: "Low Quality"
 	  }, "Low Quality"), /*#__PURE__*/React.createElement("option", {
 	    value: "Unacceptable"
-	  }, "Unacceptable"), /*#__PURE__*/React.createElement("option", {
-	    value: "Remove"
-	  }, "Remove"))), /*#__PURE__*/React.createElement("div", {
+	  }, "Unacceptable"))), /*#__PURE__*/React.createElement("div", {
 	    className: "left-panel-ctas-wrapper"
 	  }, /*#__PURE__*/React.createElement("button", {
 	    onClick: handleSkip,
