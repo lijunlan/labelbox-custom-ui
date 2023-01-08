@@ -52,6 +52,10 @@ export default function App() {
             )[1]
           );
 
+          // default to first image
+          setSelectedImageIdx(0);
+          setSelectedPhotoId(parsedAssetData[0].photoId);
+
           setCurrentAsset(asset);
           setAssetData(parsedAssetData);
         }
@@ -96,14 +100,12 @@ export default function App() {
         {<LeftPanel listingId={listingId} photoId={selectedPhotoId} />}
       </div>
       <div className="flex-grow flex-column">
-        {/* <Header
+        <Header
           currentAsset={currentAsset}
           hasNext={!!currentAsset?.next}
           hasPrev={!!currentAsset?.previous}
           projectId={projectId}
-          setSelectedListing={setSelectedListing}
-          setSelectedImageIdx={setSelectedImageIdx}
-        /> */}
+        />
         <div className="content">
           <ImageGrid
             images={assetData}

@@ -33,11 +33,15 @@ export default function LeftPanel({ listingId, photoId }) {
   return (
     <form onSubmit={handleSubmit}>
       <label>
-        Photo id:
+        Listing ID:
+        <input type="text" name="listing-id" readOnly value={listingId} />
+      </label>
+      <label>
+        Photo ID:
         <input type="text" name="photo-id" readOnly value={photoId} />
       </label>
       <label>
-        <div className="label">Photo quality:</div>
+        <div className="label">Photo Quality:</div>
         <select value={photoQualityTier} onChange={handlePhotoQualityChange}>
           <option value="Most Inspiring">Most Inspiring</option>
           <option value="High">High</option>
@@ -49,7 +53,7 @@ export default function LeftPanel({ listingId, photoId }) {
       </label>
       <div className="left-panel-ctas-wrapper">
         <button onClick={handleSkip} className="cta skip-cta">
-          Skip
+          Skip Listing
         </button>
         <input className="cta save-cta" type="submit" value="Submit" />
       </div>
