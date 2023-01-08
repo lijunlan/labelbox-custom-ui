@@ -9206,44 +9206,46 @@
 	    });
 	  }, [listingId, photoId, photoQualityTier]);
 	  document.addEventListener('keydown', function (e) {
-	    switch (e.key.toLowerCase()) {
-	      case '1':
-	        e.preventDefault();
-	        setPhotoQualityTier('Most Inspiring');
-	        break;
+	    if (!labeledPhotoId) {
+	      switch (e.key.toLowerCase()) {
+	        case '1':
+	          e.preventDefault();
+	          setPhotoQualityTier('Most Inspiring');
+	          break;
 
-	      case '2':
-	        e.preventDefault();
-	        setPhotoQualityTier('High');
-	        break;
+	        case '2':
+	          e.preventDefault();
+	          setPhotoQualityTier('High');
+	          break;
 
-	      case '3':
-	        e.preventDefault();
-	        setPhotoQualityTier('Acceptable');
-	        break;
+	        case '3':
+	          e.preventDefault();
+	          setPhotoQualityTier('Acceptable');
+	          break;
 
-	      case '4':
-	        e.preventDefault();
-	        setPhotoQualityTier('Low Quality');
-	        break;
+	        case '4':
+	          e.preventDefault();
+	          setPhotoQualityTier('Low Quality');
+	          break;
 
-	      case '5':
-	        e.preventDefault();
-	        setPhotoQualityTier('Unacceptable');
-	        break;
+	        case '5':
+	          e.preventDefault();
+	          setPhotoQualityTier('Unacceptable');
+	          break;
 
-	      case 's':
-	        e.preventDefault();
-	        handleSkip();
-	        break;
+	        case 's':
+	          e.preventDefault();
+	          handleSkip();
+	          break;
 
-	      case 'enter':
-	        e.preventDefault();
-	        handleSubmit();
-	        break;
+	        case 'enter':
+	          e.preventDefault();
+	          handleSubmit();
+	          break;
 
-	      default:
-	        return;
+	        default:
+	          return;
+	      }
 	    }
 	  });
 	  return /*#__PURE__*/React.createElement("form", {
@@ -9258,9 +9260,9 @@
 	    name: "photo-id",
 	    readOnly: true,
 	    value: labeledPhotoId ? labeledPhotoId : photoId
-	  })), /*#__PURE__*/React.createElement("label", null, /*#__PURE__*/React.createElement("div", {
+	  })), !labeledPhotoQualityTier && /*#__PURE__*/React.createElement("label", null, /*#__PURE__*/React.createElement("div", {
 	    className: "label"
-	  }, "Photo Quality:"), !labeledPhotoQualityTier && /*#__PURE__*/React.createElement("select", {
+	  }, "Photo Quality:"), /*#__PURE__*/React.createElement("select", {
 	    value: photoQualityTier,
 	    onChange: handlePhotoQualityChange
 	  }, /*#__PURE__*/React.createElement("option", {
@@ -9273,7 +9275,7 @@
 	    value: "Low Quality"
 	  }, "Low Quality"), /*#__PURE__*/React.createElement("option", {
 	    value: "Unacceptable"
-	  }, "Unacceptable")), labeledPhotoQualityTier && /*#__PURE__*/React.createElement("input", {
+	  }, "Unacceptable"))), labeledPhotoQualityTier && /*#__PURE__*/React.createElement("label", null, "Photo Quality:", /*#__PURE__*/React.createElement("input", {
 	    type: "text",
 	    readOnly: true,
 	    value: labeledPhotoQualityTier
@@ -9387,7 +9389,11 @@
 	      }
 
 	      if (asset.label) {
-	        if (asset.label === 'Skip') return;
+	        if (asset.label === 'Skip') {
+	          setLabeledPhotoId('Skipped');
+	          setLabeledPhotoQualityTier('Skipped');
+	        }
+
 	        var label = {};
 
 	        try {
@@ -9398,6 +9404,9 @@
 
 	        setLabeledPhotoId(label.photo_id);
 	        setLabeledPhotoQualityTier(label.photo_quality);
+	        setSelectedImageIdx(assetData.findIndex(function (image) {
+	          return label.photo_id === image.photoId;
+	        }));
 	      }
 	    }
 	  }, [currentAsset, setCurrentAsset, setAssetData]);

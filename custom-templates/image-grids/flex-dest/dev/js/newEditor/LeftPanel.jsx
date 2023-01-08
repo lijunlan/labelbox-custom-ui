@@ -33,44 +33,46 @@ export default function LeftPanel({
   }, [listingId, photoId, photoQualityTier]);
 
   document.addEventListener('keydown', (e) => {
-    switch (e.key.toLowerCase()) {
-      case '1':
-        e.preventDefault();
-        setPhotoQualityTier('Most Inspiring');
-        break;
+    if (!labeledPhotoId) {
+      switch (e.key.toLowerCase()) {
+        case '1':
+          e.preventDefault();
+          setPhotoQualityTier('Most Inspiring');
+          break;
 
-      case '2':
-        e.preventDefault();
-        setPhotoQualityTier('High');
-        break;
+        case '2':
+          e.preventDefault();
+          setPhotoQualityTier('High');
+          break;
 
-      case '3':
-        e.preventDefault();
-        setPhotoQualityTier('Acceptable');
-        break;
+        case '3':
+          e.preventDefault();
+          setPhotoQualityTier('Acceptable');
+          break;
 
-      case '4':
-        e.preventDefault();
-        setPhotoQualityTier('Low Quality');
-        break;
+        case '4':
+          e.preventDefault();
+          setPhotoQualityTier('Low Quality');
+          break;
 
-      case '5':
-        e.preventDefault();
-        setPhotoQualityTier('Unacceptable');
-        break;
+        case '5':
+          e.preventDefault();
+          setPhotoQualityTier('Unacceptable');
+          break;
 
-      case 's':
-        e.preventDefault();
-        handleSkip();
-        break;
+        case 's':
+          e.preventDefault();
+          handleSkip();
+          break;
 
-      case 'enter':
-        e.preventDefault();
-        handleSubmit();
-        break;
+        case 'enter':
+          e.preventDefault();
+          handleSubmit();
+          break;
 
-      default:
-        return;
+        default:
+          return;
+      }
     }
   });
 
@@ -89,9 +91,9 @@ export default function LeftPanel({
           value={labeledPhotoId ? labeledPhotoId : photoId}
         />
       </label>
-      <label>
-        <div className="label">Photo Quality:</div>
-        {!labeledPhotoQualityTier && (
+      {!labeledPhotoQualityTier && (
+        <label>
+          <div className="label">Photo Quality:</div>
           <select value={photoQualityTier} onChange={handlePhotoQualityChange}>
             <option value="Most Inspiring">Most Inspiring</option>
             <option value="High">High</option>
@@ -99,11 +101,14 @@ export default function LeftPanel({
             <option value="Low Quality">Low Quality</option>
             <option value="Unacceptable">Unacceptable</option>
           </select>
-        )}
-        {labeledPhotoQualityTier && (
+        </label>
+      )}
+      {labeledPhotoQualityTier && (
+        <label>
+          Photo Quality:
           <input type="text" readOnly value={labeledPhotoQualityTier} />
-        )}
-      </label>
+        </label>
+      )}
       {!labeledPhotoQualityTier && (
         <div className="left-panel-ctas-wrapper">
           <button onClick={handleSkip} className="cta skip-cta">
