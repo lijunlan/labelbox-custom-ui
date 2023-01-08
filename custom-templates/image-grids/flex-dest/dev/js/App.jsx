@@ -3,7 +3,7 @@ import { get, parseHtmlInput } from './utils';
 import convertLabelToPhotoEditFormat from './convertLabelToPhotoEditFormat';
 import ImageGrid from './newEditor/ImageGrid';
 import LeftPanel from './newEditor/LeftPanel';
-// import Header from './newEditor/Header';
+import Header from './newEditor/Header';
 
 const EMPTY_ARR = [];
 

@@ -9309,6 +9309,41 @@
 	  })));
 	}
 
+	function Header(_ref) {
+	  var currentAsset = _ref.currentAsset,
+	      hasPrev = _ref.hasPrev,
+	      hasNext = _ref.hasNext,
+	      projectId = _ref.projectId;
+	  var handleGoHome = react.exports.useCallback(function () {
+	    window.location.href = 'https://app.labelbox.com/projects/' + projectId;
+	  }, [projectId]);
+	  var handleGoBack = react.exports.useCallback(function () {
+	    if (hasPrev) {
+	      Labelbox.setLabelAsCurrentAsset(currentAsset.previous);
+	    }
+	  }, [currentAsset]);
+	  var handleGoNext = react.exports.useCallback(function () {
+	    if (hasNext) {
+	      Labelbox.setLabelAsCurrentAsset(currentAsset.next);
+	    }
+	  }, [currentAsset]);
+	  return /*#__PURE__*/React.createElement("div", {
+	    className: "header-container"
+	  }, /*#__PURE__*/React.createElement("i", {
+	    className: "material-icons home-icon",
+	    onClick: handleGoHome
+	  }, "home"), /*#__PURE__*/React.createElement("i", {
+	    className: "material-icons back-icon ".concat(hasPrev ? 'button-default' : ''),
+	    onClick: handleGoBack
+	  }, "keyboard_arrow_left"), /*#__PURE__*/React.createElement("div", {
+	    className: "header-title",
+	    id: "externalid"
+	  }, "Label this asset"), /*#__PURE__*/React.createElement("i", {
+	    className: "material-icons next-icon ".concat(hasNext ? 'button-default' : ''),
+	    onClick: hasNext ? handleGoNext : undefined
+	  }, "keyboard_arrow_right"));
+	}
+
 	var EMPTY_ARR = [];
 	function App() {
 	  var projectId = new URL(window.location.href).searchParams.get('project');
