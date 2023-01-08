@@ -1,30 +1,17 @@
 import React, { useCallback } from 'react';
 
-export default function Header({
-  currentAsset,
-  hasPrev,
-  hasNext,
-  projectId,
-  setSelectedListing,
-  setSelectedImageIdx,
-}) {
+export default function Header({ currentAsset, hasPrev, hasNext, projectId }) {
   const handleGoHome = useCallback(() => {
     window.location.href = 'https://app.labelbox.com/projects/' + projectId;
   }, [projectId]);
 
   const handleGoBack = useCallback(() => {
-    setSelectedListing();
-    setSelectedImageIdx();
-
     if (hasPrev) {
       Labelbox.setLabelAsCurrentAsset(currentAsset.previous);
     }
   }, [currentAsset]);
 
   const handleGoNext = useCallback(() => {
-    setSelectedListing();
-    setSelectedImageIdx();
-
     if (hasNext) {
       Labelbox.setLabelAsCurrentAsset(currentAsset.next);
     }

@@ -9270,14 +9270,19 @@
 	  }, [listingId, photoId, photoQualityTier]);
 	  return /*#__PURE__*/React.createElement("form", {
 	    onSubmit: handleSubmit
-	  }, /*#__PURE__*/React.createElement("label", null, "Photo id:", /*#__PURE__*/React.createElement("input", {
+	  }, /*#__PURE__*/React.createElement("label", null, "Listing ID:", /*#__PURE__*/React.createElement("input", {
+	    type: "text",
+	    name: "listing-id",
+	    readOnly: true,
+	    value: listingId
+	  })), /*#__PURE__*/React.createElement("label", null, "Photo ID:", /*#__PURE__*/React.createElement("input", {
 	    type: "text",
 	    name: "photo-id",
 	    readOnly: true,
 	    value: photoId
 	  })), /*#__PURE__*/React.createElement("label", null, /*#__PURE__*/React.createElement("div", {
 	    className: "label"
-	  }, "Photo quality:"), /*#__PURE__*/React.createElement("select", {
+	  }, "Photo Quality:"), /*#__PURE__*/React.createElement("select", {
 	    value: photoQualityTier,
 	    onChange: handlePhotoQualityChange
 	  }, /*#__PURE__*/React.createElement("option", {
@@ -9297,7 +9302,7 @@
 	  }, /*#__PURE__*/React.createElement("button", {
 	    onClick: handleSkip,
 	    className: "cta skip-cta"
-	  }, "Skip"), /*#__PURE__*/React.createElement("input", {
+	  }, "Skip Listing"), /*#__PURE__*/React.createElement("input", {
 	    className: "cta save-cta",
 	    type: "submit",
 	    value: "Submit"
@@ -9306,7 +9311,7 @@
 
 	var EMPTY_ARR = [];
 	function App() {
-	  new URL(window.location.href).searchParams.get('project');
+	  var projectId = new URL(window.location.href).searchParams.get('project');
 
 	  var _useState = react.exports.useState(),
 	      _useState2 = _slicedToArray(_useState, 2),
@@ -9359,7 +9364,10 @@
 	        var assetDataStr = get(asset.metadata[0].metaValue);
 	        var parsedAssetData = parseHtmlInput(assetDataStr); // Full match will be first element, listing ID will be second
 
-	        setListingId(assetDataStr.match(/href="https:\/\/www.airbnb.com\/rooms\/(.*?)"/)[1]);
+	        setListingId(assetDataStr.match(/href="https:\/\/www.airbnb.com\/rooms\/(.*?)"/)[1]); // default to first image
+
+	        setSelectedImageIdx(0);
+	        setSelectedPhotoId(parsedAssetData[0].photoId);
 	        setCurrentAsset(asset);
 	        setAssetData(parsedAssetData);
 	      }
@@ -9397,7 +9405,12 @@
 	    photoId: selectedPhotoId
 	  })), /*#__PURE__*/React.createElement("div", {
 	    className: "flex-grow flex-column"
-	  }, /*#__PURE__*/React.createElement("div", {
+	  }, /*#__PURE__*/React.createElement(Header, {
+	    currentAsset: currentAsset,
+	    hasNext: !!(currentAsset !== null && currentAsset !== void 0 && currentAsset.next),
+	    hasPrev: !!(currentAsset !== null && currentAsset !== void 0 && currentAsset.previous),
+	    projectId: projectId
+	  }), /*#__PURE__*/React.createElement("div", {
 	    className: "content"
 	  }, /*#__PURE__*/React.createElement(ImageGrid, {
 	    images: assetData,
