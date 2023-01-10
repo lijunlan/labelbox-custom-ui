@@ -6,7 +6,7 @@ export default function LeftPanel({
   labeledPhotoId,
   labeledPhotoQualityTier,
 }) {
-  const [photoQualityTier, setPhotoQualityTier] = useState();
+  const [photoQualityTier, setPhotoQualityTier] = useState('Most Inspiring');
 
   const handlePhotoQualityChange = useCallback((e) => {
     setPhotoQualityTier(e.target.value);
