@@ -20,7 +20,7 @@ export default function App() {
 
   const resetState = () => {
     setListingId();
-    setAssetData();
+    setAssetData([]);
     setSelectedImageIdx();
     setSelectedPhotoId();
     setLabeledPhotoId();
