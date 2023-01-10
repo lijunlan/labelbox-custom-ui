@@ -9285,12 +9285,16 @@
 	  })), !labeledPhotoQualityTier && /*#__PURE__*/React.createElement("div", {
 	    className: "left-panel-ctas-wrapper"
 	  }, /*#__PURE__*/React.createElement("button", {
-	    onClick: handleSkip,
+	    onClick: function onClick() {
+	      return handleSkip();
+	    },
 	    className: "cta skip-cta"
 	  }, "Skip Listing"), /*#__PURE__*/React.createElement("button", {
 	    className: "cta save-cta",
 	    type: "submit",
-	    onClick: handleSubmit
+	    onClick: function onClick() {
+	      return handleSubmit();
+	    }
 	  }, "Submit")));
 	}
 
@@ -9369,6 +9373,16 @@
 
 	  var assetNext = react.exports.useRef();
 	  var assetPrev = react.exports.useRef();
+
+	  var resetState = function resetState() {
+	    setListingId();
+	    setAssetData();
+	    setSelectedImageIdx();
+	    setSelectedPhotoId();
+	    setLabeledPhotoId();
+	    setLabeledPhotoQualityTier();
+	  };
+
 	  react.exports.useEffect(function () {
 	    document.querySelector('.content').scrollTo(0, 0);
 	  }, [assetData]);
@@ -9378,6 +9392,7 @@
 	      // to reduce jank from network calls, check the refs to ensure call is only made when relevant
 	      // data has changed
 	      if ((currentAsset === null || currentAsset === void 0 ? void 0 : currentAsset.id) !== asset.id && (currentAsset === null || currentAsset === void 0 ? void 0 : currentAsset.data) !== asset.data && (assetNext.current !== asset.next || assetPrev.current !== asset.previous)) {
+	        resetState();
 	        assetNext.current = asset.next;
 	        assetPrev.current = asset.previous;
 	        var assetDataStr = get(asset.metadata[0].metaValue);
@@ -9414,7 +9429,7 @@
 	        }));
 	      }
 	    }
-	  }, [currentAsset, setCurrentAsset, setAssetData, assetData]);
+	  }, [currentAsset]);
 	  var handleClickImage = react.exports.useCallback(function (imageIdx) {
 	    setSelectedImageIdx(imageIdx);
 	    setSelectedPhotoId(assetData[imageIdx].photoId);
