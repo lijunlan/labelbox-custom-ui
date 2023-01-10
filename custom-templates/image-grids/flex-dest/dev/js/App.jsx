@@ -30,7 +30,6 @@ export default function App() {
   const handleAssetChange = useCallback(
     (asset) => {
       if (asset) {
-        let parsedAssetData;
         // subscription to Labelbox makes increasing network calls as label history gets longer
         // to reduce jank from network calls, check the refs to ensure call is only made when relevant
         // data has changed
@@ -45,7 +44,7 @@ export default function App() {
           assetNext.current = asset.next;
           assetPrev.current = asset.previous;
           const assetDataStr = get(asset.metadata[0].metaValue);
-          parsedAssetData = parseHtmlInput(assetDataStr);
+          const parsedAssetData = parseHtmlInput(assetDataStr);
 
           // Full match will be first element, listing ID will be second
           setListingId(
@@ -60,29 +59,29 @@ export default function App() {
 
           setCurrentAsset(asset);
           setAssetData(parsedAssetData);
-        }
 
-        if (asset.label) {
-          if (asset.label === 'Skip') {
-            setLabeledPhotoId('Skipped');
-            setLabeledPhotoQualityTier('Skipped');
-            setSelectedImageIdx(undefined);
-            return;
-          }
-          let label = {};
-          try {
-            label = JSON.parse(asset.label);
-          } catch (e) {
-            console.error(e);
-          }
+          if (asset.label) {
+            if (asset.label === 'Skip') {
+              setLabeledPhotoId('Skipped');
+              setLabeledPhotoQualityTier('Skipped');
+              setSelectedImageIdx(undefined);
+              return;
+            }
+            let label = {};
+            try {
+              label = JSON.parse(asset.label);
+            } catch (e) {
+              console.error(e);
+            }
 
-          setLabeledPhotoId(label.photo_id);
-          setLabeledPhotoQualityTier(label.photo_quality);
-          setSelectedImageIdx(
-            parsedAssetData.findIndex(
-              (image) => label.photo_id === image.photoId
-            )
-          );
+            setLabeledPhotoId(label.photo_id);
+            setLabeledPhotoQualityTier(label.photo_quality);
+            setSelectedImageIdx(
+              parsedAssetData.findIndex(
+                (image) => label.photo_id === image.photoId
+              )
+            );
+          }
         }
       }
     },
