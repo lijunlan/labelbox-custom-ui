@@ -9188,13 +9188,15 @@
 	  var handlePhotoQualityChange = react.exports.useCallback(function (e) {
 	    setPhotoQualityTier(e.target.value);
 	  }, []);
-	  var handleSkip = react.exports.useCallback(function () {
+
+	  var handleSkip = function handleSkip() {
 	    Labelbox.skip().then(function () {
 	      setPhotoQualityTier('Most Inspiring');
 	      Labelbox.fetchNextAssetToLabel();
 	    });
-	  }, []);
-	  var handleSubmit = react.exports.useCallback(function () {
+	  };
+
+	  var handleSubmit = function handleSubmit() {
 	    var formattedData = {
 	      id_listing: listingId,
 	      photo_id: photoId,
@@ -9204,7 +9206,8 @@
 	      setPhotoQualityTier('Most Inspiring');
 	      Labelbox.fetchNextAssetToLabel();
 	    });
-	  }, [listingId, photoId, photoQualityTier]);
+	  };
+
 	  var handleKeydownEvent = react.exports.useCallback(function (e) {
 	    switch (e.key.toLowerCase()) {
 	      case '1':
@@ -9263,7 +9266,7 @@
 	    name: "photo-id",
 	    readOnly: true,
 	    value: labeledPhotoId ? labeledPhotoId : photoId
-	  })), !labeledPhotoQualityTier && /*#__PURE__*/React.createElement("label", null, /*#__PURE__*/React.createElement("div", {
+	  })), !labeledPhotoId && /*#__PURE__*/React.createElement("label", null, /*#__PURE__*/React.createElement("div", {
 	    className: "label"
 	  }, "Photo Quality:"), /*#__PURE__*/React.createElement("select", {
 	    value: photoQualityTier,
@@ -9278,11 +9281,11 @@
 	    value: "Low Quality"
 	  }, "Low Quality"), /*#__PURE__*/React.createElement("option", {
 	    value: "Unacceptable"
-	  }, "Unacceptable"))), labeledPhotoQualityTier && /*#__PURE__*/React.createElement("label", null, "Photo Quality:", /*#__PURE__*/React.createElement("input", {
+	  }, "Unacceptable"))), labeledPhotoId && /*#__PURE__*/React.createElement("label", null, "Photo Quality:", /*#__PURE__*/React.createElement("input", {
 	    type: "text",
 	    readOnly: true,
 	    value: labeledPhotoQualityTier
-	  })), !labeledPhotoQualityTier && /*#__PURE__*/React.createElement("div", {
+	  })), !labeledPhotoId && /*#__PURE__*/React.createElement("div", {
 	    className: "left-panel-ctas-wrapper"
 	  }, /*#__PURE__*/React.createElement("button", {
 	    onClick: function onClick() {

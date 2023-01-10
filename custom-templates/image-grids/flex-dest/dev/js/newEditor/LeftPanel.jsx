@@ -12,14 +12,14 @@ export default function LeftPanel({
     setPhotoQualityTier(e.target.value);
   }, []);
 
-  const handleSkip = useCallback(() => {
+  const handleSkip = () => {
     Labelbox.skip().then(() => {
       setPhotoQualityTier('Most Inspiring');
       Labelbox.fetchNextAssetToLabel();
     });
-  }, []);
+  };
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = () => {
     const formattedData = {
       id_listing: listingId,
       photo_id: photoId,
@@ -30,7 +30,7 @@ export default function LeftPanel({
       setPhotoQualityTier('Most Inspiring');
       Labelbox.fetchNextAssetToLabel();
     });
-  }, [listingId, photoId, photoQualityTier]);
+  };
 
   const handleKeydownEvent = useCallback((e) => {
     switch (e.key.toLowerCase()) {
@@ -97,7 +97,7 @@ export default function LeftPanel({
           value={labeledPhotoId ? labeledPhotoId : photoId}
         />
       </label>
-      {!labeledPhotoQualityTier && (
+      {!labeledPhotoId && (
         <label>
           <div className="label">Photo Quality:</div>
           <select value={photoQualityTier} onChange={handlePhotoQualityChange}>
@@ -109,13 +109,13 @@ export default function LeftPanel({
           </select>
         </label>
       )}
-      {labeledPhotoQualityTier && (
+      {labeledPhotoId && (
         <label>
           Photo Quality:
           <input type="text" readOnly value={labeledPhotoQualityTier} />
         </label>
       )}
-      {!labeledPhotoQualityTier && (
+      {!labeledPhotoId && (
         <div className="left-panel-ctas-wrapper">
           <button onClick={() => handleSkip()} className="cta skip-cta">
             Skip Listing
