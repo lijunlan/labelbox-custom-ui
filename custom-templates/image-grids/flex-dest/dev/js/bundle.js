@@ -9384,16 +9384,15 @@
 	  }, [assetData]);
 	  var handleAssetChange = react.exports.useCallback(function (asset) {
 	    if (asset) {
-	      var parsedAssetData; // subscription to Labelbox makes increasing network calls as label history gets longer
+	      // subscription to Labelbox makes increasing network calls as label history gets longer
 	      // to reduce jank from network calls, check the refs to ensure call is only made when relevant
 	      // data has changed
-
 	      if ((currentAsset === null || currentAsset === void 0 ? void 0 : currentAsset.id) !== asset.id && (currentAsset === null || currentAsset === void 0 ? void 0 : currentAsset.data) !== asset.data && (assetNext.current !== asset.next || assetPrev.current !== asset.previous)) {
 	        resetState();
 	        assetNext.current = asset.next;
 	        assetPrev.current = asset.previous;
 	        var assetDataStr = get(asset.metadata[0].metaValue);
-	        parsedAssetData = parseHtmlInput(assetDataStr); // Full match will be first element, listing ID will be second
+	        var parsedAssetData = parseHtmlInput(assetDataStr); // Full match will be first element, listing ID will be second
 
 	        setListingId(assetDataStr.match(/href="https:\/\/www.airbnb.com\/rooms\/(.*?)"/)[1]); // default to first image
 
@@ -9401,29 +9400,29 @@
 	        setSelectedPhotoId(parsedAssetData[0].photoId);
 	        setCurrentAsset(asset);
 	        setAssetData(parsedAssetData);
-	      }
 
-	      if (asset.label) {
-	        if (asset.label === 'Skip') {
-	          setLabeledPhotoId('Skipped');
-	          setLabeledPhotoQualityTier('Skipped');
-	          setSelectedImageIdx(undefined);
-	          return;
+	        if (asset.label) {
+	          if (asset.label === 'Skip') {
+	            setLabeledPhotoId('Skipped');
+	            setLabeledPhotoQualityTier('Skipped');
+	            setSelectedImageIdx(undefined);
+	            return;
+	          }
+
+	          var label = {};
+
+	          try {
+	            label = JSON.parse(asset.label);
+	          } catch (e) {
+	            console.error(e);
+	          }
+
+	          setLabeledPhotoId(label.photo_id);
+	          setLabeledPhotoQualityTier(label.photo_quality);
+	          setSelectedImageIdx(parsedAssetData.findIndex(function (image) {
+	            return label.photo_id === image.photoId;
+	          }));
 	        }
-
-	        var label = {};
-
-	        try {
-	          label = JSON.parse(asset.label);
-	        } catch (e) {
-	          console.error(e);
-	        }
-
-	        setLabeledPhotoId(label.photo_id);
-	        setLabeledPhotoQualityTier(label.photo_quality);
-	        setSelectedImageIdx(parsedAssetData.findIndex(function (image) {
-	          return label.photo_id === image.photoId;
-	        }));
 	      }
 	    }
 	  }, [currentAsset]);
