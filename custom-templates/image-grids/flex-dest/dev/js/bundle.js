@@ -9206,10 +9206,6 @@
 	    });
 	  }, [listingId, photoId, photoQualityTier]);
 	  var handleKeydownEvent = react.exports.useCallback(function (e) {
-	    if (labeledPhotoId) {
-	      return;
-	    }
-
 	    switch (e.key.toLowerCase()) {
 	      case '1':
 	        e.preventDefault();
@@ -9249,11 +9245,15 @@
 	      default:
 	        return;
 	    }
+	  }, []);
+	  react.exports.useEffect(function () {
+	    if (labeledPhotoId) {
+	      document.removeEventListener('keydown', handleKeydownEvent);
+	    } else {
+	      document.addEventListener('keydown', handleKeydownEvent);
+	    }
 	  }, [labeledPhotoId]);
-	  document.addEventListener('keydown', handleKeydownEvent);
-	  return /*#__PURE__*/React.createElement("form", {
-	    onSubmit: handleSubmit
-	  }, /*#__PURE__*/React.createElement("label", null, "Listing ID:", /*#__PURE__*/React.createElement("input", {
+	  return /*#__PURE__*/React.createElement("form", null, /*#__PURE__*/React.createElement("label", null, "Listing ID:", /*#__PURE__*/React.createElement("input", {
 	    type: "text",
 	    name: "listing-id",
 	    readOnly: true,
@@ -9287,11 +9287,11 @@
 	  }, /*#__PURE__*/React.createElement("button", {
 	    onClick: handleSkip,
 	    className: "cta skip-cta"
-	  }, "Skip Listing"), /*#__PURE__*/React.createElement("input", {
+	  }, "Skip Listing"), /*#__PURE__*/React.createElement("button", {
 	    className: "cta save-cta",
 	    type: "submit",
-	    value: "Submit"
-	  })));
+	    onClick: handleSubmit
+	  }, "Submit")));
 	}
 
 	function Header(_ref) {
