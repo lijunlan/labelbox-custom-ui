@@ -19,10 +19,6 @@ export default function App() {
   const assetPrev = useRef();
 
   const resetState = () => {
-    setListingId();
-    setAssetData([]);
-    setSelectedImageIdx();
-    setSelectedPhotoId();
     setLabeledPhotoId();
     setLabeledPhotoQualityTier();
   };
@@ -34,6 +30,7 @@ export default function App() {
   const handleAssetChange = useCallback(
     (asset) => {
       if (asset) {
+        let parsedAssetData;
         // subscription to Labelbox makes increasing network calls as label history gets longer
         // to reduce jank from network calls, check the refs to ensure call is only made when relevant
         // data has changed
@@ -48,7 +45,7 @@ export default function App() {
           assetNext.current = asset.next;
           assetPrev.current = asset.previous;
           const assetDataStr = get(asset.metadata[0].metaValue);
-          const parsedAssetData = parseHtmlInput(assetDataStr);
+          parsedAssetData = parseHtmlInput(assetDataStr);
 
           // Full match will be first element, listing ID will be second
           setListingId(
@@ -82,7 +79,9 @@ export default function App() {
           setLabeledPhotoId(label.photo_id);
           setLabeledPhotoQualityTier(label.photo_quality);
           setSelectedImageIdx(
-            assetData.findIndex((image) => label.photo_id === image.photoId)
+            parsedAssetData.findIndex(
+              (image) => label.photo_id === image.photoId
+            )
           );
         }
       }
