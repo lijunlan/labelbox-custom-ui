@@ -9376,7 +9376,7 @@
 
 	  var resetState = function resetState() {
 	    setListingId();
-	    setAssetData();
+	    setAssetData([]);
 	    setSelectedImageIdx();
 	    setSelectedPhotoId();
 	    setLabeledPhotoId();
