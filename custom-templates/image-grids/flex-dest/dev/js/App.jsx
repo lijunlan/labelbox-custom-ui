@@ -18,6 +18,15 @@ export default function App() {
   const assetNext = useRef();
   const assetPrev = useRef();
 
+  const resetState = () => {
+    setListingId();
+    setAssetData();
+    setSelectedImageIdx();
+    setSelectedPhotoId();
+    setLabeledPhotoId();
+    setLabeledPhotoQualityTier();
+  };
+
   useEffect(() => {
     document.querySelector('.content').scrollTo(0, 0);
   }, [assetData]);
@@ -34,6 +43,8 @@ export default function App() {
           (assetNext.current !== asset.next ||
             assetPrev.current !== asset.previous)
         ) {
+          resetState();
+
           assetNext.current = asset.next;
           assetPrev.current = asset.previous;
           const assetDataStr = get(asset.metadata[0].metaValue);
@@ -76,7 +87,7 @@ export default function App() {
         }
       }
     },
-    [currentAsset, setCurrentAsset, setAssetData, assetData]
+    [currentAsset]
   );
 
   const handleClickImage = useCallback(
