@@ -80,6 +80,7 @@ export default function App() {
             console.error(e);
           }
 
+          setSelectedPhotoId(label.photo_id);
           setLabeledPhotoId(label.photo_id);
           setLabeledPhotoQualityTier(label.photo_quality);
         }
