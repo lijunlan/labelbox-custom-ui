@@ -9188,15 +9188,13 @@
 	  var handlePhotoQualityChange = react.exports.useCallback(function (e) {
 	    setPhotoQualityTier(e.target.value);
 	  }, []);
-
-	  var handleSkip = function handleSkip() {
+	  var handleSkip = react.exports.useCallback(function () {
 	    Labelbox.skip().then(function () {
 	      setPhotoQualityTier('Most Inspiring');
 	      Labelbox.fetchNextAssetToLabel();
 	    });
-	  };
-
-	  var handleSubmit = function handleSubmit() {
+	  }, [setPhotoQualityTier]);
+	  var handleSubmit = react.exports.useCallback(function () {
 	    var formattedData = {
 	      id_listing: listingId,
 	      photo_id: photoId,
@@ -9206,8 +9204,7 @@
 	      setPhotoQualityTier('Most Inspiring');
 	      Labelbox.fetchNextAssetToLabel();
 	    });
-	  };
-
+	  }, [listingId, photoId, photoQualityTier, setPhotoQualityTier]);
 	  var handleKeydownEvent = react.exports.useCallback(function (e) {
 	    switch (e.key.toLowerCase()) {
 	      case '1':
@@ -9249,13 +9246,7 @@
 	        return;
 	    }
 	  }, []);
-	  react.exports.useEffect(function () {
-	    if (labeledPhotoId) {
-	      document.removeEventListener('keydown', handleKeydownEvent);
-	    } else {
-	      document.addEventListener('keydown', handleKeydownEvent);
-	    }
-	  }, [labeledPhotoId]);
+	  document.addEventListener('keydown', handleKeydownEvent);
 	  return /*#__PURE__*/React.createElement("form", null, /*#__PURE__*/React.createElement("label", null, "Listing ID:", /*#__PURE__*/React.createElement("input", {
 	    type: "text",
 	    name: "listing-id",
@@ -9265,8 +9256,8 @@
 	    type: "text",
 	    name: "photo-id",
 	    readOnly: true,
-	    value: labeledPhotoId ? labeledPhotoId : photoId
-	  })), !labeledPhotoId && /*#__PURE__*/React.createElement("label", null, /*#__PURE__*/React.createElement("div", {
+	    value: photoId
+	  })), /*#__PURE__*/React.createElement("label", null, /*#__PURE__*/React.createElement("div", {
 	    className: "label"
 	  }, "Photo Quality:"), /*#__PURE__*/React.createElement("select", {
 	    value: photoQualityTier,
@@ -9281,11 +9272,7 @@
 	    value: "Low Quality"
 	  }, "Low Quality"), /*#__PURE__*/React.createElement("option", {
 	    value: "Unacceptable"
-	  }, "Unacceptable"))), labeledPhotoId && /*#__PURE__*/React.createElement("label", null, "Photo Quality:", /*#__PURE__*/React.createElement("input", {
-	    type: "text",
-	    readOnly: true,
-	    value: labeledPhotoQualityTier
-	  })), !labeledPhotoId && /*#__PURE__*/React.createElement("div", {
+	  }, "Unacceptable"))), /*#__PURE__*/React.createElement("div", {
 	    className: "left-panel-ctas-wrapper"
 	  }, /*#__PURE__*/React.createElement("button", {
 	    onClick: function onClick() {
@@ -9298,7 +9285,9 @@
 	    onClick: function onClick() {
 	      return handleSubmit();
 	    }
-	  }, "Submit")));
+	  }, "Submit")), labeledPhotoId && /*#__PURE__*/React.createElement("div", {
+	    className: "existing-label-container"
+	  }, /*#__PURE__*/React.createElement("span", null, "Labeled Photo ID: ", labeledPhotoId), /*#__PURE__*/React.createElement("span", null, "Labeled Photo Quality: ", labeledPhotoQualityTier)));
 	}
 
 	function Header(_ref) {
@@ -9384,7 +9373,13 @@
 
 	  react.exports.useEffect(function () {
 	    document.querySelector('.content').scrollTo(0, 0);
-	  }, [assetData]);
+
+	    if (labeledPhotoId) {
+	      setSelectedImageIdx(assetData.findIndex(function (image) {
+	        return labeledPhotoId === image.photoId;
+	      }));
+	    }
+	  }, [assetData, labeledPhotoId, setSelectedImageIdx]);
 	  var handleAssetChange = react.exports.useCallback(function (asset) {
 	    if (asset) {
 	      // subscription to Labelbox makes increasing network calls as label history gets longer
@@ -9403,29 +9398,26 @@
 	        setSelectedPhotoId(parsedAssetData[0].photoId);
 	        setCurrentAsset(asset);
 	        setAssetData(parsedAssetData);
+	      }
 
-	        if (asset.label) {
-	          if (asset.label === 'Skip') {
-	            setLabeledPhotoId('Skipped');
-	            setLabeledPhotoQualityTier('Skipped');
-	            setSelectedImageIdx(undefined);
-	            return;
-	          }
-
-	          var label = {};
-
-	          try {
-	            label = JSON.parse(asset.label);
-	          } catch (e) {
-	            console.error(e);
-	          }
-
-	          setLabeledPhotoId(label.photo_id);
-	          setLabeledPhotoQualityTier(label.photo_quality);
-	          setSelectedImageIdx(parsedAssetData.findIndex(function (image) {
-	            return label.photo_id === image.photoId;
-	          }));
+	      if (asset.label) {
+	        if (asset.label === 'Skip') {
+	          setLabeledPhotoId('Skipped');
+	          setLabeledPhotoQualityTier('Skipped');
+	          setSelectedImageIdx(undefined);
+	          return;
 	        }
+
+	        var label = {};
+
+	        try {
+	          label = JSON.parse(asset.label);
+	        } catch (e) {
+	          console.error(e);
+	        }
+
+	        setLabeledPhotoId(label.photo_id);
+	        setLabeledPhotoQualityTier(label.photo_quality);
 	      }
 	    }
 	  }, [currentAsset]);

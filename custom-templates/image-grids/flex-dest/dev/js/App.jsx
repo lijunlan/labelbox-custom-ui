@@ -25,7 +25,12 @@ export default function App() {
 
   useEffect(() => {
     document.querySelector('.content').scrollTo(0, 0);
-  }, [assetData]);
+    if (labeledPhotoId) {
+      setSelectedImageIdx(
+        assetData.findIndex((image) => labeledPhotoId === image.photoId)
+      );
+    }
+  }, [assetData, labeledPhotoId, setSelectedImageIdx]);
 
   const handleAssetChange = useCallback(
     (asset) => {
@@ -59,29 +64,24 @@ export default function App() {
 
           setCurrentAsset(asset);
           setAssetData(parsedAssetData);
+        }
 
-          if (asset.label) {
-            if (asset.label === 'Skip') {
-              setLabeledPhotoId('Skipped');
-              setLabeledPhotoQualityTier('Skipped');
-              setSelectedImageIdx(undefined);
-              return;
-            }
-            let label = {};
-            try {
-              label = JSON.parse(asset.label);
-            } catch (e) {
-              console.error(e);
-            }
-
-            setLabeledPhotoId(label.photo_id);
-            setLabeledPhotoQualityTier(label.photo_quality);
-            setSelectedImageIdx(
-              parsedAssetData.findIndex(
-                (image) => label.photo_id === image.photoId
-              )
-            );
+        if (asset.label) {
+          if (asset.label === 'Skip') {
+            setLabeledPhotoId('Skipped');
+            setLabeledPhotoQualityTier('Skipped');
+            setSelectedImageIdx(undefined);
+            return;
           }
+          let label = {};
+          try {
+            label = JSON.parse(asset.label);
+          } catch (e) {
+            console.error(e);
+          }
+
+          setLabeledPhotoId(label.photo_id);
+          setLabeledPhotoQualityTier(label.photo_quality);
         }
       }
     },
