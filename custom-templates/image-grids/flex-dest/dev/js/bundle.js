@@ -9448,7 +9448,7 @@
 	    className: "content"
 	  }, /*#__PURE__*/React.createElement(ImageGrid, {
 	    images: assetData,
-	    onClickImage: labeledPhotoQualityTier ? function () {} : handleClickImage,
+	    onClickImage: handleClickImage,
 	    selectedImageIdx: selectedImageIdx
 	  }))));
 	}
