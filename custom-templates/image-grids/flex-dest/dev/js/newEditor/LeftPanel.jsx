@@ -15,78 +15,69 @@ export default function LeftPanel({
     [setPhotoQualityTier]
   );
 
-  const handleSkip = useCallback(
-    (e) => {
-      e.preventDefault();
-      Labelbox.skip().then(() => {
+  const handleSkip = (e) => {
+    e.preventDefault();
+    Labelbox.skip().then(() => {
+      setPhotoQualityTier('Most Inspiring');
+      Labelbox.fetchNextAssetToLabel();
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const formattedData = {
+      id_listing: listingId,
+      photo_id: photoId,
+      photo_quality: photoQualityTier,
+    };
+
+    Labelbox.setLabelForAsset(JSON.stringify(formattedData)).then(() => {
+      setPhotoQualityTier('Most Inspiring');
+      Labelbox.fetchNextAssetToLabel();
+    });
+  };
+
+  const handleKeydownEvent = (e) => {
+    switch (e.key.toLowerCase()) {
+      case '1':
+        e.preventDefault();
         setPhotoQualityTier('Most Inspiring');
-        Labelbox.fetchNextAssetToLabel();
-      });
-    },
-    [setPhotoQualityTier]
-  );
+        break;
 
-  const handleSubmit = useCallback(
-    (e) => {
-      e.preventDefault();
-      const formattedData = {
-        id_listing: listingId,
-        photo_id: photoId,
-        photo_quality: photoQualityTier,
-      };
+      case '2':
+        e.preventDefault();
+        setPhotoQualityTier('High');
+        break;
 
-      Labelbox.setLabelForAsset(JSON.stringify(formattedData)).then(() => {
-        setPhotoQualityTier('Most Inspiring');
-        Labelbox.fetchNextAssetToLabel();
-      });
-    },
-    [listingId, photoId, photoQualityTier, setPhotoQualityTier]
-  );
+      case '3':
+        e.preventDefault();
+        setPhotoQualityTier('Acceptable');
+        break;
 
-  const handleKeydownEvent = useCallback(
-    (e) => {
-      switch (e.key.toLowerCase()) {
-        case '1':
-          e.preventDefault();
-          setPhotoQualityTier('Most Inspiring');
-          break;
+      case '4':
+        e.preventDefault();
+        setPhotoQualityTier('Low Quality');
+        break;
 
-        case '2':
-          e.preventDefault();
-          setPhotoQualityTier('High');
-          break;
+      case '5':
+        e.preventDefault();
+        setPhotoQualityTier('Unacceptable');
+        break;
 
-        case '3':
-          e.preventDefault();
-          setPhotoQualityTier('Acceptable');
-          break;
+      case 's':
+        e.preventDefault();
+        handleSkip(e);
+        break;
 
-        case '4':
-          e.preventDefault();
-          setPhotoQualityTier('Low Quality');
-          break;
+      case 'enter':
+        e.preventDefault();
+        handleSubmit(e);
+        break;
 
-        case '5':
-          e.preventDefault();
-          setPhotoQualityTier('Unacceptable');
-          break;
-
-        case 's':
-          e.preventDefault();
-          handleSkip(e);
-          break;
-
-        case 'enter':
-          e.preventDefault();
-          handleSubmit(e);
-          break;
-
-        default:
-          return;
-      }
-    },
-    [handleSkip, handleSubmit, setPhotoQualityTier]
-  );
+      default:
+        return;
+    }
+  };
 
   useEffect(() => {
     document.addEventListener('keydown', (e) => handleKeydownEvent(e));

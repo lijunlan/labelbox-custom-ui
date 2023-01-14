@@ -9188,14 +9188,16 @@
 	  var handlePhotoQualityChange = react.exports.useCallback(function (e) {
 	    setPhotoQualityTier(e.target.value);
 	  }, [setPhotoQualityTier]);
-	  var handleSkip = react.exports.useCallback(function (e) {
+
+	  var handleSkip = function handleSkip(e) {
 	    e.preventDefault();
 	    Labelbox.skip().then(function () {
 	      setPhotoQualityTier('Most Inspiring');
 	      Labelbox.fetchNextAssetToLabel();
 	    });
-	  }, [setPhotoQualityTier]);
-	  var handleSubmit = react.exports.useCallback(function (e) {
+	  };
+
+	  var handleSubmit = function handleSubmit(e) {
 	    e.preventDefault();
 	    var formattedData = {
 	      id_listing: listingId,
@@ -9206,8 +9208,9 @@
 	      setPhotoQualityTier('Most Inspiring');
 	      Labelbox.fetchNextAssetToLabel();
 	    });
-	  }, [listingId, photoId, photoQualityTier, setPhotoQualityTier]);
-	  var handleKeydownEvent = react.exports.useCallback(function (e) {
+	  };
+
+	  var handleKeydownEvent = function handleKeydownEvent(e) {
 	    switch (e.key.toLowerCase()) {
 	      case '1':
 	        e.preventDefault();
@@ -9247,7 +9250,8 @@
 	      default:
 	        return;
 	    }
-	  }, [handleSkip, handleSubmit, setPhotoQualityTier]);
+	  };
+
 	  react.exports.useEffect(function () {
 	    document.addEventListener('keydown', function (e) {
 	      return handleKeydownEvent(e);
