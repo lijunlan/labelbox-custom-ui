@@ -117,14 +117,14 @@ export default function LeftPanel({
       </label>
       <div className="left-panel-ctas-wrapper">
         <button
-          disabled={isSkipping}
+          disabled={isSkipping || isSaving}
           onClick={(e) => handleSkip(e)}
           className="cta skip-cta"
         >
           {isSkipping ? 'Skipping...' : 'Skip Listing'}
         </button>
         <button
-          disabled={isSaving}
+          disabled={isSaving || isSkipping}
           className="cta save-cta"
           type="submit"
           onClick={(e) => handleSubmit(e)}
