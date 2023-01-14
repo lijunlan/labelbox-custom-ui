@@ -37,7 +37,7 @@ export default function LeftPanel({
     });
   };
 
-  const handleKeydownEvent = (e) => {
+  const handleKeyupEvent = (e) => {
     switch (e.key.toLowerCase()) {
       case '1':
         e.preventDefault();
@@ -80,8 +80,9 @@ export default function LeftPanel({
   };
 
   useEffect(() => {
-    document.addEventListener('keydown', (e) => handleKeydownEvent(e));
-  }, []);
+    document.addEventListener('keyup', handleKeyupEvent);
+    return () => document.removeEventListener('keyup', handleKeyupEvent);
+  }, [listingId, photoId, photoQualityTier, handleKeyupEvent]);
 
   return (
     <form>

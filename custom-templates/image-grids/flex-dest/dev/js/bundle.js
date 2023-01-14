@@ -9210,7 +9210,7 @@
 	    });
 	  };
 
-	  var handleKeydownEvent = function handleKeydownEvent(e) {
+	  var handleKeyupEvent = function handleKeyupEvent(e) {
 	    switch (e.key.toLowerCase()) {
 	      case '1':
 	        e.preventDefault();
@@ -9253,10 +9253,11 @@
 	  };
 
 	  react.exports.useEffect(function () {
-	    document.addEventListener('keydown', function (e) {
-	      return handleKeydownEvent(e);
-	    });
-	  }, []);
+	    document.addEventListener('keyup', handleKeyupEvent);
+	    return function () {
+	      return document.removeEventListener('keyup', handleKeyupEvent);
+	    };
+	  }, [listingId, photoId, photoQualityTier, handleKeyupEvent]);
 	  return /*#__PURE__*/React.createElement("form", null, /*#__PURE__*/React.createElement("label", null, "Listing ID:", /*#__PURE__*/React.createElement("input", {
 	    type: "text",
 	    name: "listing-id",
