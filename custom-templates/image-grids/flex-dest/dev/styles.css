@@ -212,6 +212,14 @@ select:focus {
   padding: 12px 24px;
 }
 
+.cta:disabled {
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+  cursor: default;
+  background-image: none;
+}
+
 .save-cta {
   background-image: linear-gradient(to right, #E61E4D 0%, #E31C5F 50%, #D70466 100%);
   border: 1px solid transparent;

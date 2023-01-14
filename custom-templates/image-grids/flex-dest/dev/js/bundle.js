@@ -9307,13 +9307,13 @@
 	  }, "Unacceptable"))), /*#__PURE__*/React.createElement("div", {
 	    className: "left-panel-ctas-wrapper"
 	  }, /*#__PURE__*/React.createElement("button", {
-	    disabled: isSkipping,
+	    disabled: isSkipping || isSaving,
 	    onClick: function onClick(e) {
 	      return handleSkip(e);
 	    },
 	    className: "cta skip-cta"
 	  }, isSkipping ? 'Skipping...' : 'Skip Listing'), /*#__PURE__*/React.createElement("button", {
-	    disabled: isSaving,
+	    disabled: isSaving || isSkipping,
 	    className: "cta save-cta",
 	    type: "submit",
 	    onClick: function onClick(e) {
