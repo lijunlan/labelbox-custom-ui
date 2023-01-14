@@ -33,7 +33,9 @@ export default function LeftPanel({
 
     Labelbox.setLabelForAsset(JSON.stringify(formattedData)).then(() => {
       setPhotoQualityTier('Most Inspiring');
-      Labelbox.fetchNextAssetToLabel();
+      if (!labeledPhotoId) {
+        Labelbox.fetchNextAssetToLabel();
+      }
     });
   };
 
