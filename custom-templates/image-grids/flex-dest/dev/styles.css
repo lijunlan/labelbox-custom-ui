@@ -255,3 +255,7 @@ select:focus {
   flex-direction: column;
   margin-top: 32px;
 }
+
+.bold-text {
+  font-weight: bold;
+}

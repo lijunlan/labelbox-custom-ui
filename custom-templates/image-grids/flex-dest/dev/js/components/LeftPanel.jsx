@@ -134,8 +134,14 @@ export default function LeftPanel({
       </div>
       {labeledPhotoId && (
         <div className="existing-label-container">
-          <span>Labeled Photo ID: {labeledPhotoId}</span>
-          <span>Labeled Photo Quality: {labeledPhotoQualityTier}</span>
+          <span>
+            <span className="bold-text">Labeled Photo ID:</span>{' '}
+            {labeledPhotoId}
+          </span>
+          <span>
+            <span className="bold-text">Labeled Photo Quality:</span>{' '}
+            {labeledPhotoQualityTier}
+          </span>
         </div>
       )}
     </form>

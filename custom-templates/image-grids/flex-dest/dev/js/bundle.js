@@ -9321,7 +9321,11 @@
 	    }
 	  }, isSaving ? 'Submitting...' : 'Submit')), labeledPhotoId && /*#__PURE__*/React.createElement("div", {
 	    className: "existing-label-container"
-	  }, /*#__PURE__*/React.createElement("span", null, "Labeled Photo ID: ", labeledPhotoId), /*#__PURE__*/React.createElement("span", null, "Labeled Photo Quality: ", labeledPhotoQualityTier)));
+	  }, /*#__PURE__*/React.createElement("span", null, /*#__PURE__*/React.createElement("span", {
+	    className: "bold-text"
+	  }, "Labeled Photo ID:"), ' ', labeledPhotoId), /*#__PURE__*/React.createElement("span", null, /*#__PURE__*/React.createElement("span", {
+	    className: "bold-text"
+	  }, "Labeled Photo Quality:"), ' ', labeledPhotoQualityTier)));
 	}
 
 	function Header(_ref) {
