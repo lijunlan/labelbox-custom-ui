@@ -9185,19 +9185,33 @@
 	      photoQualityTier = _useState2[0],
 	      setPhotoQualityTier = _useState2[1];
 
+	  var _useState3 = react.exports.useState(false),
+	      _useState4 = _slicedToArray(_useState3, 2),
+	      isSaving = _useState4[0],
+	      setIsSaving = _useState4[1];
+
+	  var _useState5 = react.exports.useState(false),
+	      _useState6 = _slicedToArray(_useState5, 2),
+	      isSkipping = _useState6[0],
+	      setIsSkipping = _useState6[1];
+
 	  var handlePhotoQualityChange = react.exports.useCallback(function (e) {
 	    setPhotoQualityTier(e.target.value);
 	  }, [setPhotoQualityTier]);
 
 	  var handleSkip = function handleSkip(e) {
+	    setIsSkipping(true);
 	    e.preventDefault();
 	    Labelbox.skip().then(function () {
 	      setPhotoQualityTier('Most Inspiring');
+	      e.target.blur();
 	      Labelbox.fetchNextAssetToLabel();
+	      setIsSkipping(false);
 	    });
 	  };
 
 	  var handleSubmit = function handleSubmit(e) {
+	    setIsSaving(true);
 	    e.preventDefault();
 	    var formattedData = {
 	      id_listing: listingId,
@@ -9210,48 +9224,52 @@
 	      if (!labeledPhotoId) {
 	        Labelbox.fetchNextAssetToLabel();
 	      }
+
+	      setIsSaving(false);
 	    });
 	  };
 
 	  var handleKeyupEvent = function handleKeyupEvent(e) {
-	    switch (e.key.toLowerCase()) {
-	      case '1':
-	        e.preventDefault();
-	        setPhotoQualityTier('Most Inspiring');
-	        break;
+	    if (!isSaving && !isSkipping) {
+	      switch (e.key.toLowerCase()) {
+	        case '1':
+	          e.preventDefault();
+	          setPhotoQualityTier('Most Inspiring');
+	          break;
 
-	      case '2':
-	        e.preventDefault();
-	        setPhotoQualityTier('High');
-	        break;
+	        case '2':
+	          e.preventDefault();
+	          setPhotoQualityTier('High');
+	          break;
 
-	      case '3':
-	        e.preventDefault();
-	        setPhotoQualityTier('Acceptable');
-	        break;
+	        case '3':
+	          e.preventDefault();
+	          setPhotoQualityTier('Acceptable');
+	          break;
 
-	      case '4':
-	        e.preventDefault();
-	        setPhotoQualityTier('Low Quality');
-	        break;
+	        case '4':
+	          e.preventDefault();
+	          setPhotoQualityTier('Low Quality');
+	          break;
 
-	      case '5':
-	        e.preventDefault();
-	        setPhotoQualityTier('Unacceptable');
-	        break;
+	        case '5':
+	          e.preventDefault();
+	          setPhotoQualityTier('Unacceptable');
+	          break;
 
-	      case 's':
-	        e.preventDefault();
-	        handleSkip(e);
-	        break;
+	        case 's':
+	          e.preventDefault();
+	          handleSkip(e);
+	          break;
 
-	      case 'enter':
-	        e.preventDefault();
-	        handleSubmit(e);
-	        break;
+	        case 'enter':
+	          e.preventDefault();
+	          handleSubmit(e);
+	          break;
 
-	      default:
-	        return;
+	        default:
+	          return;
+	      }
 	    }
 	  };
 
@@ -9289,17 +9307,19 @@
 	  }, "Unacceptable"))), /*#__PURE__*/React.createElement("div", {
 	    className: "left-panel-ctas-wrapper"
 	  }, /*#__PURE__*/React.createElement("button", {
+	    disabled: isSkipping,
 	    onClick: function onClick(e) {
 	      return handleSkip(e);
 	    },
 	    className: "cta skip-cta"
-	  }, "Skip Listing"), /*#__PURE__*/React.createElement("button", {
+	  }, isSkipping ? 'Skipping...' : 'Skip Listing'), /*#__PURE__*/React.createElement("button", {
+	    disabled: isSaving,
 	    className: "cta save-cta",
 	    type: "submit",
 	    onClick: function onClick(e) {
 	      return handleSubmit(e);
 	    }
-	  }, "Submit")), labeledPhotoId && /*#__PURE__*/React.createElement("div", {
+	  }, isSaving ? 'Submitting...' : 'Submit')), labeledPhotoId && /*#__PURE__*/React.createElement("div", {
 	    className: "existing-label-container"
 	  }, /*#__PURE__*/React.createElement("span", null, "Labeled Photo ID: ", labeledPhotoId), /*#__PURE__*/React.createElement("span", null, "Labeled Photo Quality: ", labeledPhotoQualityTier)));
 	}

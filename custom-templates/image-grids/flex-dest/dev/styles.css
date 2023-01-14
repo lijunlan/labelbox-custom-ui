@@ -157,6 +157,10 @@ body{
   margin-right: 10px; 
 }
 
+.skip-cta:focus {
+  background-color: #d3d3d3;
+}
+
 .submit-cta {
   border: 1px solid #222222;
   background-color: #222222;

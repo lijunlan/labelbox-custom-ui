@@ -7,6 +7,8 @@ export default function LeftPanel({
   labeledPhotoQualityTier,
 }) {
   const [photoQualityTier, setPhotoQualityTier] = useState('Most Inspiring');
+  const [isSaving, setIsSaving] = useState(false);
+  const [isSkipping, setIsSkipping] = useState(false);
 
   const handlePhotoQualityChange = useCallback(
     (e) => {
@@ -16,14 +18,18 @@ export default function LeftPanel({
   );
 
   const handleSkip = (e) => {
+    setIsSkipping(true);
     e.preventDefault();
     Labelbox.skip().then(() => {
       setPhotoQualityTier('Most Inspiring');
+      e.target.blur();
       Labelbox.fetchNextAssetToLabel();
+      setIsSkipping(false);
     });
   };
 
   const handleSubmit = (e) => {
+    setIsSaving(true);
     e.preventDefault();
     const formattedData = {
       id_listing: listingId,
@@ -36,48 +42,51 @@ export default function LeftPanel({
       if (!labeledPhotoId) {
         Labelbox.fetchNextAssetToLabel();
       }
+      setIsSaving(false);
     });
   };
 
   const handleKeyupEvent = (e) => {
-    switch (e.key.toLowerCase()) {
-      case '1':
-        e.preventDefault();
-        setPhotoQualityTier('Most Inspiring');
-        break;
+    if (!isSaving && !isSkipping) {
+      switch (e.key.toLowerCase()) {
+        case '1':
+          e.preventDefault();
+          setPhotoQualityTier('Most Inspiring');
+          break;
 
-      case '2':
-        e.preventDefault();
-        setPhotoQualityTier('High');
-        break;
+        case '2':
+          e.preventDefault();
+          setPhotoQualityTier('High');
+          break;
 
-      case '3':
-        e.preventDefault();
-        setPhotoQualityTier('Acceptable');
-        break;
+        case '3':
+          e.preventDefault();
+          setPhotoQualityTier('Acceptable');
+          break;
 
-      case '4':
-        e.preventDefault();
-        setPhotoQualityTier('Low Quality');
-        break;
+        case '4':
+          e.preventDefault();
+          setPhotoQualityTier('Low Quality');
+          break;
 
-      case '5':
-        e.preventDefault();
-        setPhotoQualityTier('Unacceptable');
-        break;
+        case '5':
+          e.preventDefault();
+          setPhotoQualityTier('Unacceptable');
+          break;
 
-      case 's':
-        e.preventDefault();
-        handleSkip(e);
-        break;
+        case 's':
+          e.preventDefault();
+          handleSkip(e);
+          break;
 
-      case 'enter':
-        e.preventDefault();
-        handleSubmit(e);
-        break;
+        case 'enter':
+          e.preventDefault();
+          handleSubmit(e);
+          break;
 
-      default:
-        return;
+        default:
+          return;
+      }
     }
   };
 
@@ -107,15 +116,20 @@ export default function LeftPanel({
         </select>
       </label>
       <div className="left-panel-ctas-wrapper">
-        <button onClick={(e) => handleSkip(e)} className="cta skip-cta">
-          Skip Listing
+        <button
+          disabled={isSkipping}
+          onClick={(e) => handleSkip(e)}
+          className="cta skip-cta"
+        >
+          {isSkipping ? 'Skipping...' : 'Skip Listing'}
         </button>
         <button
+          disabled={isSaving}
           className="cta save-cta"
           type="submit"
           onClick={(e) => handleSubmit(e)}
         >
-          Submit
+          {isSaving ? 'Submitting...' : 'Submit'}
         </button>
       </div>
       {labeledPhotoId && (
