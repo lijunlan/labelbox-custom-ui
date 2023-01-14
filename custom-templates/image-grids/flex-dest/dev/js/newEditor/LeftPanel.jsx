@@ -8,9 +8,12 @@ export default function LeftPanel({
 }) {
   const [photoQualityTier, setPhotoQualityTier] = useState('Most Inspiring');
 
-  const handlePhotoQualityChange = useCallback((e) => {
-    setPhotoQualityTier(e.target.value);
-  }, []);
+  const handlePhotoQualityChange = useCallback(
+    (e) => {
+      setPhotoQualityTier(e.target.value);
+    },
+    [setPhotoQualityTier]
+  );
 
   const handleSkip = useCallback(() => {
     Labelbox.skip().then(() => {
@@ -97,14 +100,10 @@ export default function LeftPanel({
         </select>
       </label>
       <div className="left-panel-ctas-wrapper">
-        <button onClick={() => handleSkip()} className="cta skip-cta">
+        <button onClick={handleSkip} className="cta skip-cta">
           Skip Listing
         </button>
-        <button
-          className="cta save-cta"
-          type="submit"
-          onClick={() => handleSubmit()}
-        >
+        <button className="cta save-cta" type="submit" onClick={handleSubmit}>
           Submit
         </button>
       </div>
