@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { get, parseHtmlInput } from './utils';
-import ImageGrid from './newEditor/ImageGrid';
-import LeftPanel from './newEditor/LeftPanel';
-import Header from './newEditor/Header';
+import ImageGrid from './components/ImageGrid';
+import LeftPanel from './components/LeftPanel';
+import Header from './components/Header';
 
 const EMPTY_ARR = [];
 
