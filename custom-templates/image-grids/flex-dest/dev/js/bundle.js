@@ -9188,13 +9188,15 @@
 	  var handlePhotoQualityChange = react.exports.useCallback(function (e) {
 	    setPhotoQualityTier(e.target.value);
 	  }, [setPhotoQualityTier]);
-	  var handleSkip = react.exports.useCallback(function () {
+
+	  var handleSkip = function handleSkip() {
 	    Labelbox.skip().then(function () {
 	      setPhotoQualityTier('Most Inspiring');
 	      Labelbox.fetchNextAssetToLabel();
 	    });
-	  }, [setPhotoQualityTier]);
-	  var handleSubmit = react.exports.useCallback(function () {
+	  };
+
+	  var handleSubmit = function handleSubmit() {
 	    var formattedData = {
 	      id_listing: listingId,
 	      photo_id: photoId,
@@ -9204,7 +9206,8 @@
 	      setPhotoQualityTier('Most Inspiring');
 	      Labelbox.fetchNextAssetToLabel();
 	    });
-	  }, [listingId, photoId, photoQualityTier, setPhotoQualityTier]);
+	  };
+
 	  var handleKeydownEvent = react.exports.useCallback(function (e) {
 	    switch (e.key.toLowerCase()) {
 	      case '1':
@@ -9275,12 +9278,16 @@
 	  }, "Unacceptable"))), /*#__PURE__*/React.createElement("div", {
 	    className: "left-panel-ctas-wrapper"
 	  }, /*#__PURE__*/React.createElement("button", {
-	    onClick: handleSkip,
+	    onClick: function onClick() {
+	      return handleSkip;
+	    },
 	    className: "cta skip-cta"
 	  }, "Skip Listing"), /*#__PURE__*/React.createElement("button", {
 	    className: "cta save-cta",
 	    type: "submit",
-	    onClick: handleSubmit
+	    onClick: function onClick() {
+	      return handleSubmit();
+	    }
 	  }, "Submit")), labeledPhotoId && /*#__PURE__*/React.createElement("div", {
 	    className: "existing-label-container"
 	  }, /*#__PURE__*/React.createElement("span", null, "Labeled Photo ID: ", labeledPhotoId), /*#__PURE__*/React.createElement("span", null, "Labeled Photo Quality: ", labeledPhotoQualityTier)));
