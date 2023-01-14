@@ -79,7 +79,7 @@ export default function LeftPanel({
     }
   };
 
-  document.addEventListener('keydown', handleKeydownEvent);
+  document.addEventListener('keydown', (e) => handleKeydownEvent(e));
 
   return (
     <form>
