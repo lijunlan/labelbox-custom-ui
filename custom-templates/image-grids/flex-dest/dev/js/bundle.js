@@ -9187,7 +9187,7 @@
 
 	  var handlePhotoQualityChange = react.exports.useCallback(function (e) {
 	    setPhotoQualityTier(e.target.value);
-	  }, []);
+	  }, [setPhotoQualityTier]);
 	  var handleSkip = react.exports.useCallback(function () {
 	    Labelbox.skip().then(function () {
 	      setPhotoQualityTier('Most Inspiring');
@@ -9275,16 +9275,12 @@
 	  }, "Unacceptable"))), /*#__PURE__*/React.createElement("div", {
 	    className: "left-panel-ctas-wrapper"
 	  }, /*#__PURE__*/React.createElement("button", {
-	    onClick: function onClick() {
-	      return handleSkip();
-	    },
+	    onClick: handleSkip,
 	    className: "cta skip-cta"
 	  }, "Skip Listing"), /*#__PURE__*/React.createElement("button", {
 	    className: "cta save-cta",
 	    type: "submit",
-	    onClick: function onClick() {
-	      return handleSubmit();
-	    }
+	    onClick: handleSubmit
 	  }, "Submit")), labeledPhotoId && /*#__PURE__*/React.createElement("div", {
 	    className: "existing-label-container"
 	  }, /*#__PURE__*/React.createElement("span", null, "Labeled Photo ID: ", labeledPhotoId), /*#__PURE__*/React.createElement("span", null, "Labeled Photo Quality: ", labeledPhotoQualityTier)));
