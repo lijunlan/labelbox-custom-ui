@@ -9206,7 +9206,10 @@
 	    };
 	    Labelbox.setLabelForAsset(JSON.stringify(formattedData)).then(function () {
 	      setPhotoQualityTier('Most Inspiring');
-	      Labelbox.fetchNextAssetToLabel();
+
+	      if (!labeledPhotoId) {
+	        Labelbox.fetchNextAssetToLabel();
+	      }
 	    });
 	  };
 
