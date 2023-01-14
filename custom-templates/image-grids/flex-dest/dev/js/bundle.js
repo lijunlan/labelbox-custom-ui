@@ -9188,16 +9188,14 @@
 	  var handlePhotoQualityChange = react.exports.useCallback(function (e) {
 	    setPhotoQualityTier(e.target.value);
 	  }, [setPhotoQualityTier]);
-
-	  var handleSkip = function handleSkip(e) {
+	  var handleSkip = react.exports.useCallback(function (e) {
 	    e.preventDefault();
 	    Labelbox.skip().then(function () {
 	      setPhotoQualityTier('Most Inspiring');
 	      Labelbox.fetchNextAssetToLabel();
 	    });
-	  };
-
-	  var handleSubmit = function handleSubmit(e) {
+	  }, [setPhotoQualityTier]);
+	  var handleSubmit = react.exports.useCallback(function (e) {
 	    e.preventDefault();
 	    var formattedData = {
 	      id_listing: listingId,
@@ -9208,9 +9206,8 @@
 	      setPhotoQualityTier('Most Inspiring');
 	      Labelbox.fetchNextAssetToLabel();
 	    });
-	  };
-
-	  var handleKeydownEvent = function handleKeydownEvent(e) {
+	  }, [listingId, photoId, photoQualityTier, setPhotoQualityTier]);
+	  var handleKeydownEvent = react.exports.useCallback(function (e) {
 	    switch (e.key.toLowerCase()) {
 	      case '1':
 	        e.preventDefault();
@@ -9250,11 +9247,12 @@
 	      default:
 	        return;
 	    }
-	  };
-
-	  document.addEventListener('keydown', function (e) {
-	    return handleKeydownEvent(e);
-	  });
+	  }, [handleSkip, handleSubmit, setPhotoQualityTier]);
+	  react.exports.useEffect(function () {
+	    document.addEventListener('keydown', function (e) {
+	      return handleKeydownEvent(e);
+	    });
+	  }, []);
 	  return /*#__PURE__*/React.createElement("form", null, /*#__PURE__*/React.createElement("label", null, "Listing ID:", /*#__PURE__*/React.createElement("input", {
 	    type: "text",
 	    name: "listing-id",
@@ -9424,6 +9422,7 @@
 	          console.error(e);
 	        }
 
+	        setSelectedPhotoId(label.photo_id);
 	        setLabeledPhotoId(label.photo_id);
 	        setLabeledPhotoQualityTier(label.photo_quality);
 	      }

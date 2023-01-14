@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 
 export default function LeftPanel({
   listingId,
@@ -15,71 +15,82 @@ export default function LeftPanel({
     [setPhotoQualityTier]
   );
 
-  const handleSkip = (e) => {
-    e.preventDefault();
-    Labelbox.skip().then(() => {
-      setPhotoQualityTier('Most Inspiring');
-      Labelbox.fetchNextAssetToLabel();
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const formattedData = {
-      id_listing: listingId,
-      photo_id: photoId,
-      photo_quality: photoQualityTier,
-    };
-
-    Labelbox.setLabelForAsset(JSON.stringify(formattedData)).then(() => {
-      setPhotoQualityTier('Most Inspiring');
-      Labelbox.fetchNextAssetToLabel();
-    });
-  };
-
-  const handleKeydownEvent = (e) => {
-    switch (e.key.toLowerCase()) {
-      case '1':
-        e.preventDefault();
+  const handleSkip = useCallback(
+    (e) => {
+      e.preventDefault();
+      Labelbox.skip().then(() => {
         setPhotoQualityTier('Most Inspiring');
-        break;
+        Labelbox.fetchNextAssetToLabel();
+      });
+    },
+    [setPhotoQualityTier]
+  );
 
-      case '2':
-        e.preventDefault();
-        setPhotoQualityTier('High');
-        break;
+  const handleSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
+      const formattedData = {
+        id_listing: listingId,
+        photo_id: photoId,
+        photo_quality: photoQualityTier,
+      };
 
-      case '3':
-        e.preventDefault();
-        setPhotoQualityTier('Acceptable');
-        break;
+      Labelbox.setLabelForAsset(JSON.stringify(formattedData)).then(() => {
+        setPhotoQualityTier('Most Inspiring');
+        Labelbox.fetchNextAssetToLabel();
+      });
+    },
+    [listingId, photoId, photoQualityTier, setPhotoQualityTier]
+  );
 
-      case '4':
-        e.preventDefault();
-        setPhotoQualityTier('Low Quality');
-        break;
+  const handleKeydownEvent = useCallback(
+    (e) => {
+      switch (e.key.toLowerCase()) {
+        case '1':
+          e.preventDefault();
+          setPhotoQualityTier('Most Inspiring');
+          break;
 
-      case '5':
-        e.preventDefault();
-        setPhotoQualityTier('Unacceptable');
-        break;
+        case '2':
+          e.preventDefault();
+          setPhotoQualityTier('High');
+          break;
 
-      case 's':
-        e.preventDefault();
-        handleSkip(e);
-        break;
+        case '3':
+          e.preventDefault();
+          setPhotoQualityTier('Acceptable');
+          break;
 
-      case 'enter':
-        e.preventDefault();
-        handleSubmit(e);
-        break;
+        case '4':
+          e.preventDefault();
+          setPhotoQualityTier('Low Quality');
+          break;
 
-      default:
-        return;
-    }
-  };
+        case '5':
+          e.preventDefault();
+          setPhotoQualityTier('Unacceptable');
+          break;
 
-  document.addEventListener('keydown', (e) => handleKeydownEvent(e));
+        case 's':
+          e.preventDefault();
+          handleSkip(e);
+          break;
+
+        case 'enter':
+          e.preventDefault();
+          handleSubmit(e);
+          break;
+
+        default:
+          return;
+      }
+    },
+    [handleSkip, handleSubmit, setPhotoQualityTier]
+  );
+
+  useEffect(() => {
+    document.addEventListener('keydown', (e) => handleKeydownEvent(e));
+  }, []);
 
   return (
     <form>
