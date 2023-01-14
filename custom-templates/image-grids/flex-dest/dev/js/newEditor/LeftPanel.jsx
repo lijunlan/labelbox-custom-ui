@@ -15,27 +15,29 @@ export default function LeftPanel({
     [setPhotoQualityTier]
   );
 
-  const handleSkip = () => {
+  const handleSkip = (e) => {
+    e.preventDefault();
     Labelbox.skip().then(() => {
       setPhotoQualityTier('Most Inspiring');
       Labelbox.fetchNextAssetToLabel();
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     const formattedData = {
       id_listing: listingId,
       photo_id: photoId,
       photo_quality: photoQualityTier,
     };
 
-    Labelbox.setLabelForAsset(JSON.stringify(formattedData), 'ANY').then(() => {
+    Labelbox.setLabelForAsset(JSON.stringify(formattedData)).then(() => {
       setPhotoQualityTier('Most Inspiring');
       Labelbox.fetchNextAssetToLabel();
     });
   };
 
-  const handleKeydownEvent = useCallback((e) => {
+  const handleKeydownEvent = (e) => {
     switch (e.key.toLowerCase()) {
       case '1':
         e.preventDefault();
@@ -64,18 +66,18 @@ export default function LeftPanel({
 
       case 's':
         e.preventDefault();
-        handleSkip();
+        handleSkip(e);
         break;
 
       case 'enter':
         e.preventDefault();
-        handleSubmit();
+        handleSubmit(e);
         break;
 
       default:
         return;
     }
-  }, []);
+  };
 
   document.addEventListener('keydown', handleKeydownEvent);
 
@@ -100,13 +102,13 @@ export default function LeftPanel({
         </select>
       </label>
       <div className="left-panel-ctas-wrapper">
-        <button onClick={() => handleSkip} className="cta skip-cta">
+        <button onClick={(e) => handleSkip(e)} className="cta skip-cta">
           Skip Listing
         </button>
         <button
           className="cta save-cta"
           type="submit"
-          onClick={() => handleSubmit()}
+          onClick={(e) => handleSubmit(e)}
         >
           Submit
         </button>

@@ -9189,26 +9189,28 @@
 	    setPhotoQualityTier(e.target.value);
 	  }, [setPhotoQualityTier]);
 
-	  var handleSkip = function handleSkip() {
+	  var handleSkip = function handleSkip(e) {
+	    e.preventDefault();
 	    Labelbox.skip().then(function () {
 	      setPhotoQualityTier('Most Inspiring');
 	      Labelbox.fetchNextAssetToLabel();
 	    });
 	  };
 
-	  var handleSubmit = function handleSubmit() {
+	  var handleSubmit = function handleSubmit(e) {
+	    e.preventDefault();
 	    var formattedData = {
 	      id_listing: listingId,
 	      photo_id: photoId,
 	      photo_quality: photoQualityTier
 	    };
-	    Labelbox.setLabelForAsset(JSON.stringify(formattedData), 'ANY').then(function () {
+	    Labelbox.setLabelForAsset(JSON.stringify(formattedData)).then(function () {
 	      setPhotoQualityTier('Most Inspiring');
 	      Labelbox.fetchNextAssetToLabel();
 	    });
 	  };
 
-	  var handleKeydownEvent = react.exports.useCallback(function (e) {
+	  var handleKeydownEvent = function handleKeydownEvent(e) {
 	    switch (e.key.toLowerCase()) {
 	      case '1':
 	        e.preventDefault();
@@ -9237,18 +9239,19 @@
 
 	      case 's':
 	        e.preventDefault();
-	        handleSkip();
+	        handleSkip(e);
 	        break;
 
 	      case 'enter':
 	        e.preventDefault();
-	        handleSubmit();
+	        handleSubmit(e);
 	        break;
 
 	      default:
 	        return;
 	    }
-	  }, []);
+	  };
+
 	  document.addEventListener('keydown', handleKeydownEvent);
 	  return /*#__PURE__*/React.createElement("form", null, /*#__PURE__*/React.createElement("label", null, "Listing ID:", /*#__PURE__*/React.createElement("input", {
 	    type: "text",
@@ -9278,15 +9281,15 @@
 	  }, "Unacceptable"))), /*#__PURE__*/React.createElement("div", {
 	    className: "left-panel-ctas-wrapper"
 	  }, /*#__PURE__*/React.createElement("button", {
-	    onClick: function onClick() {
-	      return handleSkip;
+	    onClick: function onClick(e) {
+	      return handleSkip(e);
 	    },
 	    className: "cta skip-cta"
 	  }, "Skip Listing"), /*#__PURE__*/React.createElement("button", {
 	    className: "cta save-cta",
 	    type: "submit",
-	    onClick: function onClick() {
-	      return handleSubmit();
+	    onClick: function onClick(e) {
+	      return handleSubmit(e);
 	    }
 	  }, "Submit")), labeledPhotoId && /*#__PURE__*/React.createElement("div", {
 	    className: "existing-label-container"
