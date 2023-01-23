@@ -8784,7 +8784,7 @@
 	          bottom = _getElement2.bottom;
 
 	      if (currentY < nextSiblingY && bottom > window.innerHeight) {
-	        el.nextSibling.scrollIntoView();
+	        el.nextSibling.scrollIntoView(false);
 	      }
 
 	      _onClickImage(selectedImageIdx + 1);
@@ -8815,8 +8815,9 @@
 
 	      var _getElement5 = getElement(currentId),
 	          currentX = _getElement5.x,
-	          _currentY2 = _getElement5.y; // loop backwards until we find the first item above in the same column
+	          _currentY2 = _getElement5.y;
 
+	      var lastInPrevRow; // loop backwards until we find the first item above in the same column
 
 	      for (var i = selectedImageIdx - 1; i >= 0; i--) {
 	        var _getElement6 = getElement("image-container-".concat(images[i].photoId)),
@@ -8825,42 +8826,84 @@
 	            prevY = _getElement6.y,
 	            _top = _getElement6.top;
 
-	        if (currentX === prevX && _currentY2 > prevY) {
-	          _onClickImage(i);
-
-	          if (_top < 0) {
-	            _el2.scrollIntoView();
+	        if (_currentY2 > prevY) {
+	          if (lastInPrevRow === undefined) {
+	            lastInPrevRow = i;
 	          }
 
-	          break;
+	          if (currentX === prevX) {
+	            _onClickImage(i);
+
+	            if (_top < 0) {
+	              _el2.scrollIntoView();
+	            }
+
+	            break;
+	          }
+	        } // if we've reached this, then there are grid items in the last row that don't perfectly align
+	        // so we take the reference to the last item in the prev row and use that to go to
+
+
+	        if (i === 0 && lastInPrevRow !== undefined) {
+	          var _getElement7 = getElement("image-container-".concat(images[lastInPrevRow].photoId)),
+	              newEl = _getElement7.el,
+	              newTop = _getElement7.top;
+
+	          _onClickImage(lastInPrevRow);
+
+	          if (newTop < 0) {
+	            newEl.scrollIntoView();
+	          }
 	        }
 	      }
 	    } else if (key === 'arrowdown') {
 	      e.preventDefault();
 
-	      var _getElement7 = getElement(currentId),
-	          _currentX = _getElement7.x,
-	          _currentY3 = _getElement7.y; // loop forward until we find the first item below in the same column
+	      var _getElement8 = getElement(currentId),
+	          _currentX = _getElement8.x,
+	          _currentY3 = _getElement8.y;
 
+	      var firstInNextRow; // loop forward until we find the first item below in the same column
 
 	      for (var _i = selectedImageIdx + 1; _i < images.length; _i++) {
-	        var _getElement8 = getElement("image-container-".concat(images[_i].photoId)),
-	            _el3 = _getElement8.el,
-	            nextX = _getElement8.x,
-	            nextY = _getElement8.y,
-	            _bottom = _getElement8.bottom;
+	        var _getElement9 = getElement("image-container-".concat(images[_i].photoId)),
+	            _el3 = _getElement9.el,
+	            nextX = _getElement9.x,
+	            nextY = _getElement9.y,
+	            _bottom = _getElement9.bottom;
 
-	        if (_currentX === nextX && _currentY3 < nextY) {
-	          _onClickImage(_i);
-
-	          if (_bottom > window.innerHeight) {
-	            _el3.scrollIntoView();
+	        if (_currentY3 < nextY) {
+	          if (firstInNextRow === undefined) {
+	            firstInNextRow = _i;
 	          }
 
-	          break;
+	          if (_currentX === nextX) {
+	            _onClickImage(_i);
+
+	            if (_bottom > window.innerHeight) {
+	              _el3.scrollIntoView(false);
+	            }
+
+	            break;
+	          }
+	        } // if we've reached this, then there are grid items in the last row that don't perfectly align
+	        // so we take the reference to the first item in the next row and use that to go to
+
+
+	        if (_i === images.length - 1 && firstInNextRow !== undefined) {
+	          var _getElement10 = getElement("image-container-".concat(images[firstInNextRow].photoId)),
+	              _newEl = _getElement10.el,
+	              newBottom = _getElement10.bottom;
+
+	          _onClickImage(firstInNextRow);
+
+	          if (newBottom > window.innerHeight) {
+	            _newEl.scrollIntoView(false);
+	          }
 	        }
 	      }
 	    } else if (key === ' ') {
+	      e.preventDefault();
 	      setIsPhotoViewerOpen(true);
 	    }
 	  };
@@ -8868,7 +8911,8 @@
 	  react.exports.useEffect(function () {
 	    document.addEventListener('keydown', handleKeydownEvent);
 	    return function () {
-	      return document.removeEventListener('keydown', handleKeydownEvent);
+	      document.removeEventListener('keydown', handleKeydownEvent);
+	      setIsPhotoViewerOpen(false);
 	    };
 	  }, [images, selectedImageIdx, handleKeydownEvent]);
 
@@ -8888,9 +8932,12 @@
 	        return _onClickImage(photoIdx);
 	      }
 	    });
-	  })), isPhotoViewerOpen && /*#__PURE__*/React.createElement(Lightbox, {
+	  })), isPhotoViewerOpen && !!images[selectedImageIdx] && /*#__PURE__*/React.createElement(Lightbox, {
+	    medium: images[selectedImageIdx].imageSrc,
 	    large: images[selectedImageIdx].imageSrc,
-	    onClose: closePhotoViewer
+	    onClose: closePhotoViewer,
+	    hideDownload: true,
+	    showRotate: true
 	  }));
 	}
 
@@ -9124,6 +9171,11 @@
 	  var assetNext = react.exports.useRef();
 	  var assetPrev = react.exports.useRef();
 
+	  var _useState15 = react.exports.useState(true),
+	      _useState16 = _slicedToArray(_useState15, 2),
+	      isLoading = _useState16[0],
+	      setIsLoading = _useState16[1];
+
 	  var resetState = function resetState() {
 	    setLabeledPhotoId();
 	    setLabeledPhotoQualityTier();
@@ -9144,6 +9196,7 @@
 	      // to reduce jank from network calls, check the refs to ensure call is only made when relevant
 	      // data has changed
 	      if ((currentAsset === null || currentAsset === void 0 ? void 0 : currentAsset.id) !== asset.id && (currentAsset === null || currentAsset === void 0 ? void 0 : currentAsset.data) !== asset.data && (assetNext.current !== asset.next || assetPrev.current !== asset.previous)) {
+	        setIsLoading(true);
 	        resetState();
 	        assetNext.current = asset.next;
 	        assetPrev.current = asset.previous;
@@ -9156,6 +9209,7 @@
 	        setSelectedPhotoId(parsedAssetData[0].photoId);
 	        setCurrentAsset(asset);
 	        setAssetData(parsedAssetData);
+	        setIsLoading(false);
 	      }
 
 	      if (asset.label) {
@@ -9205,11 +9259,11 @@
 	    projectId: projectId
 	  }), /*#__PURE__*/React.createElement("div", {
 	    className: "content"
-	  }, /*#__PURE__*/React.createElement(ImageGrid, {
+	  }, !isLoading && /*#__PURE__*/React.createElement(ImageGrid, {
 	    images: assetData,
 	    onClickImage: handleClickImage,
 	    selectedImageIdx: selectedImageIdx
-	  }))));
+	  }), isLoading && /*#__PURE__*/React.createElement("p", null, "Loading..."))));
 	}
 
 	ReactDOM.render( /*#__PURE__*/React.createElement(App, null), document.getElementById('root'));

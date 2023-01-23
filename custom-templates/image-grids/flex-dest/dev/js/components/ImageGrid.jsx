@@ -34,7 +34,7 @@ export default function ImageGrid({ images, onClickImage, selectedImageIdx }) {
       // if the next item is in the next row and off screen, scroll to it
       const { y: nextSiblingY, bottom } = getElement(el.nextSibling.id);
       if (currentY < nextSiblingY && bottom > window.innerHeight) {
-        el.nextSibling.scrollIntoView();
+        el.nextSibling.scrollIntoView(false);
       }
 
       onClickImage(selectedImageIdx + 1);
@@ -58,6 +58,8 @@ export default function ImageGrid({ images, onClickImage, selectedImageIdx }) {
       e.preventDefault();
       const { x: currentX, y: currentY } = getElement(currentId);
 
+      let lastInPrevRow;
+
       // loop backwards until we find the first item above in the same column
       for (let i = selectedImageIdx - 1; i >= 0; i--) {
         const {
@@ -67,17 +69,37 @@ export default function ImageGrid({ images, onClickImage, selectedImageIdx }) {
           top,
         } = getElement(`image-container-${images[i].photoId}`);
 
-        if (currentX === prevX && currentY > prevY) {
-          onClickImage(i);
-          if (top < 0) {
-            el.scrollIntoView();
+        if (currentY > prevY) {
+          if (lastInPrevRow === undefined) {
+            lastInPrevRow = i;
           }
-          break;
+          if (currentX === prevX) {
+            onClickImage(i);
+            if (top < 0) {
+              el.scrollIntoView();
+            }
+            break;
+          }
+        }
+
+        // if we've reached this, then there are grid items in the last row that don't perfectly align
+        // so we take the reference to the last item in the prev row and use that to go to
+        if (i === 0 && lastInPrevRow !== undefined) {
+          const { el: newEl, top: newTop } = getElement(
+            `image-container-${images[lastInPrevRow].photoId}`
+          );
+
+          onClickImage(lastInPrevRow);
+          if (newTop < 0) {
+            newEl.scrollIntoView();
+          }
         }
       }
     } else if (key === 'arrowdown') {
       e.preventDefault();
       const { x: currentX, y: currentY } = getElement(currentId);
+
+      let firstInNextRow;
 
       // loop forward until we find the first item below in the same column
       for (let i = selectedImageIdx + 1; i < images.length; i++) {
@@ -88,22 +110,44 @@ export default function ImageGrid({ images, onClickImage, selectedImageIdx }) {
           bottom,
         } = getElement(`image-container-${images[i].photoId}`);
 
-        if (currentX === nextX && currentY < nextY) {
-          onClickImage(i);
-          if (bottom > window.innerHeight) {
-            el.scrollIntoView();
+        if (currentY < nextY) {
+          if (firstInNextRow === undefined) {
+            firstInNextRow = i;
           }
-          break;
+          if (currentX === nextX) {
+            onClickImage(i);
+            if (bottom > window.innerHeight) {
+              el.scrollIntoView(false);
+            }
+            break;
+          }
+        }
+
+        // if we've reached this, then there are grid items in the last row that don't perfectly align
+        // so we take the reference to the first item in the next row and use that to go to
+        if (i === images.length - 1 && firstInNextRow !== undefined) {
+          const { el: newEl, bottom: newBottom } = getElement(
+            `image-container-${images[firstInNextRow].photoId}`
+          );
+
+          onClickImage(firstInNextRow);
+          if (newBottom > window.innerHeight) {
+            newEl.scrollIntoView(false);
+          }
         }
       }
     } else if (key === ' ') {
+      e.preventDefault();
       setIsPhotoViewerOpen(true);
     }
   };
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeydownEvent);
-    return () => document.removeEventListener('keydown', handleKeydownEvent);
+    return () => {
+      document.removeEventListener('keydown', handleKeydownEvent);
+      setIsPhotoViewerOpen(false);
+    };
   }, [images, selectedImageIdx, handleKeydownEvent]);
 
   const closePhotoViewer = () => {
@@ -125,10 +169,13 @@ export default function ImageGrid({ images, onClickImage, selectedImageIdx }) {
           );
         })}
       </div>
-      {isPhotoViewerOpen && (
+      {isPhotoViewerOpen && !!images[selectedImageIdx] && (
         <Lightbox
+          medium={images[selectedImageIdx].imageSrc}
           large={images[selectedImageIdx].imageSrc}
           onClose={closePhotoViewer}
+          hideDownload
+          showRotate
         />
       )}
     </>

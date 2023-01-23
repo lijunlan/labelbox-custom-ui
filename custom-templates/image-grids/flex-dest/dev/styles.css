@@ -260,3 +260,8 @@ select:focus {
 .bold-text {
   font-weight: bold;
 }
+
+.__react_modal_image__modal_container {
+  left: 360px !important;
+  width: calc(100% - 360px) !important;
+}
