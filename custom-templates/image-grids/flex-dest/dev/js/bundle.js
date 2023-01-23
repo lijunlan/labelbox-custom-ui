@@ -7855,10 +7855,14 @@
 	  var rect = el.getBoundingClientRect();
 	  var x = rect.left + window.scrollX;
 	  var y = rect.top + window.scrollY;
+	  var top = rect.top;
+	  var bottom = rect.bottom;
 	  return {
 	    el: el,
 	    x: x,
-	    y: y
+	    y: y,
+	    top: top,
+	    bottom: bottom
 	  };
 	}
 
@@ -7885,13 +7889,14 @@
 
 	      if (!el.nextSibling) {
 	        return;
-	      } // if the next item is in the next row, scroll to it
+	      } // if the next item is in the next row and off screen, scroll to it
 
 
 	      var _getElement2 = getElement(el.nextSibling.id),
-	          nextSiblingY = _getElement2.y;
+	          nextSiblingY = _getElement2.y,
+	          nextSiblingBottom = _getElement2.bottom;
 
-	      if (currentY < nextSiblingY) {
+	      if (currentY < nextSiblingY && nextSiblingBottom > window.innerHeight) {
 	        el.nextSibling.scrollIntoView();
 	      }
 
@@ -7906,13 +7911,14 @@
 
 	      if (!_el.previousSibling) {
 	        return;
-	      } // if the prev item is in the prev row, scroll to it
+	      } // if the prev item is in the prev row and off screen, scroll to it
 
 
 	      var _getElement4 = getElement(_el.previousSibling.id),
-	          prevSiblingY = _getElement4.y;
+	          prevSiblingY = _getElement4.y,
+	          prevSiblingTop = _getElement4.top;
 
-	      if (_currentY > prevSiblingY) {
+	      if (_currentY > prevSiblingY && prevSiblingTop < 0) {
 	        _el.previousSibling.scrollIntoView();
 	      }
 
@@ -7921,8 +7927,8 @@
 	      e.preventDefault();
 
 	      var _getElement5 = getElement(currentId),
-	          currentX = _getElement5.currentX,
-	          _currentY2 = _getElement5.currentY; // loop backwards until we find the first item above in the same column
+	          currentX = _getElement5.x,
+	          _currentY2 = _getElement5.y; // loop backwards until we find the first item above in the same column
 
 
 	      for (var i = selectedImageIdx - 1; i >= 0; i--) {
@@ -7943,8 +7949,8 @@
 	      e.preventDefault();
 
 	      var _getElement7 = getElement(currentId),
-	          _currentX = _getElement7.currentX,
-	          _currentY3 = _getElement7.currentY; // loop forward until we find the first item below in the same column
+	          _currentX = _getElement7.x,
+	          _currentY3 = _getElement7.y; // loop forward until we find the first item below in the same column
 
 
 	      for (var _i = selectedImageIdx + 1; _i < images.length; _i++) {
