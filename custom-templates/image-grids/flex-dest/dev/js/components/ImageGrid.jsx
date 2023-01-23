@@ -144,10 +144,7 @@ export default function ImageGrid({ images, onClickImage, selectedImageIdx }) {
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeydownEvent);
-    return () => {
-      document.removeEventListener('keydown', handleKeydownEvent);
-      setIsPhotoViewerOpen(false);
-    };
+    return () => document.removeEventListener('keydown', handleKeydownEvent);
   }, [images, selectedImageIdx, handleKeydownEvent]);
 
   const closePhotoViewer = () => {
