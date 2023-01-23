@@ -18,29 +18,38 @@ export default function Header({ currentAsset, hasPrev, hasNext, projectId }) {
   }, [currentAsset]);
 
   return (
-    <div className="header-container">
-      <i className="material-icons home-icon" onClick={handleGoHome}>
-        home
-      </i>
-      <i
-        className={`material-icons back-icon ${
-          hasPrev ? 'button-default' : ''
-        }`}
-        onClick={handleGoBack}
-      >
-        keyboard_arrow_left
-      </i>
-      <div className="header-title" id="externalid">
-        Label this asset
+    <>
+      <div className="header-container">
+        <i className="material-icons home-icon" onClick={handleGoHome}>
+          home
+        </i>
+        <i
+          className={`material-icons back-icon ${
+            hasPrev ? 'button-default' : ''
+          }`}
+          onClick={handleGoBack}
+        >
+          keyboard_arrow_left
+        </i>
+        <div className="header-title" id="externalid">
+          Label this asset
+        </div>
+        <i
+          className={`material-icons next-icon ${
+            hasNext ? 'button-default' : ''
+          }`}
+          onClick={hasNext ? handleGoNext : undefined}
+        >
+          keyboard_arrow_right
+        </i>
       </div>
-      <i
-        className={`material-icons next-icon ${
-          hasNext ? 'button-default' : ''
-        }`}
-        onClick={hasNext ? handleGoNext : undefined}
-      >
-        keyboard_arrow_right
-      </i>
-    </div>
+      <div className="keyboard-shortcuts">
+        <span className="bold-text">Set Quality:</span> 1-5 | <span>Skip:</span>{' '}
+        s | <span className="bold-text">Submit:</span> Enter |{' '}
+        <span className="bold-text">Select Photo:</span> Arrows |{' '}
+        <span className="bold-text">View Photo:</span> Space |{' '}
+        <span className="bold-text">Close Photo:</span> Esc
+      </div>
+    </>
   );
 }
