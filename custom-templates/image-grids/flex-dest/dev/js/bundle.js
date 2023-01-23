@@ -9130,7 +9130,9 @@
 	    className: "keyboard-shortcuts"
 	  }, /*#__PURE__*/React.createElement("span", {
 	    className: "bold-text"
-	  }, "Set Quality:"), " 1-5 | ", /*#__PURE__*/React.createElement("span", null, "Skip:"), ' ', "s | ", /*#__PURE__*/React.createElement("span", {
+	  }, "Set Quality:"), " 1-5 |", ' ', /*#__PURE__*/React.createElement("span", {
+	    className: "bold-text"
+	  }, "Skip:"), " s |", ' ', /*#__PURE__*/React.createElement("span", {
 	    className: "bold-text"
 	  }, "Submit:"), " Enter |", ' ', /*#__PURE__*/React.createElement("span", {
 	    className: "bold-text"

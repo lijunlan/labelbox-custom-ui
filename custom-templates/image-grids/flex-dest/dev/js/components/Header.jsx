@@ -44,8 +44,9 @@ export default function Header({ currentAsset, hasPrev, hasNext, projectId }) {
         </i>
       </div>
       <div className="keyboard-shortcuts">
-        <span className="bold-text">Set Quality:</span> 1-5 | <span>Skip:</span>{' '}
-        s | <span className="bold-text">Submit:</span> Enter |{' '}
+        <span className="bold-text">Set Quality:</span> 1-5 |{' '}
+        <span className="bold-text">Skip:</span> s |{' '}
+        <span className="bold-text">Submit:</span> Enter |{' '}
         <span className="bold-text">Select Photo:</span> Arrows |{' '}
         <span className="bold-text">View Photo:</span> Space |{' '}
         <span className="bold-text">Close Photo:</span> Esc
