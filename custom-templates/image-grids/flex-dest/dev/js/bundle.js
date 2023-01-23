@@ -9177,7 +9177,7 @@
 	      return;
 	    }
 
-	    var key = e.key.toLowercase();
+	    var key = e.key.toLowerCase();
 	    var currentId = "image-container-".concat(images[selectedImageIdx].photoId);
 
 	    if (key === 'arrowright') {

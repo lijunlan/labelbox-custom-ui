@@ -14,7 +14,7 @@ export default function ImageGrid({ images, onClickImage, selectedImageIdx }) {
     if (images.length === 0) {
       return;
     }
-    const key = e.key.toLowercase();
+    const key = e.key.toLowerCase();
     const currentId = `image-container-${images[selectedImageIdx].photoId}`;
     if (key === 'arrowright') {
       e.preventDefault();
