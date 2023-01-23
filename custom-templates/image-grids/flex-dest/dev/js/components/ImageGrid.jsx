@@ -29,10 +29,8 @@ export default function ImageGrid({ images, onClickImage, selectedImageIdx }) {
       }
 
       // if the next item is in the next row and off screen, scroll to it
-      const { y: nextSiblingY, bottom: nextSiblingBottom } = getElement(
-        el.nextSibling.id
-      );
-      if (currentY < nextSiblingY && nextSiblingBottom > window.innerHeight) {
+      const { y: nextSiblingY, bottom } = getElement(el.nextSibling.id);
+      if (currentY < nextSiblingY && bottom > window.innerHeight) {
         el.nextSibling.scrollIntoView();
       }
 
@@ -47,10 +45,8 @@ export default function ImageGrid({ images, onClickImage, selectedImageIdx }) {
       }
 
       // if the prev item is in the prev row and off screen, scroll to it
-      const { y: prevSiblingY, top: prevSiblingTop } = getElement(
-        el.previousSibling.id
-      );
-      if (currentY > prevSiblingY && prevSiblingTop < 0) {
+      const { y: prevSiblingY, top } = getElement(el.previousSibling.id);
+      if (currentY > prevSiblingY && top < 0) {
         el.previousSibling.scrollIntoView();
       }
 
@@ -65,11 +61,14 @@ export default function ImageGrid({ images, onClickImage, selectedImageIdx }) {
           el,
           x: prevX,
           y: prevY,
+          top,
         } = getElement(`image-container-${images[i].photoId}`);
 
         if (currentX === prevX && currentY > prevY) {
           onClickImage(i);
-          el.scrollIntoView();
+          if (top < 0) {
+            el.scrollIntoView();
+          }
           break;
         }
       }
@@ -83,11 +82,14 @@ export default function ImageGrid({ images, onClickImage, selectedImageIdx }) {
           el,
           x: nextX,
           y: nextY,
+          bottom,
         } = getElement(`image-container-${images[i].photoId}`);
 
         if (currentX === nextX && currentY < nextY) {
           onClickImage(i);
-          el.scrollIntoView();
+          if (bottom > window.innerHeight) {
+            el.scrollIntoView();
+          }
           break;
         }
       }
