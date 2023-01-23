@@ -8944,7 +8944,8 @@
 	  var listingId = _ref.listingId,
 	      photoId = _ref.photoId,
 	      labeledPhotoId = _ref.labeledPhotoId,
-	      labeledPhotoQualityTier = _ref.labeledPhotoQualityTier;
+	      labeledPhotoQualityTier = _ref.labeledPhotoQualityTier,
+	      onSubmitOrSkip = _ref.onSubmitOrSkip;
 
 	  var _useState = react.exports.useState('Most Inspiring'),
 	      _useState2 = _slicedToArray(_useState, 2),
@@ -8967,6 +8968,7 @@
 
 	  var handleSkip = function handleSkip(e) {
 	    setIsSkipping(true);
+	    onSubmitOrSkip();
 	    e.preventDefault();
 	    Labelbox.skip().then(function () {
 	      setPhotoQualityTier('Most Inspiring');
@@ -8978,6 +8980,7 @@
 
 	  var handleSubmit = function handleSubmit(e) {
 	    setIsSaving(true);
+	    onSubmitOrSkip();
 	    e.preventDefault();
 	    var formattedData = {
 	      id_listing: listingId,
@@ -9189,6 +9192,11 @@
 	      isLoading = _useState16[0],
 	      setIsLoading = _useState16[1];
 
+	  var _useState17 = react.exports.useState(true),
+	      _useState18 = _slicedToArray(_useState17, 2),
+	      shouldAllowImageSelection = _useState18[0],
+	      setShouldAllowImageSelection = _useState18[1];
+
 	  var resetState = function resetState() {
 	    setLabeledPhotoId();
 	    setLabeledPhotoQualityTier();
@@ -9223,6 +9231,7 @@
 	        setCurrentAsset(asset);
 	        setAssetData(parsedAssetData);
 	        setIsLoading(false);
+	        setShouldAllowImageSelection(true);
 	      }
 
 	      if (asset.label) {
@@ -9248,9 +9257,16 @@
 	    }
 	  }, [currentAsset]);
 	  var handleClickImage = react.exports.useCallback(function (imageIdx) {
-	    setSelectedImageIdx(imageIdx);
-	    setSelectedPhotoId(assetData[imageIdx].photoId);
-	  }, [assetData, setSelectedImageIdx, setSelectedPhotoId]);
+	    if (shouldAllowImageSelection) {
+	      setSelectedImageIdx(imageIdx);
+	      setSelectedPhotoId(assetData[imageIdx].photoId);
+	    }
+	  }, [assetData, setSelectedImageIdx, setSelectedPhotoId, shouldAllowImageSelection]);
+
+	  var onSubmitOrSkip = function onSubmitOrSkip() {
+	    setShouldAllowImageSelection(false);
+	  };
+
 	  react.exports.useEffect(function () {
 	    Labelbox.currentAsset().subscribe(function (asset) {
 	      handleAssetChange(asset);
@@ -9262,7 +9278,8 @@
 	    listingId: listingId,
 	    photoId: selectedPhotoId,
 	    labeledPhotoId: labeledPhotoId,
-	    labeledPhotoQualityTier: labeledPhotoQualityTier
+	    labeledPhotoQualityTier: labeledPhotoQualityTier,
+	    onSubmitOrSkip: onSubmitOrSkip
 	  })), /*#__PURE__*/React.createElement("div", {
 	    className: "flex-grow flex-column"
 	  }, /*#__PURE__*/React.createElement(Header, {

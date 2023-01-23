@@ -5,6 +5,7 @@ export default function LeftPanel({
   photoId,
   labeledPhotoId,
   labeledPhotoQualityTier,
+  onSubmitOrSkip,
 }) {
   const [photoQualityTier, setPhotoQualityTier] = useState('Most Inspiring');
   const [isSaving, setIsSaving] = useState(false);
@@ -19,6 +20,8 @@ export default function LeftPanel({
 
   const handleSkip = (e) => {
     setIsSkipping(true);
+    onSubmitOrSkip();
+
     e.preventDefault();
     Labelbox.skip().then(() => {
       setPhotoQualityTier('Most Inspiring');
@@ -30,6 +33,8 @@ export default function LeftPanel({
 
   const handleSubmit = (e) => {
     setIsSaving(true);
+    onSubmitOrSkip();
+
     e.preventDefault();
     const formattedData = {
       id_listing: listingId,
