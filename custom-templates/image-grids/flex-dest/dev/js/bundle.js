@@ -9272,7 +9272,7 @@
 	  react.exports.useEffect(function () {
 	    document.addEventListener('keydown', handleKeydownEvent);
 	    return function () {
-	      return document.removeEventListener('keyup', handleKeydownEvent);
+	      return document.removeEventListener('keydown', handleKeydownEvent);
 	    };
 	  }, [images, selectedImageIdx, handleKeydownEvent]);
 	  return /*#__PURE__*/React.createElement("div", {
