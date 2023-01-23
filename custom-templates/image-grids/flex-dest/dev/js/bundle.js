@@ -9130,17 +9130,29 @@
 	    className: "keyboard-shortcuts"
 	  }, /*#__PURE__*/React.createElement("span", {
 	    className: "bold-text"
-	  }, "Set Quality:"), " 1-5 |", ' ', /*#__PURE__*/React.createElement("span", {
+	  }, "Select Photo:"), ' ', /*#__PURE__*/React.createElement("span", {
+	    className: "italic-text"
+	  }, "Arrows"), " |", ' ', /*#__PURE__*/React.createElement("span", {
 	    className: "bold-text"
-	  }, "Skip:"), " s |", ' ', /*#__PURE__*/React.createElement("span", {
+	  }, "View Photo:"), ' ', /*#__PURE__*/React.createElement("span", {
+	    className: "italic-text"
+	  }, "Space"), " |", ' ', /*#__PURE__*/React.createElement("span", {
 	    className: "bold-text"
-	  }, "Submit:"), " Enter |", ' ', /*#__PURE__*/React.createElement("span", {
+	  }, "Close Photo:"), ' ', /*#__PURE__*/React.createElement("span", {
+	    className: "italic-text"
+	  }, "Esc"), " |", ' ', /*#__PURE__*/React.createElement("span", {
 	    className: "bold-text"
-	  }, "Select Photo:"), " Arrows |", ' ', /*#__PURE__*/React.createElement("span", {
+	  }, "Set Quality:"), ' ', /*#__PURE__*/React.createElement("span", {
+	    className: "italic-text"
+	  }, "1-5"), " |", ' ', /*#__PURE__*/React.createElement("span", {
 	    className: "bold-text"
-	  }, "View Photo:"), " Space |", ' ', /*#__PURE__*/React.createElement("span", {
+	  }, "Submit:"), ' ', /*#__PURE__*/React.createElement("span", {
+	    className: "italic-text"
+	  }, "Enter"), " |", ' ', /*#__PURE__*/React.createElement("span", {
 	    className: "bold-text"
-	  }, "Close Photo:"), " Esc"));
+	  }, "Skip:"), ' ', /*#__PURE__*/React.createElement("span", {
+	    className: "italic-text"
+	  }, "s")));
 	}
 
 	function App() {
