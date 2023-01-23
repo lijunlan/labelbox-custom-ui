@@ -18,6 +18,8 @@ export default function App() {
   const assetNext = useRef();
   const assetPrev = useRef();
   const [isLoading, setIsLoading] = useState(true);
+  const [shouldAllowImageSelection, setShouldAllowImageSelection] =
+    useState(true);
 
   const resetState = () => {
     setLabeledPhotoId();
@@ -68,6 +70,7 @@ export default function App() {
           setAssetData(parsedAssetData);
 
           setIsLoading(false);
+          setShouldAllowImageSelection(true);
         }
 
         if (asset.label) {
@@ -95,11 +98,22 @@ export default function App() {
 
   const handleClickImage = useCallback(
     (imageIdx) => {
-      setSelectedImageIdx(imageIdx);
-      setSelectedPhotoId(assetData[imageIdx].photoId);
+      if (shouldAllowImageSelection) {
+        setSelectedImageIdx(imageIdx);
+        setSelectedPhotoId(assetData[imageIdx].photoId);
+      }
     },
-    [assetData, setSelectedImageIdx, setSelectedPhotoId]
+    [
+      assetData,
+      setSelectedImageIdx,
+      setSelectedPhotoId,
+      shouldAllowImageSelection,
+    ]
   );
+
+  const onSubmitOrSkip = () => {
+    setShouldAllowImageSelection(false);
+  };
 
   useEffect(() => {
     Labelbox.currentAsset().subscribe((asset) => {
@@ -116,6 +130,7 @@ export default function App() {
             photoId={selectedPhotoId}
             labeledPhotoId={labeledPhotoId}
             labeledPhotoQualityTier={labeledPhotoQualityTier}
+            onSubmitOrSkip={onSubmitOrSkip}
           />
         }
       </div>
