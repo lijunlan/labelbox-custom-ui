@@ -17,6 +17,7 @@ export default function App() {
   const [labeledPhotoQualityTier, setLabeledPhotoQualityTier] = useState();
   const assetNext = useRef();
   const assetPrev = useRef();
+  const [isLoading, setIsLoading] = useState(true);
 
   const resetState = () => {
     setLabeledPhotoId();
@@ -44,6 +45,7 @@ export default function App() {
           (assetNext.current !== asset.next ||
             assetPrev.current !== asset.previous)
         ) {
+          setIsLoading(true);
           resetState();
 
           assetNext.current = asset.next;
@@ -64,6 +66,8 @@ export default function App() {
 
           setCurrentAsset(asset);
           setAssetData(parsedAssetData);
+
+          setIsLoading(false);
         }
 
         if (asset.label) {
@@ -123,11 +127,14 @@ export default function App() {
           projectId={projectId}
         />
         <div className="content">
-          <ImageGrid
-            images={assetData}
-            onClickImage={handleClickImage}
-            selectedImageIdx={selectedImageIdx}
-          />
+          {!isLoading && (
+            <ImageGrid
+              images={assetData}
+              onClickImage={handleClickImage}
+              selectedImageIdx={selectedImageIdx}
+            />
+          )}
+          {isLoading && <p>Loading...</p>}
         </div>
       </div>
     </>
