@@ -9112,7 +9112,7 @@
 	      Labelbox.setLabelAsCurrentAsset(currentAsset.next);
 	    }
 	  }, [currentAsset]);
-	  return /*#__PURE__*/React.createElement("div", {
+	  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
 	    className: "header-container"
 	  }, /*#__PURE__*/React.createElement("i", {
 	    className: "material-icons home-icon",
@@ -9126,7 +9126,19 @@
 	  }, "Label this asset"), /*#__PURE__*/React.createElement("i", {
 	    className: "material-icons next-icon ".concat(hasNext ? 'button-default' : ''),
 	    onClick: hasNext ? handleGoNext : undefined
-	  }, "keyboard_arrow_right"));
+	  }, "keyboard_arrow_right")), /*#__PURE__*/React.createElement("div", {
+	    className: "keyboard-shortcuts"
+	  }, /*#__PURE__*/React.createElement("span", {
+	    className: "bold-text"
+	  }, "Set Quality:"), " 1-5 | ", /*#__PURE__*/React.createElement("span", null, "Skip:"), ' ', "s | ", /*#__PURE__*/React.createElement("span", {
+	    className: "bold-text"
+	  }, "Submit:"), " Enter |", ' ', /*#__PURE__*/React.createElement("span", {
+	    className: "bold-text"
+	  }, "Select Photo:"), " Arrows |", ' ', /*#__PURE__*/React.createElement("span", {
+	    className: "bold-text"
+	  }, "View Photo:"), " Space |", ' ', /*#__PURE__*/React.createElement("span", {
+	    className: "bold-text"
+	  }, "Close Photo:"), " Esc"));
 	}
 
 	function App() {
