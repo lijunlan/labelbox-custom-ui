@@ -9155,10 +9155,126 @@
 	  }), /*#__PURE__*/React.createElement("span", null, imgObj.caption));
 	}
 
+	function getElement(id) {
+	  var el = document.getElementById(id);
+	  var rect = el.getBoundingClientRect();
+	  var x = rect.left + window.scrollX;
+	  var y = rect.top + window.scrollY;
+	  return {
+	    el: el,
+	    x: x,
+	    y: y
+	  };
+	}
+
 	function ImageGrid(_ref) {
 	  var images = _ref.images,
 	      _onClickImage = _ref.onClickImage,
 	      selectedImageIdx = _ref.selectedImageIdx;
+
+	  var handleKeydownEvent = function handleKeydownEvent(e) {
+	    if (images.length === 0) {
+	      return;
+	    }
+
+	    var key = e.key.toLowercase();
+	    var currentId = "image-container-".concat(images[selectedImageIdx].photoId);
+
+	    if (key === 'arrowright') {
+	      e.preventDefault();
+
+	      var _getElement = getElement(currentId),
+	          el = _getElement.el,
+	          currentY = _getElement.y; // at the last item in the grid/list
+
+
+	      if (!el.nextSibling) {
+	        return;
+	      } // if the next item is in the next row, scroll to it
+
+
+	      var _getElement2 = getElement(el.nextSibling.id),
+	          nextSiblingY = _getElement2.y;
+
+	      if (currentY < nextSiblingY) {
+	        el.nextSibling.scrollIntoView();
+	      }
+
+	      _onClickImage(selectedImageIdx + 1);
+	    } else if (key === 'arrowleft') {
+	      e.preventDefault();
+
+	      var _getElement3 = getElement(currentId),
+	          _el = _getElement3.el,
+	          _currentY = _getElement3.y; // at the first item in the grid/list
+
+
+	      if (!_el.previousSibling) {
+	        return;
+	      } // if the prev item is in the prev row, scroll to it
+
+
+	      var _getElement4 = getElement(_el.previousSibling.id),
+	          prevSiblingY = _getElement4.y;
+
+	      if (_currentY > prevSiblingY) {
+	        _el.previousSibling.scrollIntoView();
+	      }
+
+	      _onClickImage(selectedImageIdx - 1);
+	    } else if (key === 'arrowup') {
+	      e.preventDefault();
+
+	      var _getElement5 = getElement(currentId),
+	          currentX = _getElement5.currentX,
+	          _currentY2 = _getElement5.currentY; // loop backwards until we find the first item above in the same column
+
+
+	      for (var i = selectedImageIdx - 1; i >= 0; i--) {
+	        var _getElement6 = getElement("image-container-".concat(images[i].photoId)),
+	            _el2 = _getElement6.el,
+	            prevX = _getElement6.x,
+	            prevY = _getElement6.y;
+
+	        if (currentX === prevX && _currentY2 > prevY) {
+	          _onClickImage(i);
+
+	          _el2.scrollIntoView();
+
+	          break;
+	        }
+	      }
+	    } else if (key === 'arrowdown') {
+	      e.preventDefault();
+
+	      var _getElement7 = getElement(currentId),
+	          _currentX = _getElement7.currentX,
+	          _currentY3 = _getElement7.currentY; // loop forward until we find the first item below in the same column
+
+
+	      for (var _i = selectedImageIdx + 1; _i < images.length; _i++) {
+	        var _getElement8 = getElement("image-container-".concat(images[_i].photoId)),
+	            _el3 = _getElement8.el,
+	            nextX = _getElement8.x,
+	            nextY = _getElement8.y;
+
+	        if (_currentX === nextX && _currentY3 < nextY) {
+	          _onClickImage(_i);
+
+	          _el3.scrollIntoView();
+
+	          break;
+	        }
+	      }
+	    }
+	  };
+
+	  react.exports.useEffect(function () {
+	    document.addEventListener('keydown', handleKeydownEvent);
+	    return function () {
+	      return document.removeEventListener('keyup', handleKeydownEvent);
+	    };
+	  }, [images, selectedImageIdx, handleKeydownEvent]);
 	  return /*#__PURE__*/React.createElement("div", {
 	    className: "photo-grid"
 	  }, images.map(function (imgObj, idx) {
