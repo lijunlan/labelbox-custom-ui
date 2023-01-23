@@ -7850,6 +7850,888 @@
 	  }), /*#__PURE__*/React.createElement("span", null, imgObj.caption));
 	}
 
+	function _typeof$2(obj) {
+	  "@babel/helpers - typeof";
+
+	  return _typeof$2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) {
+	    return typeof obj;
+	  } : function (obj) {
+	    return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+	  }, _typeof$2(obj);
+	}
+
+	function _classCallCheck$2(instance, Constructor) {
+	  if (!(instance instanceof Constructor)) {
+	    throw new TypeError("Cannot call a class as a function");
+	  }
+	}
+
+	function _defineProperties$2(target, props) {
+	  for (var i = 0; i < props.length; i++) {
+	    var descriptor = props[i];
+	    descriptor.enumerable = descriptor.enumerable || false;
+	    descriptor.configurable = true;
+	    if ("value" in descriptor) descriptor.writable = true;
+	    Object.defineProperty(target, descriptor.key, descriptor);
+	  }
+	}
+
+	function _createClass$2(Constructor, protoProps, staticProps) {
+	  if (protoProps) _defineProperties$2(Constructor.prototype, protoProps);
+	  if (staticProps) _defineProperties$2(Constructor, staticProps);
+	  Object.defineProperty(Constructor, "prototype", {
+	    writable: false
+	  });
+	  return Constructor;
+	}
+
+	function _inherits$2(subClass, superClass) {
+	  if (typeof superClass !== "function" && superClass !== null) {
+	    throw new TypeError("Super expression must either be null or a function");
+	  }
+
+	  subClass.prototype = Object.create(superClass && superClass.prototype, {
+	    constructor: {
+	      value: subClass,
+	      writable: true,
+	      configurable: true
+	    }
+	  });
+	  Object.defineProperty(subClass, "prototype", {
+	    writable: false
+	  });
+	  if (superClass) _setPrototypeOf$2(subClass, superClass);
+	}
+
+	function _setPrototypeOf$2(o, p) {
+	  _setPrototypeOf$2 = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+	    o.__proto__ = p;
+	    return o;
+	  };
+	  return _setPrototypeOf$2(o, p);
+	}
+
+	function _createSuper$2(Derived) {
+	  var hasNativeReflectConstruct = _isNativeReflectConstruct$2();
+
+	  return function _createSuperInternal() {
+	    var Super = _getPrototypeOf$2(Derived),
+	        result;
+
+	    if (hasNativeReflectConstruct) {
+	      var NewTarget = _getPrototypeOf$2(this).constructor;
+
+	      result = Reflect.construct(Super, arguments, NewTarget);
+	    } else {
+	      result = Super.apply(this, arguments);
+	    }
+
+	    return _possibleConstructorReturn$2(this, result);
+	  };
+	}
+
+	function _possibleConstructorReturn$2(self, call) {
+	  if (call && (_typeof$2(call) === "object" || typeof call === "function")) {
+	    return call;
+	  } else if (call !== void 0) {
+	    throw new TypeError("Derived constructors may only return object or undefined");
+	  }
+
+	  return _assertThisInitialized$2(self);
+	}
+
+	function _assertThisInitialized$2(self) {
+	  if (self === void 0) {
+	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	  }
+
+	  return self;
+	}
+
+	function _isNativeReflectConstruct$2() {
+	  if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+	  if (Reflect.construct.sham) return false;
+	  if (typeof Proxy === "function") return true;
+
+	  try {
+	    Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+	    return true;
+	  } catch (e) {
+	    return false;
+	  }
+	}
+
+	function _getPrototypeOf$2(o) {
+	  _getPrototypeOf$2 = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) {
+	    return o.__proto__ || Object.getPrototypeOf(o);
+	  };
+	  return _getPrototypeOf$2(o);
+	}
+
+	function appendStyle(id, css) {
+	  if (!document.head.querySelector("#" + id)) {
+	    var node = document.createElement("style");
+	    node.textContent = css;
+	    node.type = "text/css";
+	    node.id = id;
+	    document.head.appendChild(node);
+	  }
+	}
+
+	var StyleInjector = /*#__PURE__*/function (_Component) {
+	  _inherits$2(StyleInjector, _Component);
+
+	  var _super = _createSuper$2(StyleInjector);
+
+	  function StyleInjector() {
+	    _classCallCheck$2(this, StyleInjector);
+
+	    return _super.apply(this, arguments);
+	  }
+
+	  _createClass$2(StyleInjector, [{
+	    key: "componentDidMount",
+	    value: function componentDidMount() {
+	      appendStyle(this.props.name, this.props.css);
+	    }
+	  }, {
+	    key: "componentWillUnmount",
+	    value: function componentWillUnmount() {
+	      var node = document.getElementById(this.props.name);
+	      node.parentNode.removeChild(node);
+	    }
+	  }, {
+	    key: "render",
+	    value: function render() {
+	      return null;
+	    }
+	  }]);
+
+	  return StyleInjector;
+	}(react.exports.Component);
+	var lightboxStyles = function lightboxStyles(_ref) {
+	  var imageBackgroundColor = _ref.imageBackgroundColor;
+	  return "\n  body {\n    overflow: hidden;\n  }\n\n  .__react_modal_image__modal_container {\n    position: fixed;\n    z-index: 5000;\n    left: 0;\n    top: 0;\n    width: 100%;\n    height: 100%;\n    background-color: rgba(0, 0, 0, 0.8);\n    touch-action: none;\n    overflow: hidden;\n  }\n\n  .__react_modal_image__modal_content {\n    position: relative;\n    height: 100%;\n    width: 100%;\n  }\n\n  .__react_modal_image__modal_content img, \n  .__react_modal_image__modal_content svg {\n    position: absolute;\n    top: 50%;\n    left: 50%;\n    transform: translate3d(-50%, -50%, 0);\n    -webkit-transform: translate3d(-50%, -50%, 0);\n    -ms-transform: translate3d(-50%, -50%, 0);\n    overflow: hidden;\n  }\n\n  .__react_modal_image__medium_img {\n    max-width: 98%;\n    max-height: 98%;\n    background-color: ".concat(imageBackgroundColor, ";\n  }\n\n  .__react_modal_image__large_img {\n    cursor: move;\n    background-color: ").concat(imageBackgroundColor, "\n  }\n\n  .__react_modal_image__icon_menu a {\n    display: inline-block;\n    font-size: 40px;\n    cursor: pointer;\n    line-height: 40px;\n    box-sizing: border-box;\n    border: none;\n    padding: 0px 5px 0px 5px;\n    margin-left: 10px;\n    color: white;\n    background-color: rgba(0, 0, 0, 0);\n  }\n\n  .__react_modal_image__icon_menu {\n    display: inline-block;\n    float: right;\n  }\n\n  .__react_modal_image__caption {\n    display: inline-block;\n    color: white;\n    font-size: 120%;\n    padding: 10px;\n    margin: 0;\n  }\n\n  .__react_modal_image__header {\n    position: absolute;\n    top: 0;\n    width: 100%;\n    background-color: rgba(0, 0, 0, 0.7);\n    overflow: hidden;\n  }\n");
+	};
+
+	/* 
+	  Icons from https://material.io/icons/
+	*/
+	var ZoomInIcon = function ZoomInIcon() {
+	  return /*#__PURE__*/React.createElement("svg", {
+	    fill: "#ffffff",
+	    height: "24",
+	    viewBox: "0 0 24 24",
+	    width: "24",
+	    xmlns: "http://www.w3.org/2000/svg"
+	  }, /*#__PURE__*/React.createElement("path", {
+	    d: "M0 0h24v24H0z",
+	    fill: "none"
+	  }), /*#__PURE__*/React.createElement("path", {
+	    d: "M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"
+	  }));
+	};
+	var ZoomOutIcon = function ZoomOutIcon() {
+	  return /*#__PURE__*/React.createElement("svg", {
+	    fill: "#ffffff",
+	    height: "24",
+	    viewBox: "0 0 24 24",
+	    width: "24",
+	    xmlns: "http://www.w3.org/2000/svg"
+	  }, /*#__PURE__*/React.createElement("path", {
+	    d: "M0 0h24v24H0z",
+	    fill: "none"
+	  }), /*#__PURE__*/React.createElement("path", {
+	    d: "M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"
+	  }));
+	};
+	var DownloadIcon = function DownloadIcon() {
+	  return /*#__PURE__*/React.createElement("svg", {
+	    fill: "#ffffff",
+	    height: "24",
+	    viewBox: "0 0 24 24",
+	    width: "24",
+	    xmlns: "http://www.w3.org/2000/svg"
+	  }, /*#__PURE__*/React.createElement("path", {
+	    d: "M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
+	  }), /*#__PURE__*/React.createElement("path", {
+	    d: "M0 0h24v24H0z",
+	    fill: "none"
+	  }));
+	};
+	var CloseIcon = function CloseIcon() {
+	  return /*#__PURE__*/React.createElement("svg", {
+	    fill: "#ffffff",
+	    height: "24",
+	    viewBox: "0 0 24 24",
+	    width: "24",
+	    xmlns: "http://www.w3.org/2000/svg"
+	  }, /*#__PURE__*/React.createElement("path", {
+	    d: "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+	  }), /*#__PURE__*/React.createElement("path", {
+	    d: "M0 0h24v24H0z",
+	    fill: "none"
+	  }));
+	};
+	var SpinnerIcon = function SpinnerIcon() {
+	  return /*#__PURE__*/React.createElement("svg", {
+	    fill: "#ffffff",
+	    height: "48",
+	    viewBox: "0 0 24 24",
+	    width: "48",
+	    xmlns: "http://www.w3.org/2000/svg"
+	  }, /*#__PURE__*/React.createElement("path", {
+	    d: "M6 2v6h.01L6 8.01 10 12l-4 4 .01.01H6V22h12v-5.99h-.01L18 16l-4-4 4-3.99-.01-.01H18V2H6zm10 14.5V20H8v-3.5l4-4 4 4zm-4-5l-4-4V4h8v3.5l-4 4z"
+	  }), /*#__PURE__*/React.createElement("path", {
+	    d: "M0 0h24v24H0V0z",
+	    fill: "none"
+	  }));
+	};
+	var RotateIcon = function RotateIcon() {
+	  return /*#__PURE__*/React.createElement("svg", {
+	    fill: "#ffffff",
+	    width: "24",
+	    height: "24",
+	    viewBox: "0 0 24 24",
+	    xmlns: "http://www.w3.org/2000/svg"
+	  }, /*#__PURE__*/React.createElement("path", {
+	    fill: "none",
+	    d: "M0 0h24v24H0V0zm0 0h24v24H0V0z"
+	  }), /*#__PURE__*/React.createElement("path", {
+	    d: "M7.47 21.49C4.2 19.93 1.86 16.76 1.5 13H0c.51 6.16 5.66 11 11.95 11 .23 0 .44-.02.66-.03L8.8 20.15l-1.33 1.34zM12.05 0c-.23 0-.44.02-.66.04l3.81 3.81 1.33-1.33C19.8 4.07 22.14 7.24 22.5 11H24c-.51-6.16-5.66-11-11.95-11zM16 14h2V8c0-1.11-.9-2-2-2h-6v2h6v6zm-8 2V4H6v2H4v2h2v8c0 1.1.89 2 2 2h8v2h2v-2h2v-2H8z"
+	  }));
+	};
+
+	function isSameOrigin(href) {
+	  // @ts-ignore
+	  return document.location.hostname !== new URL(href, document.location).hostname;
+	}
+	/**
+	 * Triggers image download from cross origin URLs
+	 * 
+	 * `<a href="..." download>foo</a> works only for same-origin URLs.
+	 * Further info: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#attr-download
+	 */
+
+
+	var crossOriginDownload = function crossOriginDownload(href) {
+	  return function (event) {
+	    if (!isSameOrigin(href)) {
+	      // native download will be triggered by `download` attribute
+	      return;
+	    } // else proceed to use `fetch` for cross origin image download
+
+
+	    event.preventDefault();
+	    fetch(href).then(function (res) {
+	      if (!res.ok) {
+	        console.error("Failed to download image, HTTP status " + res.status + " from " + href);
+	      }
+
+	      return res.blob().then(function (blob) {
+	        var tmpAnchor = document.createElement("a");
+	        tmpAnchor.setAttribute("download", href.split("/").pop());
+	        tmpAnchor.href = URL.createObjectURL(blob);
+	        tmpAnchor.click();
+	      });
+	    })["catch"](function (err) {
+	      console.error(err);
+	      console.error("Failed to download image from " + href);
+	    });
+	  };
+	};
+
+	var Header$1 = function Header(_ref) {
+	  var image = _ref.image,
+	      alt = _ref.alt,
+	      zoomed = _ref.zoomed,
+	      toggleZoom = _ref.toggleZoom,
+	      toggleRotate = _ref.toggleRotate,
+	      onClose = _ref.onClose,
+	      enableDownload = _ref.enableDownload,
+	      enableZoom = _ref.enableZoom,
+	      enableRotate = _ref.enableRotate;
+	  return /*#__PURE__*/React.createElement("div", {
+	    className: "__react_modal_image__header"
+	  }, /*#__PURE__*/React.createElement("span", {
+	    className: "__react_modal_image__icon_menu"
+	  }, enableDownload && /*#__PURE__*/React.createElement("a", {
+	    href: image,
+	    download: true,
+	    onClick: crossOriginDownload(image)
+	  }, /*#__PURE__*/React.createElement(DownloadIcon, null)), enableZoom && /*#__PURE__*/React.createElement("a", {
+	    onClick: toggleZoom
+	  }, zoomed ? /*#__PURE__*/React.createElement(ZoomOutIcon, null) : /*#__PURE__*/React.createElement(ZoomInIcon, null)), enableRotate && /*#__PURE__*/React.createElement("a", {
+	    onClick: toggleRotate
+	  }, /*#__PURE__*/React.createElement(RotateIcon, null)), /*#__PURE__*/React.createElement("a", {
+	    onClick: onClose
+	  }, /*#__PURE__*/React.createElement(CloseIcon, null))), alt && /*#__PURE__*/React.createElement("span", {
+	    className: "__react_modal_image__caption"
+	  }, alt));
+	};
+
+	function _typeof$1(obj) {
+	  "@babel/helpers - typeof";
+
+	  return _typeof$1 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) {
+	    return typeof obj;
+	  } : function (obj) {
+	    return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+	  }, _typeof$1(obj);
+	}
+
+	function _classCallCheck$1(instance, Constructor) {
+	  if (!(instance instanceof Constructor)) {
+	    throw new TypeError("Cannot call a class as a function");
+	  }
+	}
+
+	function _defineProperties$1(target, props) {
+	  for (var i = 0; i < props.length; i++) {
+	    var descriptor = props[i];
+	    descriptor.enumerable = descriptor.enumerable || false;
+	    descriptor.configurable = true;
+	    if ("value" in descriptor) descriptor.writable = true;
+	    Object.defineProperty(target, descriptor.key, descriptor);
+	  }
+	}
+
+	function _createClass$1(Constructor, protoProps, staticProps) {
+	  if (protoProps) _defineProperties$1(Constructor.prototype, protoProps);
+	  if (staticProps) _defineProperties$1(Constructor, staticProps);
+	  Object.defineProperty(Constructor, "prototype", {
+	    writable: false
+	  });
+	  return Constructor;
+	}
+
+	function _inherits$1(subClass, superClass) {
+	  if (typeof superClass !== "function" && superClass !== null) {
+	    throw new TypeError("Super expression must either be null or a function");
+	  }
+
+	  subClass.prototype = Object.create(superClass && superClass.prototype, {
+	    constructor: {
+	      value: subClass,
+	      writable: true,
+	      configurable: true
+	    }
+	  });
+	  Object.defineProperty(subClass, "prototype", {
+	    writable: false
+	  });
+	  if (superClass) _setPrototypeOf$1(subClass, superClass);
+	}
+
+	function _setPrototypeOf$1(o, p) {
+	  _setPrototypeOf$1 = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+	    o.__proto__ = p;
+	    return o;
+	  };
+	  return _setPrototypeOf$1(o, p);
+	}
+
+	function _createSuper$1(Derived) {
+	  var hasNativeReflectConstruct = _isNativeReflectConstruct$1();
+
+	  return function _createSuperInternal() {
+	    var Super = _getPrototypeOf$1(Derived),
+	        result;
+
+	    if (hasNativeReflectConstruct) {
+	      var NewTarget = _getPrototypeOf$1(this).constructor;
+
+	      result = Reflect.construct(Super, arguments, NewTarget);
+	    } else {
+	      result = Super.apply(this, arguments);
+	    }
+
+	    return _possibleConstructorReturn$1(this, result);
+	  };
+	}
+
+	function _possibleConstructorReturn$1(self, call) {
+	  if (call && (_typeof$1(call) === "object" || typeof call === "function")) {
+	    return call;
+	  } else if (call !== void 0) {
+	    throw new TypeError("Derived constructors may only return object or undefined");
+	  }
+
+	  return _assertThisInitialized$1(self);
+	}
+
+	function _assertThisInitialized$1(self) {
+	  if (self === void 0) {
+	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	  }
+
+	  return self;
+	}
+
+	function _isNativeReflectConstruct$1() {
+	  if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+	  if (Reflect.construct.sham) return false;
+	  if (typeof Proxy === "function") return true;
+
+	  try {
+	    Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+	    return true;
+	  } catch (e) {
+	    return false;
+	  }
+	}
+
+	function _getPrototypeOf$1(o) {
+	  _getPrototypeOf$1 = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) {
+	    return o.__proto__ || Object.getPrototypeOf(o);
+	  };
+	  return _getPrototypeOf$1(o);
+	}
+
+	function _defineProperty$1(obj, key, value) {
+	  if (key in obj) {
+	    Object.defineProperty(obj, key, {
+	      value: value,
+	      enumerable: true,
+	      configurable: true,
+	      writable: true
+	    });
+	  } else {
+	    obj[key] = value;
+	  }
+
+	  return obj;
+	}
+
+	var Image = /*#__PURE__*/function (_Component) {
+	  _inherits$1(Image, _Component);
+
+	  var _super = _createSuper$1(Image);
+
+	  function Image() {
+	    var _this;
+
+	    _classCallCheck$1(this, Image);
+
+	    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    _this = _super.call.apply(_super, [this].concat(args));
+
+	    _defineProperty$1(_assertThisInitialized$1(_this), "state", {
+	      loading: true
+	    });
+
+	    _defineProperty$1(_assertThisInitialized$1(_this), "handleOnLoad", function () {
+	      _this.setState({
+	        loading: false
+	      });
+	    });
+
+	    _defineProperty$1(_assertThisInitialized$1(_this), "handleOnContextMenu", function (event) {
+	      !_this.props.contextMenu && event.preventDefault();
+	    });
+
+	    return _this;
+	  }
+
+	  _createClass$1(Image, [{
+	    key: "render",
+	    value: function render() {
+	      var _this$props = this.props,
+	          id = _this$props.id,
+	          className = _this$props.className,
+	          src = _this$props.src,
+	          style = _this$props.style,
+	          handleDoubleClick = _this$props.handleDoubleClick;
+	      return /*#__PURE__*/React.createElement("div", null, this.state.loading && /*#__PURE__*/React.createElement(SpinnerIcon, null), /*#__PURE__*/React.createElement("img", {
+	        id: id,
+	        className: className,
+	        src: src,
+	        style: style,
+	        onLoad: this.handleOnLoad,
+	        onDoubleClick: handleDoubleClick,
+	        onContextMenu: this.handleOnContextMenu
+	      }));
+	    }
+	  }]);
+
+	  return Image;
+	}(react.exports.Component);
+
+	function _typeof(obj) {
+	  "@babel/helpers - typeof";
+
+	  return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) {
+	    return typeof obj;
+	  } : function (obj) {
+	    return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+	  }, _typeof(obj);
+	}
+
+	function _classCallCheck(instance, Constructor) {
+	  if (!(instance instanceof Constructor)) {
+	    throw new TypeError("Cannot call a class as a function");
+	  }
+	}
+
+	function _defineProperties(target, props) {
+	  for (var i = 0; i < props.length; i++) {
+	    var descriptor = props[i];
+	    descriptor.enumerable = descriptor.enumerable || false;
+	    descriptor.configurable = true;
+	    if ("value" in descriptor) descriptor.writable = true;
+	    Object.defineProperty(target, descriptor.key, descriptor);
+	  }
+	}
+
+	function _createClass(Constructor, protoProps, staticProps) {
+	  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+	  if (staticProps) _defineProperties(Constructor, staticProps);
+	  Object.defineProperty(Constructor, "prototype", {
+	    writable: false
+	  });
+	  return Constructor;
+	}
+
+	function _inherits(subClass, superClass) {
+	  if (typeof superClass !== "function" && superClass !== null) {
+	    throw new TypeError("Super expression must either be null or a function");
+	  }
+
+	  subClass.prototype = Object.create(superClass && superClass.prototype, {
+	    constructor: {
+	      value: subClass,
+	      writable: true,
+	      configurable: true
+	    }
+	  });
+	  Object.defineProperty(subClass, "prototype", {
+	    writable: false
+	  });
+	  if (superClass) _setPrototypeOf(subClass, superClass);
+	}
+
+	function _setPrototypeOf(o, p) {
+	  _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+	    o.__proto__ = p;
+	    return o;
+	  };
+	  return _setPrototypeOf(o, p);
+	}
+
+	function _createSuper(Derived) {
+	  var hasNativeReflectConstruct = _isNativeReflectConstruct();
+
+	  return function _createSuperInternal() {
+	    var Super = _getPrototypeOf(Derived),
+	        result;
+
+	    if (hasNativeReflectConstruct) {
+	      var NewTarget = _getPrototypeOf(this).constructor;
+
+	      result = Reflect.construct(Super, arguments, NewTarget);
+	    } else {
+	      result = Super.apply(this, arguments);
+	    }
+
+	    return _possibleConstructorReturn(this, result);
+	  };
+	}
+
+	function _possibleConstructorReturn(self, call) {
+	  if (call && (_typeof(call) === "object" || typeof call === "function")) {
+	    return call;
+	  } else if (call !== void 0) {
+	    throw new TypeError("Derived constructors may only return object or undefined");
+	  }
+
+	  return _assertThisInitialized(self);
+	}
+
+	function _assertThisInitialized(self) {
+	  if (self === void 0) {
+	    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	  }
+
+	  return self;
+	}
+
+	function _isNativeReflectConstruct() {
+	  if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+	  if (Reflect.construct.sham) return false;
+	  if (typeof Proxy === "function") return true;
+
+	  try {
+	    Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+	    return true;
+	  } catch (e) {
+	    return false;
+	  }
+	}
+
+	function _getPrototypeOf(o) {
+	  _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) {
+	    return o.__proto__ || Object.getPrototypeOf(o);
+	  };
+	  return _getPrototypeOf(o);
+	}
+
+	function _defineProperty(obj, key, value) {
+	  if (key in obj) {
+	    Object.defineProperty(obj, key, {
+	      value: value,
+	      enumerable: true,
+	      configurable: true,
+	      writable: true
+	    });
+	  } else {
+	    obj[key] = value;
+	  }
+
+	  return obj;
+	}
+
+	var Lightbox = /*#__PURE__*/function (_Component) {
+	  _inherits(Lightbox, _Component);
+
+	  var _super = _createSuper(Lightbox);
+
+	  function Lightbox() {
+	    var _this;
+
+	    _classCallCheck(this, Lightbox);
+
+	    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    _this = _super.call.apply(_super, [this].concat(args));
+
+	    _defineProperty(_assertThisInitialized(_this), "state", {
+	      move: {
+	        x: 0,
+	        y: 0
+	      },
+	      moveStart: undefined,
+	      zoomed: false,
+	      rotationDeg: 0
+	    });
+
+	    _defineProperty(_assertThisInitialized(_this), "handleKeyDown", function (event) {
+	      // ESC or ENTER closes the modal
+	      if (event.keyCode === 27 || event.keyCode === 13) {
+	        _this.props.onClose();
+	      }
+	    });
+
+	    _defineProperty(_assertThisInitialized(_this), "getCoordinatesIfOverImg", function (event) {
+	      var point = event.changedTouches ? event.changedTouches[0] : event;
+
+	      if (point.target.id !== "react-modal-image-img") {
+	        // the img was not a target of the coordinates
+	        return;
+	      }
+
+	      var dim = _this.contentEl.getBoundingClientRect();
+
+	      var x = point.clientX - dim.left;
+	      var y = point.clientY - dim.top;
+	      return {
+	        x: x,
+	        y: y
+	      };
+	    });
+
+	    _defineProperty(_assertThisInitialized(_this), "handleMouseDownOrTouchStart", function (event) {
+	      event.preventDefault();
+
+	      if (event.touches && event.touches.length > 1) {
+	        // more than one finger, ignored
+	        return;
+	      }
+
+	      var coords = _this.getCoordinatesIfOverImg(event);
+
+	      if (!coords) {
+	        // click outside the img => close modal
+	        _this.props.onClose();
+	      }
+
+	      if (!_this.state.zoomed) {
+	        // do not allow drag'n'drop if zoom has not been applied
+	        return;
+	      }
+
+	      _this.setState(function (prev) {
+	        return {
+	          moveStart: {
+	            x: coords.x - prev.move.x,
+	            y: coords.y - prev.move.y
+	          }
+	        };
+	      });
+	    });
+
+	    _defineProperty(_assertThisInitialized(_this), "handleMouseMoveOrTouchMove", function (event) {
+	      event.preventDefault();
+
+	      if (!_this.state.zoomed || !_this.state.moveStart) {
+	        // do not allow drag'n'drop if zoom has not been applied
+	        // or if there has not been a click
+	        return;
+	      }
+
+	      if (event.touches && event.touches.length > 1) {
+	        // more than one finger, ignored
+	        return;
+	      }
+
+	      var coords = _this.getCoordinatesIfOverImg(event);
+
+	      if (!coords) {
+	        return;
+	      }
+
+	      _this.setState(function (prev) {
+	        return {
+	          move: {
+	            x: coords.x - prev.moveStart.x,
+	            y: coords.y - prev.moveStart.y
+	          }
+	        };
+	      });
+	    });
+
+	    _defineProperty(_assertThisInitialized(_this), "handleMouseUpOrTouchEnd", function (event) {
+	      _this.setState({
+	        moveStart: undefined
+	      });
+	    });
+
+	    _defineProperty(_assertThisInitialized(_this), "toggleZoom", function (event) {
+	      event.preventDefault();
+
+	      _this.setState(function (prev) {
+	        return {
+	          zoomed: !prev.zoomed,
+	          // reset position if zoomed out
+	          move: prev.zoomed ? {
+	            x: 0,
+	            y: 0
+	          } : prev.move
+	        };
+	      });
+	    });
+
+	    _defineProperty(_assertThisInitialized(_this), "toggleRotate", function (event) {
+	      event.preventDefault();
+	      var rotationDeg = _this.state.rotationDeg;
+
+	      if (rotationDeg === 360) {
+	        _this.setState({
+	          rotationDeg: 90
+	        });
+
+	        return;
+	      }
+
+	      _this.setState(function (prevState) {
+	        return {
+	          rotationDeg: prevState.rotationDeg += 90
+	        };
+	      });
+	    });
+
+	    return _this;
+	  }
+
+	  _createClass(Lightbox, [{
+	    key: "componentDidMount",
+	    value: function componentDidMount() {
+	      document.addEventListener("keydown", this.handleKeyDown, false);
+	    }
+	  }, {
+	    key: "componentWillUnmount",
+	    value: function componentWillUnmount() {
+	      document.removeEventListener("keydown", this.handleKeyDown, false);
+	    }
+	  }, {
+	    key: "render",
+	    value: function render() {
+	      var _this2 = this;
+
+	      var _this$props = this.props,
+	          medium = _this$props.medium,
+	          large = _this$props.large,
+	          alt = _this$props.alt,
+	          onClose = _this$props.onClose,
+	          hideDownload = _this$props.hideDownload,
+	          hideZoom = _this$props.hideZoom,
+	          showRotate = _this$props.showRotate,
+	          _this$props$imageBack = _this$props.imageBackgroundColor,
+	          imageBackgroundColor = _this$props$imageBack === void 0 ? "black" : _this$props$imageBack;
+	      var _this$state = this.state,
+	          move = _this$state.move,
+	          zoomed = _this$state.zoomed,
+	          rotationDeg = _this$state.rotationDeg;
+	      return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(StyleInjector, {
+	        name: "__react_modal_image__lightbox",
+	        css: lightboxStyles({
+	          imageBackgroundColor: imageBackgroundColor
+	        })
+	      }), /*#__PURE__*/React.createElement("div", {
+	        className: "__react_modal_image__modal_container"
+	      }, /*#__PURE__*/React.createElement("div", {
+	        className: "__react_modal_image__modal_content",
+	        onMouseDown: this.handleMouseDownOrTouchStart,
+	        onMouseUp: this.handleMouseUpOrTouchEnd,
+	        onMouseMove: this.handleMouseMoveOrTouchMove,
+	        onTouchStart: this.handleMouseDownOrTouchStart,
+	        onTouchEnd: this.handleMouseUpOrTouchEnd,
+	        onTouchMove: this.handleMouseMoveOrTouchMove,
+	        ref: function ref(el) {
+	          _this2.contentEl = el;
+	        }
+	      }, zoomed && /*#__PURE__*/React.createElement(Image, {
+	        id: "react-modal-image-img",
+	        className: "__react_modal_image__large_img",
+	        src: large || medium,
+	        style: {
+	          transform: "translate3d(-50%, -50%, 0) translate3d(".concat(move.x, "px, ").concat(move.y, "px, 0) rotate(").concat(rotationDeg, "deg)"),
+	          WebkitTransform: "translate3d(-50%, -50%, 0) translate3d(".concat(move.x, "px, ").concat(move.y, "px, 0) rotate(").concat(rotationDeg, "deg)"),
+	          MsTransform: "translate3d(-50%, -50%, 0) translate3d(".concat(move.x, "px, ").concat(move.y, "px, 0) rotate(").concat(rotationDeg, "deg)")
+	        },
+	        handleDoubleClick: this.toggleZoom
+	      }), !zoomed && /*#__PURE__*/React.createElement(Image, {
+	        id: "react-modal-image-img",
+	        className: "__react_modal_image__medium_img",
+	        src: medium || large,
+	        handleDoubleClick: this.toggleZoom,
+	        contextMenu: !medium,
+	        style: {
+	          transform: "translate3d(-50%, -50%, 0) rotate(".concat(rotationDeg, "deg)"),
+	          WebkitTransform: "translate3d(-50%, -50%, 0) rotate(".concat(rotationDeg, "deg)"),
+	          MsTransform: "translate3d(-50%, -50%, 0) rotate(".concat(rotationDeg, "deg)")
+	        }
+	      })), /*#__PURE__*/React.createElement(Header$1, {
+	        image: large || medium,
+	        alt: alt,
+	        zoomed: zoomed,
+	        toggleZoom: this.toggleZoom,
+	        toggleRotate: this.toggleRotate,
+	        onClose: onClose,
+	        enableDownload: !hideDownload,
+	        enableZoom: !hideZoom,
+	        enableRotate: !!showRotate
+	      })));
+	    }
+	  }]);
+
+	  return Lightbox;
+	}(react.exports.Component);
+
 	function getElement(id) {
 	  var el = document.getElementById(id);
 	  var rect = el.getBoundingClientRect();
@@ -7870,6 +8752,11 @@
 	  var images = _ref.images,
 	      _onClickImage = _ref.onClickImage,
 	      selectedImageIdx = _ref.selectedImageIdx;
+
+	  var _useState = react.exports.useState(false),
+	      _useState2 = _slicedToArray(_useState, 2),
+	      isPhotoViewerOpen = _useState2[0],
+	      setIsPhotoViewerOpen = _useState2[1];
 
 	  var handleKeydownEvent = function handleKeydownEvent(e) {
 	    if (images.length === 0) {
@@ -7973,6 +8860,8 @@
 	          break;
 	        }
 	      }
+	    } else if (key === ' ') {
+	      setIsPhotoViewerOpen(true);
 	    }
 	  };
 
@@ -7982,7 +8871,12 @@
 	      return document.removeEventListener('keydown', handleKeydownEvent);
 	    };
 	  }, [images, selectedImageIdx, handleKeydownEvent]);
-	  return /*#__PURE__*/React.createElement("div", {
+
+	  var closePhotoViewer = function closePhotoViewer() {
+	    setIsPhotoViewerOpen(false);
+	  };
+
+	  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
 	    className: "photo-grid"
 	  }, images.map(function (imgObj, idx) {
 	    return /*#__PURE__*/React.createElement(DefaultImage, {
@@ -7994,6 +8888,9 @@
 	        return _onClickImage(photoIdx);
 	      }
 	    });
+	  })), isPhotoViewerOpen && /*#__PURE__*/React.createElement(Lightbox, {
+	    large: images[selectedImageIdx].imageSrc,
+	    onClose: closePhotoViewer
 	  }));
 	}
 
