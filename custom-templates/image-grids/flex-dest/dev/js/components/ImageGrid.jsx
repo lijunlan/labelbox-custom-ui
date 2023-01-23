@@ -6,7 +6,9 @@ function getElement(id) {
   const rect = el.getBoundingClientRect();
   const x = rect.left + window.scrollX;
   const y = rect.top + window.scrollY;
-  return { el, x, y };
+  const top = rect.top;
+  const bottom = rect.bottom;
+  return { el, x, y, top, bottom };
 }
 
 export default function ImageGrid({ images, onClickImage, selectedImageIdx }) {
@@ -26,9 +28,11 @@ export default function ImageGrid({ images, onClickImage, selectedImageIdx }) {
         return;
       }
 
-      // if the next item is in the next row, scroll to it
-      const { y: nextSiblingY } = getElement(el.nextSibling.id);
-      if (currentY < nextSiblingY) {
+      // if the next item is in the next row and off screen, scroll to it
+      const { y: nextSiblingY, bottom: nextSiblingBottom } = getElement(
+        el.nextSibling.id
+      );
+      if (currentY < nextSiblingY && nextSiblingBottom > window.innerHeight) {
         el.nextSibling.scrollIntoView();
       }
 
@@ -42,16 +46,18 @@ export default function ImageGrid({ images, onClickImage, selectedImageIdx }) {
         return;
       }
 
-      // if the prev item is in the prev row, scroll to it
-      const { y: prevSiblingY } = getElement(el.previousSibling.id);
-      if (currentY > prevSiblingY) {
+      // if the prev item is in the prev row and off screen, scroll to it
+      const { y: prevSiblingY, top: prevSiblingTop } = getElement(
+        el.previousSibling.id
+      );
+      if (currentY > prevSiblingY && prevSiblingTop < 0) {
         el.previousSibling.scrollIntoView();
       }
 
       onClickImage(selectedImageIdx - 1);
     } else if (key === 'arrowup') {
       e.preventDefault();
-      const { currentX, currentY } = getElement(currentId);
+      const { x: currentX, y: currentY } = getElement(currentId);
 
       // loop backwards until we find the first item above in the same column
       for (let i = selectedImageIdx - 1; i >= 0; i--) {
@@ -69,7 +75,7 @@ export default function ImageGrid({ images, onClickImage, selectedImageIdx }) {
       }
     } else if (key === 'arrowdown') {
       e.preventDefault();
-      const { currentX, currentY } = getElement(currentId);
+      const { x: currentX, y: currentY } = getElement(currentId);
 
       // loop forward until we find the first item below in the same column
       for (let i = selectedImageIdx + 1; i < images.length; i++) {
