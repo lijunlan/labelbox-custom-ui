@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import DefaultImage from './DefaultImage';
+import { Lightbox } from 'react-modal-image';
 
 function getElement(id) {
   const el = document.getElementById(id);
@@ -12,6 +13,8 @@ function getElement(id) {
 }
 
 export default function ImageGrid({ images, onClickImage, selectedImageIdx }) {
+  const [isPhotoViewerOpen, setIsPhotoViewerOpen] = useState(false);
+
   const handleKeydownEvent = (e) => {
     if (images.length === 0) {
       return;
@@ -93,6 +96,8 @@ export default function ImageGrid({ images, onClickImage, selectedImageIdx }) {
           break;
         }
       }
+    } else if (key === ' ') {
+      setIsPhotoViewerOpen(true);
     }
   };
 
@@ -101,19 +106,31 @@ export default function ImageGrid({ images, onClickImage, selectedImageIdx }) {
     return () => document.removeEventListener('keydown', handleKeydownEvent);
   }, [images, selectedImageIdx, handleKeydownEvent]);
 
+  const closePhotoViewer = () => {
+    setIsPhotoViewerOpen(false);
+  };
+
   return (
-    <div className="photo-grid">
-      {images.map((imgObj, idx) => {
-        return (
-          <DefaultImage
-            imgObj={imgObj}
-            idx={idx}
-            isSelected={selectedImageIdx === idx}
-            key={imgObj.photoId}
-            onClickImage={(photoIdx) => onClickImage(photoIdx)}
-          />
-        );
-      })}
-    </div>
+    <>
+      <div className="photo-grid">
+        {images.map((imgObj, idx) => {
+          return (
+            <DefaultImage
+              imgObj={imgObj}
+              idx={idx}
+              isSelected={selectedImageIdx === idx}
+              key={imgObj.photoId}
+              onClickImage={(photoIdx) => onClickImage(photoIdx)}
+            />
+          );
+        })}
+      </div>
+      {isPhotoViewerOpen && (
+        <Lightbox
+          large={images[selectedImageIdx].imageSrc}
+          onClose={closePhotoViewer}
+        />
+      )}
+    </>
   );
 }
