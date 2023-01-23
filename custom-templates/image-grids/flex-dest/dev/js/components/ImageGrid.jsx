@@ -90,7 +90,7 @@ export default function ImageGrid({ images, onClickImage, selectedImageIdx }) {
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeydownEvent);
-    return () => document.removeEventListener('keyup', handleKeydownEvent);
+    return () => document.removeEventListener('keydown', handleKeydownEvent);
   }, [images, selectedImageIdx, handleKeydownEvent]);
 
   return (
