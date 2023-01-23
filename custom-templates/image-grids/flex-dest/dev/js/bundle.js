@@ -7894,9 +7894,9 @@
 
 	      var _getElement2 = getElement(el.nextSibling.id),
 	          nextSiblingY = _getElement2.y,
-	          nextSiblingBottom = _getElement2.bottom;
+	          bottom = _getElement2.bottom;
 
-	      if (currentY < nextSiblingY && nextSiblingBottom > window.innerHeight) {
+	      if (currentY < nextSiblingY && bottom > window.innerHeight) {
 	        el.nextSibling.scrollIntoView();
 	      }
 
@@ -7916,9 +7916,9 @@
 
 	      var _getElement4 = getElement(_el.previousSibling.id),
 	          prevSiblingY = _getElement4.y,
-	          prevSiblingTop = _getElement4.top;
+	          top = _getElement4.top;
 
-	      if (_currentY > prevSiblingY && prevSiblingTop < 0) {
+	      if (_currentY > prevSiblingY && top < 0) {
 	        _el.previousSibling.scrollIntoView();
 	      }
 
@@ -7935,12 +7935,15 @@
 	        var _getElement6 = getElement("image-container-".concat(images[i].photoId)),
 	            _el2 = _getElement6.el,
 	            prevX = _getElement6.x,
-	            prevY = _getElement6.y;
+	            prevY = _getElement6.y,
+	            _top = _getElement6.top;
 
 	        if (currentX === prevX && _currentY2 > prevY) {
 	          _onClickImage(i);
 
-	          _el2.scrollIntoView();
+	          if (_top < 0) {
+	            _el2.scrollIntoView();
+	          }
 
 	          break;
 	        }
@@ -7957,12 +7960,15 @@
 	        var _getElement8 = getElement("image-container-".concat(images[_i].photoId)),
 	            _el3 = _getElement8.el,
 	            nextX = _getElement8.x,
-	            nextY = _getElement8.y;
+	            nextY = _getElement8.y,
+	            _bottom = _getElement8.bottom;
 
 	        if (_currentX === nextX && _currentY3 < nextY) {
 	          _onClickImage(_i);
 
-	          _el3.scrollIntoView();
+	          if (_bottom > window.innerHeight) {
+	            _el3.scrollIntoView();
+	          }
 
 	          break;
 	        }
