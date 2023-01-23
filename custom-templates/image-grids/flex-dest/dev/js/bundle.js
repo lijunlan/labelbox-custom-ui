@@ -8911,8 +8911,7 @@
 	  react.exports.useEffect(function () {
 	    document.addEventListener('keydown', handleKeydownEvent);
 	    return function () {
-	      document.removeEventListener('keydown', handleKeydownEvent);
-	      setIsPhotoViewerOpen(false);
+	      return document.removeEventListener('keydown', handleKeydownEvent);
 	    };
 	  }, [images, selectedImageIdx, handleKeydownEvent]);
 
