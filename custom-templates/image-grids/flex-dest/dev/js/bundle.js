@@ -8803,9 +8803,10 @@
 
 	      var _getElement4 = getElement(_el.previousSibling.id),
 	          prevSiblingY = _getElement4.y,
-	          top = _getElement4.top;
+	          top = _getElement4.top; // 87 because of the headers
 
-	      if (_currentY > prevSiblingY && top < 0) {
+
+	      if (_currentY > prevSiblingY && top < 87) {
 	        _el.previousSibling.scrollIntoView();
 	      }
 
@@ -8832,9 +8833,10 @@
 	          }
 
 	          if (currentX === prevX) {
-	            _onClickImage(i);
+	            _onClickImage(i); // 87 because of the headers
 
-	            if (_top < 0) {
+
+	            if (_top < 87) {
 	              _el2.scrollIntoView();
 	            }
 
@@ -8849,9 +8851,10 @@
 	              newEl = _getElement7.el,
 	              newTop = _getElement7.top;
 
-	          _onClickImage(lastInPrevRow);
+	          _onClickImage(lastInPrevRow); // 87 because of the headers
 
-	          if (newTop < 0) {
+
+	          if (newTop < 87) {
 	            newEl.scrollIntoView();
 	          }
 	        }

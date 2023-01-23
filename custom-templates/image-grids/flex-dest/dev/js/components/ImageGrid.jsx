@@ -49,7 +49,8 @@ export default function ImageGrid({ images, onClickImage, selectedImageIdx }) {
 
       // if the prev item is in the prev row and off screen, scroll to it
       const { y: prevSiblingY, top } = getElement(el.previousSibling.id);
-      if (currentY > prevSiblingY && top < 0) {
+      // 87 because of the headers
+      if (currentY > prevSiblingY && top < 87) {
         el.previousSibling.scrollIntoView();
       }
 
@@ -75,7 +76,8 @@ export default function ImageGrid({ images, onClickImage, selectedImageIdx }) {
           }
           if (currentX === prevX) {
             onClickImage(i);
-            if (top < 0) {
+            // 87 because of the headers
+            if (top < 87) {
               el.scrollIntoView();
             }
             break;
@@ -90,7 +92,8 @@ export default function ImageGrid({ images, onClickImage, selectedImageIdx }) {
           );
 
           onClickImage(lastInPrevRow);
-          if (newTop < 0) {
+          // 87 because of the headers
+          if (newTop < 87) {
             newEl.scrollIntoView();
           }
         }
