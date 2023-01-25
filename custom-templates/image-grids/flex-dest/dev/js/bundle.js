@@ -9113,14 +9113,14 @@
 	    if (hasPrev) {
 	      Labelbox.setLabelAsCurrentAsset(currentAsset.previous);
 	    }
-	  }, [currentAsset]);
+	  }, [currentAsset, hasPrev]);
 	  var handleGoNext = react.exports.useCallback(function () {
 	    if (hasNext) {
 	      Labelbox.setLabelAsCurrentAsset(currentAsset.next);
 	    } else if (!hasNext && hasLabel) {
 	      Labelbox.fetchNextAssetToLabel();
 	    }
-	  }, [currentAsset]);
+	  }, [currentAsset, hasNext, hasLabel]);
 	  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
 	    className: "header-container"
 	  }, /*#__PURE__*/React.createElement("i", {
