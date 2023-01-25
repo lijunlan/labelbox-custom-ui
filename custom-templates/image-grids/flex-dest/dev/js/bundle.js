@@ -9104,7 +9104,8 @@
 	  var currentAsset = _ref.currentAsset,
 	      hasPrev = _ref.hasPrev,
 	      hasNext = _ref.hasNext,
-	      projectId = _ref.projectId;
+	      projectId = _ref.projectId,
+	      hasLabel = _ref.hasLabel;
 	  var handleGoHome = react.exports.useCallback(function () {
 	    window.location.href = 'https://app.labelbox.com/projects/' + projectId;
 	  }, [projectId]);
@@ -9116,6 +9117,8 @@
 	  var handleGoNext = react.exports.useCallback(function () {
 	    if (hasNext) {
 	      Labelbox.setLabelAsCurrentAsset(currentAsset.next);
+	    } else if (!hasNext && hasLabel) {
+	      Labelbox.fetchNextAssetToLabel();
 	    }
 	  }, [currentAsset]);
 	  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
@@ -9131,7 +9134,7 @@
 	    id: "externalid"
 	  }, "Label this asset"), /*#__PURE__*/React.createElement("i", {
 	    className: "material-icons next-icon ".concat(hasNext ? 'button-default' : ''),
-	    onClick: hasNext ? handleGoNext : undefined
+	    onClick: hasNext || !hasNext && hasLabel ? handleGoNext : undefined
 	  }, "keyboard_arrow_right")), /*#__PURE__*/React.createElement("div", {
 	    className: "keyboard-shortcuts"
 	  }, /*#__PURE__*/React.createElement("span", {
@@ -9216,10 +9219,7 @@
 	  }, [assetData, labeledPhotoId, setSelectedImageIdx]);
 	  var handleAssetChange = react.exports.useCallback(function (asset) {
 	    if (asset) {
-	      // subscription to Labelbox makes increasing network calls as label history gets longer
-	      // to reduce jank from network calls, check the refs to ensure call is only made when relevant
-	      // data has changed
-	      if ((currentAsset === null || currentAsset === void 0 ? void 0 : currentAsset.id) !== asset.id && (currentAsset === null || currentAsset === void 0 ? void 0 : currentAsset.data) !== asset.data && (assetNext.current !== asset.next || assetPrev.current !== asset.previous)) {
+	      if (asset.id !== currentAsset.id) {
 	        setIsLoading(true);
 	        resetState();
 	        assetNext.current = asset.next;
@@ -9289,7 +9289,8 @@
 	    currentAsset: currentAsset,
 	    hasNext: !!(currentAsset !== null && currentAsset !== void 0 && currentAsset.next),
 	    hasPrev: !!(currentAsset !== null && currentAsset !== void 0 && currentAsset.previous),
-	    projectId: projectId
+	    projectId: projectId,
+	    hasLabel: !!labeledPhotoId
 	  }), /*#__PURE__*/React.createElement("div", {
 	    className: "content"
 	  }, !isLoading && /*#__PURE__*/React.createElement(ImageGrid, {
