@@ -9219,7 +9219,7 @@
 	  }, [assetData, labeledPhotoId, setSelectedImageIdx]);
 	  var handleAssetChange = react.exports.useCallback(function (asset) {
 	    if (asset) {
-	      if (asset.id !== currentAsset.id) {
+	      if (asset.id !== (currentAsset === null || currentAsset === void 0 ? void 0 : currentAsset.id)) {
 	        setIsLoading(true);
 	        resetState();
 	        assetNext.current = asset.next;
