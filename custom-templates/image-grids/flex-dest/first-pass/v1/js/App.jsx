@@ -140,6 +140,7 @@ export default function App() {
           hasNext={!!currentAsset?.next}
           hasPrev={!!currentAsset?.previous}
           projectId={projectId}
+          hasLabel={!!labeledPhotoId}
         />
         <div className="content">
           {!isLoading && (
