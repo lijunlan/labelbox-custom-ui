@@ -9104,7 +9104,8 @@
 	  var currentAsset = _ref.currentAsset,
 	      hasPrev = _ref.hasPrev,
 	      hasNext = _ref.hasNext,
-	      projectId = _ref.projectId;
+	      projectId = _ref.projectId,
+	      hasLabel = _ref.hasLabel;
 	  var handleGoHome = react.exports.useCallback(function () {
 	    window.location.href = 'https://app.labelbox.com/projects/' + projectId;
 	  }, [projectId]);
@@ -9112,12 +9113,14 @@
 	    if (hasPrev) {
 	      Labelbox.setLabelAsCurrentAsset(currentAsset.previous);
 	    }
-	  }, [currentAsset]);
+	  }, [currentAsset, hasPrev]);
 	  var handleGoNext = react.exports.useCallback(function () {
 	    if (hasNext) {
 	      Labelbox.setLabelAsCurrentAsset(currentAsset.next);
+	    } else if (!hasNext && hasLabel) {
+	      Labelbox.fetchNextAssetToLabel();
 	    }
-	  }, [currentAsset]);
+	  }, [currentAsset, hasNext, hasLabel]);
 	  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
 	    className: "header-container"
 	  }, /*#__PURE__*/React.createElement("i", {
@@ -9130,8 +9133,8 @@
 	    className: "header-title",
 	    id: "externalid"
 	  }, "Label this asset"), /*#__PURE__*/React.createElement("i", {
-	    className: "material-icons next-icon ".concat(hasNext ? 'button-default' : ''),
-	    onClick: hasNext ? handleGoNext : undefined
+	    className: "material-icons next-icon ".concat(hasNext || !hasNext && hasLabel ? 'button-default' : ''),
+	    onClick: hasNext || !hasNext && hasLabel ? handleGoNext : undefined
 	  }, "keyboard_arrow_right")), /*#__PURE__*/React.createElement("div", {
 	    className: "keyboard-shortcuts"
 	  }, /*#__PURE__*/React.createElement("span", {
@@ -9289,7 +9292,8 @@
 	    currentAsset: currentAsset,
 	    hasNext: !!(currentAsset !== null && currentAsset !== void 0 && currentAsset.next),
 	    hasPrev: !!(currentAsset !== null && currentAsset !== void 0 && currentAsset.previous),
-	    projectId: projectId
+	    projectId: projectId,
+	    hasLabel: !!labeledPhotoId
 	  }), /*#__PURE__*/React.createElement("div", {
 	    className: "content"
 	  }, !isLoading && /*#__PURE__*/React.createElement(ImageGrid, {

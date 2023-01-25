@@ -1,6 +1,12 @@
 import React, { useCallback } from 'react';
 
-export default function Header({ currentAsset, hasPrev, hasNext, projectId }) {
+export default function Header({
+  currentAsset,
+  hasPrev,
+  hasNext,
+  projectId,
+  hasLabel,
+}) {
   const handleGoHome = useCallback(() => {
     window.location.href = 'https://app.labelbox.com/projects/' + projectId;
   }, [projectId]);
@@ -9,13 +15,15 @@ export default function Header({ currentAsset, hasPrev, hasNext, projectId }) {
     if (hasPrev) {
       Labelbox.setLabelAsCurrentAsset(currentAsset.previous);
     }
-  }, [currentAsset]);
+  }, [currentAsset, hasPrev]);
 
   const handleGoNext = useCallback(() => {
     if (hasNext) {
       Labelbox.setLabelAsCurrentAsset(currentAsset.next);
+    } else if (!hasNext && hasLabel) {
+      Labelbox.fetchNextAssetToLabel();
     }
-  }, [currentAsset]);
+  }, [currentAsset, hasNext, hasLabel]);
 
   return (
     <>
@@ -36,9 +44,9 @@ export default function Header({ currentAsset, hasPrev, hasNext, projectId }) {
         </div>
         <i
           className={`material-icons next-icon ${
-            hasNext ? 'button-default' : ''
+            hasNext || (!hasNext && hasLabel) ? 'button-default' : ''
           }`}
-          onClick={hasNext ? handleGoNext : undefined}
+          onClick={hasNext || (!hasNext && hasLabel) ? handleGoNext : undefined}
         >
           keyboard_arrow_right
         </i>
