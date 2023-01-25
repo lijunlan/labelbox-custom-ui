@@ -15,7 +15,7 @@ export default function Header({
     if (hasPrev) {
       Labelbox.setLabelAsCurrentAsset(currentAsset.previous);
     }
-  }, [currentAsset]);
+  }, [currentAsset, hasPrev]);
 
   const handleGoNext = useCallback(() => {
     if (hasNext) {
@@ -23,7 +23,7 @@ export default function Header({
     } else if (!hasNext && hasLabel) {
       Labelbox.fetchNextAssetToLabel();
     }
-  }, [currentAsset]);
+  }, [currentAsset, hasNext, hasLabel]);
 
   return (
     <>
