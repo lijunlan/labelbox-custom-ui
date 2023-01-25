@@ -44,7 +44,7 @@ export default function Header({
         </div>
         <i
           className={`material-icons next-icon ${
-            hasNext ? 'button-default' : ''
+            hasNext || (!hasNext && hasLabel) ? 'button-default' : ''
           }`}
           onClick={hasNext || (!hasNext && hasLabel) ? handleGoNext : undefined}
         >

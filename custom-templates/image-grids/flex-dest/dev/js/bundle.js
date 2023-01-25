@@ -9133,7 +9133,7 @@
 	    className: "header-title",
 	    id: "externalid"
 	  }, "Label this asset"), /*#__PURE__*/React.createElement("i", {
-	    className: "material-icons next-icon ".concat(hasNext ? 'button-default' : ''),
+	    className: "material-icons next-icon ".concat(hasNext || !hasNext && hasLabel ? 'button-default' : ''),
 	    onClick: hasNext || !hasNext && hasLabel ? handleGoNext : undefined
 	  }, "keyboard_arrow_right")), /*#__PURE__*/React.createElement("div", {
 	    className: "keyboard-shortcuts"
