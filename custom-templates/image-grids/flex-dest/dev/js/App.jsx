@@ -38,7 +38,15 @@ export default function App() {
   const handleAssetChange = useCallback(
     (asset) => {
       if (asset) {
-        if (asset.id !== currentAsset?.id) {
+        // subscription to Labelbox makes increasing network calls as label history gets longer
+        // to reduce jank from network calls, check the refs to ensure call is only made when relevant
+        // data has changed
+        if (
+          currentAsset?.id !== asset.id &&
+          currentAsset?.data !== asset.data &&
+          (assetNext.current !== asset.next ||
+            assetPrev.current !== asset.previous)
+        ) {
           setIsLoading(true);
           resetState();
 

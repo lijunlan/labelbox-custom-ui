@@ -9219,7 +9219,10 @@
 	  }, [assetData, labeledPhotoId, setSelectedImageIdx]);
 	  var handleAssetChange = react.exports.useCallback(function (asset) {
 	    if (asset) {
-	      if (asset.id !== (currentAsset === null || currentAsset === void 0 ? void 0 : currentAsset.id)) {
+	      // subscription to Labelbox makes increasing network calls as label history gets longer
+	      // to reduce jank from network calls, check the refs to ensure call is only made when relevant
+	      // data has changed
+	      if ((currentAsset === null || currentAsset === void 0 ? void 0 : currentAsset.id) !== asset.id && (currentAsset === null || currentAsset === void 0 ? void 0 : currentAsset.data) !== asset.data && (assetNext.current !== asset.next || assetPrev.current !== asset.previous)) {
 	        setIsLoading(true);
 	        resetState();
 	        assetNext.current = asset.next;
