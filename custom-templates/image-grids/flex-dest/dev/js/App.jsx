@@ -38,7 +38,7 @@ export default function App() {
   const handleAssetChange = useCallback(
     (asset) => {
       if (asset) {
-        if (asset.id !== currentAsset.id) {
+        if (asset.id !== currentAsset?.id) {
           setIsLoading(true);
           resetState();
 
