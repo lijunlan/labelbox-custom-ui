@@ -8172,16 +8172,6 @@
 	    value: photoQualityTier,
 	    onChange: handlePhotoQualityChange
 	  }, /*#__PURE__*/React.createElement("option", {
-	    value: "Most Inspiring"
-	  }, "Most Inspiring"), /*#__PURE__*/React.createElement("option", {
-	    value: "High"
-	  }, "High"), /*#__PURE__*/React.createElement("option", {
-	    value: "Acceptable"
-	  }, "Acceptable"), /*#__PURE__*/React.createElement("option", {
-	    value: "Low Quality"
-	  }, "Low Quality"), /*#__PURE__*/React.createElement("option", {
-	    value: "Unacceptable"
-	  }, "Unacceptable"), /*#__PURE__*/React.createElement("option", {
 	    value: "Remove"
 	  }, "Remove"))), /*#__PURE__*/React.createElement("div", {
 	    className: "left-panel-ctas-wrapper"
