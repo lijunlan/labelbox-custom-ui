@@ -1,0 +1,14 @@
+[
+  {
+    "data": "https://airbnb-labelbox.s3.us-east-1.amazonaws.com/test_recording_1.mp3",
+    "externalId": "audio_1"
+  },
+  {
+    "data": "https://airbnb-labelbox.s3.us-east-1.amazonaws.com/test_recording_2.mp3",
+    "externalId": "audio_2"
+  },
+  {
+    "data": "https://airbnb-labelbox.s3.us-east-1.amazonaws.com/test_recording_3.mp3",
+    "externalId": "audio_3"
+  }
+]
