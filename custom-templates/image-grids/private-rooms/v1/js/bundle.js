@@ -8172,8 +8172,6 @@
 	    value: photoQualityTier,
 	    onChange: handlePhotoQualityChange
 	  }, /*#__PURE__*/React.createElement("option", {
-	    value: "Accept"
-	  }, "Accept"), /*#__PURE__*/React.createElement("option", {
 	    value: "Remove"
 	  }, "Remove"))), /*#__PURE__*/React.createElement("div", {
 	    className: "left-panel-ctas-wrapper"
