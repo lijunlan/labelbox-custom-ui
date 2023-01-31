@@ -8030,7 +8030,7 @@
 	  var updatedDefaultPhotoId = updatedDefaultPhotoInfo === null || updatedDefaultPhotoInfo === void 0 ? void 0 : updatedDefaultPhotoInfo.defaultPhotoId;
 	  var updatedDefaultPhotoQualityTier = updatedDefaultPhotoInfo === null || updatedDefaultPhotoInfo === void 0 ? void 0 : updatedDefaultPhotoInfo.photoQualityTier;
 
-	  var _useState = react.exports.useState(updatedDefaultPhotoQualityTier || originalPhotoQualityTier),
+	  var _useState = react.exports.useState(updatedDefaultPhotoQualityTier),
 	      _useState2 = _slicedToArray(_useState, 2),
 	      photoQualityTier = _useState2[0],
 	      setPhotoQualityTier = _useState2[1];
