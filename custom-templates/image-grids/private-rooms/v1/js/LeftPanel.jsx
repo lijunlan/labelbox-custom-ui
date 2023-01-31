@@ -200,7 +200,7 @@ export default function LeftPanel({
         <div className="label">Photo quality:</div>
         <select value={photoQualityTier} onChange={handlePhotoQualityChange}>
           <option value="Remove">Remove</option>
-          <option value="Remove2">Remove</option>
+          <option value="Accept">Accept</option>
         </select>
       </label>
       <div className="left-panel-ctas-wrapper">
