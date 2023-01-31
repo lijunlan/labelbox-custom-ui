@@ -25,9 +25,7 @@ export default function LeftPanel({
   );
 
   useEffect(() => {
-    setPhotoQualityTier(
-      updatedDefaultPhotoQualityTier || originalPhotoQualityTier
-    );
+    setPhotoQualityTier(updatedDefaultPhotoQualityTier);
   }, [selectedListing]);
 
   function handlePhotoQualityChange(e) {
