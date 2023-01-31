@@ -21,11 +21,13 @@ export default function LeftPanel({
     updatedDefaultPhotoInfo?.photoQualityTier;
 
   const [photoQualityTier, setPhotoQualityTier] = useState(
-    updatedDefaultPhotoQualityTier
+    updatedDefaultPhotoQualityTier || originalPhotoQualityTier
   );
 
   useEffect(() => {
-    setPhotoQualityTier(updatedDefaultPhotoQualityTier);
+    setPhotoQualityTier(
+      updatedDefaultPhotoQualityTier || originalPhotoQualityTier
+    );
   }, [selectedListing]);
 
   function handlePhotoQualityChange(e) {
@@ -197,8 +199,8 @@ export default function LeftPanel({
       <label>
         <div className="label">Photo quality:</div>
         <select value={photoQualityTier} onChange={handlePhotoQualityChange}>
-          <option value="Remove">Remove</option>
           <option value="Accept">Accept</option>
+          <option value="Remove">Remove</option>
         </select>
       </label>
       <div className="left-panel-ctas-wrapper">

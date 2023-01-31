@@ -8030,13 +8030,13 @@
 	  var updatedDefaultPhotoId = updatedDefaultPhotoInfo === null || updatedDefaultPhotoInfo === void 0 ? void 0 : updatedDefaultPhotoInfo.defaultPhotoId;
 	  var updatedDefaultPhotoQualityTier = updatedDefaultPhotoInfo === null || updatedDefaultPhotoInfo === void 0 ? void 0 : updatedDefaultPhotoInfo.photoQualityTier;
 
-	  var _useState = react.exports.useState(updatedDefaultPhotoQualityTier),
+	  var _useState = react.exports.useState(updatedDefaultPhotoQualityTier || originalPhotoQualityTier),
 	      _useState2 = _slicedToArray(_useState, 2),
 	      photoQualityTier = _useState2[0],
 	      setPhotoQualityTier = _useState2[1];
 
 	  react.exports.useEffect(function () {
-	    setPhotoQualityTier(updatedDefaultPhotoQualityTier);
+	    setPhotoQualityTier(updatedDefaultPhotoQualityTier || originalPhotoQualityTier);
 	  }, [selectedListing]);
 
 	  function handlePhotoQualityChange(e) {
@@ -8172,10 +8172,10 @@
 	    value: photoQualityTier,
 	    onChange: handlePhotoQualityChange
 	  }, /*#__PURE__*/React.createElement("option", {
-	    value: "Remove"
-	  }, "Remove"), /*#__PURE__*/React.createElement("option", {
 	    value: "Accept"
-	  }, "Accept"))), /*#__PURE__*/React.createElement("div", {
+	  }, "Accept"), /*#__PURE__*/React.createElement("option", {
+	    value: "Remove"
+	  }, "Remove"))), /*#__PURE__*/React.createElement("div", {
 	    className: "left-panel-ctas-wrapper"
 	  }, /*#__PURE__*/React.createElement("button", {
 	    onClick: handleResetChanges,
