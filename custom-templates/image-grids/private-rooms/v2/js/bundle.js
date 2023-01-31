@@ -8024,7 +8024,7 @@
 	      selectedListing = _ref.selectedListing,
 	      setNewDefaultPhotoId = _ref.setNewDefaultPhotoId,
 	      setPhotoEdits = _ref.setPhotoEdits;
-	  var originalPhotoQualityTier = 'Remove';
+	  var originalPhotoQualityTier = assetData.qualityTier;
 	  var originalDefaultPhotoId = selectedListing.photoId;
 	  var updatedDefaultPhotoInfo = getUpdatedDefaultPhotoInfo(photoEdits, selectedListing);
 	  var updatedDefaultPhotoId = updatedDefaultPhotoInfo === null || updatedDefaultPhotoInfo === void 0 ? void 0 : updatedDefaultPhotoInfo.defaultPhotoId;
@@ -8065,7 +8065,9 @@
 	  }
 
 	  function handleSubmit(e) {
-	    e.preventDefault(); // photo id and quality tier both same as original data
+	    e.preventDefault(); // Artificially update photo quality tier
+
+	    setPhotoQualityTier('Remove'); // photo id and quality tier both same as original data
 
 	    if ((!newDefaultPhotoId || newDefaultPhotoId === originalDefaultPhotoId) && photoQualityTier === originalPhotoQualityTier) {
 	      return setPhotoEdits(function (prevEdits) {
