@@ -8174,8 +8174,8 @@
 	  }, /*#__PURE__*/React.createElement("option", {
 	    value: "Remove"
 	  }, "Remove"), /*#__PURE__*/React.createElement("option", {
-	    value: "Remove2"
-	  }, "Remove"))), /*#__PURE__*/React.createElement("div", {
+	    value: "Accept"
+	  }, "Accept"))), /*#__PURE__*/React.createElement("div", {
 	    className: "left-panel-ctas-wrapper"
 	  }, /*#__PURE__*/React.createElement("button", {
 	    onClick: handleResetChanges,
