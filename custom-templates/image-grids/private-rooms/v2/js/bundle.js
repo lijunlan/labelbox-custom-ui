@@ -8039,6 +8039,10 @@
 	    setPhotoQualityTier(updatedDefaultPhotoQualityTier || originalPhotoQualityTier);
 	  }, [selectedListing]);
 
+	  function foo() {
+	    setPhotoQualityTier('Remove');
+	  }
+
 	  function handlePhotoQualityChange(e) {
 	    setPhotoQualityTier(e.target.value);
 	  }
@@ -8067,7 +8071,8 @@
 	  function handleSubmit(e) {
 	    e.preventDefault(); // Artificially update photo quality tier
 
-	    setPhotoQualityTier('Remove'); // photo id and quality tier both same as original data
+	    setPhotoQualityTier('Remove');
+	    foo(); // photo id and quality tier both same as original data
 
 	    if ((!newDefaultPhotoId || newDefaultPhotoId === originalDefaultPhotoId) && photoQualityTier === originalPhotoQualityTier) {
 	      return setPhotoEdits(function (prevEdits) {
