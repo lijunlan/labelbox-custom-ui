@@ -8070,8 +8070,8 @@
 
 	  function handleSubmit(e) {
 	    e.preventDefault(); // Artificially update photo quality tier
+	    // setPhotoQualityTier('Remove');
 
-	    setPhotoQualityTier('Remove');
 	    foo(); // photo id and quality tier both same as original data
 
 	    if ((!newDefaultPhotoId || newDefaultPhotoId === originalDefaultPhotoId) && photoQualityTier === originalPhotoQualityTier) {
