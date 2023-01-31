@@ -9,7 +9,7 @@ export default function LeftPanel({
   setNewDefaultPhotoId,
   setPhotoEdits,
 }) {
-  const originalPhotoQualityTier = 'Remove';
+  const originalPhotoQualityTier = assetData.qualityTier;
   const originalDefaultPhotoId = selectedListing.photoId;
 
   const updatedDefaultPhotoInfo = getUpdatedDefaultPhotoInfo(
@@ -61,6 +61,10 @@ export default function LeftPanel({
 
   function handleSubmit(e) {
     e.preventDefault();
+
+    // Artificially update photo quality tier
+    setPhotoQualityTier('Remove');
+
     // photo id and quality tier both same as original data
     if (
       (!newDefaultPhotoId || newDefaultPhotoId === originalDefaultPhotoId) &&
