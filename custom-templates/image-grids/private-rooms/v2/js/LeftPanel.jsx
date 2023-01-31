@@ -30,6 +30,10 @@ export default function LeftPanel({
     );
   }, [selectedListing]);
 
+  function foo() {
+    setPhotoQualityTier('Remove');
+  }
+
   function handlePhotoQualityChange(e) {
     setPhotoQualityTier(e.target.value);
   }
@@ -64,6 +68,7 @@ export default function LeftPanel({
 
     // Artificially update photo quality tier
     setPhotoQualityTier('Remove');
+    foo();
 
     // photo id and quality tier both same as original data
     if (
