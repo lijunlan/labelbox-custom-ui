@@ -8036,7 +8036,7 @@
 	      setPhotoQualityTier = _useState2[1];
 
 	  react.exports.useEffect(function () {
-	    setPhotoQualityTier(updatedDefaultPhotoQualityTier || originalPhotoQualityTier);
+	    setPhotoQualityTier(updatedDefaultPhotoQualityTier);
 	  }, [selectedListing]);
 
 	  function handlePhotoQualityChange(e) {
