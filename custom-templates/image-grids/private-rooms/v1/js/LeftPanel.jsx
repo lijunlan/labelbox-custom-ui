@@ -21,7 +21,7 @@ export default function LeftPanel({
     updatedDefaultPhotoInfo?.photoQualityTier;
 
   const [photoQualityTier, setPhotoQualityTier] = useState(
-    updatedDefaultPhotoQualityTier || originalPhotoQualityTier
+    updatedDefaultPhotoQualityTier
   );
 
   useEffect(() => {
