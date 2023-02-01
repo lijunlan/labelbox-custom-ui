@@ -21,7 +21,7 @@ body{
 .left-side-panel {
   background-color: #EBEBEB;
   width: 360px;
-  min-width: 260px;
+  min-width: 280px;
   border-right: 1px solid #DDDDDD;
   overflow-y: scroll;
   height: 100vh;
