@@ -9,7 +9,7 @@ export default function LeftPanel({
   setNewDefaultPhotoId,
   setPhotoEdits,
 }) {
-  const originalPhotoQualityTier = 'Remove'; // assetData.qualityTier;
+  const originalPhotoQualityTier = assetData.qualityTier;
   const originalDefaultPhotoId = selectedListing.photoId;
 
   const updatedDefaultPhotoInfo = getUpdatedDefaultPhotoInfo(
@@ -68,7 +68,7 @@ export default function LeftPanel({
         return [
           ...prevEdits.slice(0, prevChangeIndex),
           Object.assign({}, prevEdits[prevChangeIndex], {
-            photoQualityTier,
+            photoQualityTier: 'Remove',
           }),
           ...prevEdits.slice(prevChangeIndex + 1),
         ];
@@ -81,7 +81,7 @@ export default function LeftPanel({
               originalDefaultPhotoId ||
               updatedDefaultPhotoId ||
               originalDefaultPhotoId,
-            photoQualityTier,
+            photoQualityTier: 'Remove',
           },
         ];
       }

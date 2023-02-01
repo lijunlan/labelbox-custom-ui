@@ -8024,17 +8024,16 @@
 	      selectedListing = _ref.selectedListing,
 	      setNewDefaultPhotoId = _ref.setNewDefaultPhotoId,
 	      setPhotoEdits = _ref.setPhotoEdits;
-	  var originalPhotoQualityTier = 'Remove'; // assetData.qualityTier;
-
+	  var originalPhotoQualityTier = assetData.qualityTier;
 	  var originalDefaultPhotoId = selectedListing.photoId;
 	  var updatedDefaultPhotoInfo = getUpdatedDefaultPhotoInfo(photoEdits, selectedListing);
 	  var updatedDefaultPhotoId = updatedDefaultPhotoInfo === null || updatedDefaultPhotoInfo === void 0 ? void 0 : updatedDefaultPhotoInfo.defaultPhotoId;
 	  var updatedDefaultPhotoQualityTier = updatedDefaultPhotoInfo === null || updatedDefaultPhotoInfo === void 0 ? void 0 : updatedDefaultPhotoInfo.photoQualityTier;
 
 	  var _useState = react.exports.useState(updatedDefaultPhotoQualityTier || originalPhotoQualityTier),
-	      _useState2 = _slicedToArray(_useState, 2),
-	      photoQualityTier = _useState2[0],
-	      setPhotoQualityTier = _useState2[1];
+	      _useState2 = _slicedToArray(_useState, 2);
+	      _useState2[0];
+	      var setPhotoQualityTier = _useState2[1];
 
 	  react.exports.useEffect(function () {
 	    setPhotoQualityTier(updatedDefaultPhotoQualityTier || originalPhotoQualityTier);
@@ -8071,13 +8070,13 @@
 
 	      if (prevChangeIndex !== -1) {
 	        return [].concat(_toConsumableArray(prevEdits.slice(0, prevChangeIndex)), [Object.assign({}, prevEdits[prevChangeIndex], {
-	          photoQualityTier: photoQualityTier
+	          photoQualityTier: 'Remove'
 	        })], _toConsumableArray(prevEdits.slice(prevChangeIndex + 1)));
 	      } else {
 	        return [].concat(_toConsumableArray(prevEdits), [{
 	          listingId: selectedListing.listingId,
 	          defaultPhotoId: originalDefaultPhotoId || updatedDefaultPhotoId || originalDefaultPhotoId,
-	          photoQualityTier: photoQualityTier
+	          photoQualityTier: 'Remove'
 	        }]);
 	      }
 	    });
