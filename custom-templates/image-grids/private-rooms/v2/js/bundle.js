@@ -8024,7 +8024,8 @@
 	      selectedListing = _ref.selectedListing,
 	      setNewDefaultPhotoId = _ref.setNewDefaultPhotoId,
 	      setPhotoEdits = _ref.setPhotoEdits;
-	  var originalPhotoQualityTier = assetData.qualityTier;
+	  var originalPhotoQualityTier = 'Remove'; // assetData.qualityTier;
+
 	  var originalDefaultPhotoId = selectedListing.photoId;
 	  var updatedDefaultPhotoInfo = getUpdatedDefaultPhotoInfo(photoEdits, selectedListing);
 	  var updatedDefaultPhotoId = updatedDefaultPhotoInfo === null || updatedDefaultPhotoInfo === void 0 ? void 0 : updatedDefaultPhotoInfo.defaultPhotoId;
