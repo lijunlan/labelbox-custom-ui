@@ -7912,46 +7912,17 @@
 	  }));
 	}
 
-	function getUpdateReason(edit, originalDefaultPhotoId, originalPhotoQualityTier) {
-	  var defaultPhotoId = edit.defaultPhotoId,
-	      photoQualityTier = edit.photoQualityTier;
-	  var defaultPhotoIdChanged = !!defaultPhotoId && defaultPhotoId !== originalDefaultPhotoId;
-	  var photoQualityTierChanged = !!photoQualityTier && photoQualityTier !== originalPhotoQualityTier;
-
-	  if (photoQualityTierChanged && photoQualityTier === 'Remove') {
-	    return 'remove category';
-	  }
-
-	  if (defaultPhotoIdChanged && photoQualityTierChanged) {
-	    return 'update photo + quality';
-	  }
-
-	  if (photoQualityTierChanged) {
-	    return 'update quality';
-	  }
-
-	  if (defaultPhotoIdChanged) {
-	    return 'update photo';
-	  }
-
-	  return '';
-	}
-
-	function formatEditDataForSubmission(photoEdits, attribute, originalPhotoQualityTier, gridImages) {
+	function formatEditDataForSubmission(photoEdits, gridImages) {
 	  var formatted = photoEdits.map(function (edit) {
-	    var listingId = edit.listingId,
-	        defaultPhotoId = edit.defaultPhotoId,
-	        photoQualityTier = edit.photoQualityTier;
-	    var listingInfo = gridImages.find(function (listing) {
+	    var listingId = edit.listingId;
+	        edit.defaultPhotoId;
+	        var photoQualityTier = edit.photoQualityTier;
+	    gridImages.find(function (listing) {
 	      return listing.listingId === listingId;
 	    });
-	    var originalDefaultPhotoId = listingInfo === null || listingInfo === void 0 ? void 0 : listingInfo.photoId;
 	    var data = {
 	      id_listing: listingId,
-	      listing_category: attribute,
-	      photo_id: defaultPhotoId,
-	      photo_quality: photoQualityTier,
-	      update_reason: getUpdateReason(edit, originalDefaultPhotoId, originalPhotoQualityTier)
+	      photo_quality: photoQualityTier
 	    };
 	    return data;
 	  });
@@ -7982,7 +7953,7 @@
 	  var handleSubmit = react.exports.useCallback(function () {
 	    setSelectedListing();
 	    setSelectedImageIdx();
-	    var formattedData = formatEditDataForSubmission(photoEdits, assetData === null || assetData === void 0 ? void 0 : assetData.attribute, assetData === null || assetData === void 0 ? void 0 : assetData.qualityTier, assetData === null || assetData === void 0 ? void 0 : assetData.gridImages);
+	    var formattedData = formatEditDataForSubmission(photoEdits, assetData === null || assetData === void 0 ? void 0 : assetData.gridImages);
 	    Labelbox.setLabelForAsset(formattedData, 'ANY').then(function () {
 	      setPhotoEdits([]);
 	      Labelbox.fetchNextAssetToLabel();
