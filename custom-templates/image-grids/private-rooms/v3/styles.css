@@ -21,7 +21,7 @@ body{
 .left-side-panel {
   background-color: #EBEBEB;
   width: 360px;
-  min-width: 360px;
+  min-width: 280px;
   border-right: 1px solid #DDDDDD;
   overflow-y: scroll;
   height: 100vh;
@@ -207,7 +207,7 @@ select:focus {
   padding: 12px 24px;
 }
 
-.save-cta {
+.remove-cta {
   background-image: linear-gradient(to right, #E61E4D 0%, #E31C5F 50%, #D70466 100%);
   border: 1px solid transparent;
   color: white;

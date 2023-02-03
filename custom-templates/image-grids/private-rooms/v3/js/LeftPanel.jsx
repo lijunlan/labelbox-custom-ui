@@ -9,7 +9,7 @@ export default function LeftPanel({
   setNewDefaultPhotoId,
   setPhotoEdits,
 }) {
-  const originalPhotoQualityTier = assetData.qualityTier;
+  const originalPhotoQualityTier = 'Accept';
   const originalDefaultPhotoId = selectedListing.photoId;
 
   const updatedDefaultPhotoInfo = getUpdatedDefaultPhotoInfo(
@@ -30,16 +30,12 @@ export default function LeftPanel({
     );
   }, [selectedListing]);
 
-  function handlePhotoQualityChange(e) {
-    setPhotoQualityTier(e.target.value);
-  }
-
   function clearUnsavedChanges() {
     setNewDefaultPhotoId('');
     setPhotoQualityTier(assetData.qualityTier);
   }
 
-  function handleResetChanges() {
+  function handleReset() {
     clearUnsavedChanges();
 
     // delete saved change entry from photoEdits
@@ -48,143 +44,44 @@ export default function LeftPanel({
         (edit) => edit.listingId === selectedListing.listingId
       );
 
-      if (prevChangeIndex !== -1) {
-        return [
-          ...prevEdits.slice(0, prevChangeIndex),
-          ...prevEdits.slice(prevChangeIndex + 1),
-        ];
-      } else {
+      // Selected has not been removed, so do nothing to prevEdits
+      if (prevChangeIndex === -1) {
         return prevEdits;
       }
+
+      // Selected listing has been removed before, so remove it from prevEdits
+      return [
+        ...prevEdits.slice(0, prevChangeIndex),
+        ...prevEdits.slice(prevChangeIndex + 1),
+      ];
     });
   }
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    // photo id and quality tier both same as original data
-    if (
-      (!newDefaultPhotoId || newDefaultPhotoId === originalDefaultPhotoId) &&
-      photoQualityTier === originalPhotoQualityTier
-    ) {
-      return setPhotoEdits((prevEdits) => {
-        const prevChangeIndex = prevEdits.findIndex(
-          (edit) => edit.listingId === selectedListing.listingId
-        );
+  function handleRemove() {
+    setPhotoEdits((prevEdits) => {
+      const prevChangeIndex = prevEdits.findIndex(
+        (edit) => edit.listingId === selectedListing.listingId
+      );
 
-        if (prevChangeIndex !== -1) {
-          // delete previous edit
-          return [
-            ...prevEdits.slice(0, prevChangeIndex),
-            ...prevEdits.slice(prevChangeIndex + 1),
-          ];
-        }
-        return prevEdits;
-      });
-    }
-
-    // change in photo id
-    if (!!newDefaultPhotoId) {
-      if (newDefaultPhotoId !== originalDefaultPhotoId) {
-        setPhotoEdits((prevEdits) => {
-          const prevChangeIndex = prevEdits.findIndex(
-            (edit) => edit.listingId === selectedListing.listingId
-          );
-
-          if (prevChangeIndex !== -1) {
-            // override previous edit
-            return [
-              ...prevEdits.slice(0, prevChangeIndex),
-              Object.assign({}, prevEdits[prevChangeIndex], {
-                defaultPhotoId: newDefaultPhotoId,
-              }),
-              ...prevEdits.slice(prevChangeIndex + 1),
-            ];
-          } else {
-            // add to photoEdits
-            return [
-              ...prevEdits,
-              {
-                listingId: selectedListing.listingId,
-                defaultPhotoId: newDefaultPhotoId,
-                photoQualityTier,
-              },
-            ];
-          }
-        });
-      } else {
-        setPhotoEdits((prevEdits) => {
-          const prevChangeIndex = prevEdits.findIndex(
-            (edit) => edit.listingId === selectedListing.listingId
-          );
-
-          if (prevChangeIndex !== -1) {
-            const copy = Object.assign({}, prevEdits[prevChangeIndex], {
-              defaultPhotoId: newDefaultPhotoId,
-            });
-
-            return [
-              ...prevEdits.slice(0, prevChangeIndex),
-              copy,
-              ...prevEdits.slice(prevChangeIndex + 1),
-            ];
-          }
-          return prevEdits;
-        });
+      // Selected listing has not been removed before, so append it to prevEdits
+      if (prevChangeIndex === -1) {
+        return [
+          ...prevEdits,
+          {
+            listingId: selectedListing.listingId,
+            defaultPhotoId: originalDefaultPhotoId || updatedDefaultPhotoId,
+            photoQualityTier: 'Remove',
+          },
+        ];
       }
-    }
 
-    // change photo quality tier
-    if (photoQualityTier !== originalPhotoQualityTier) {
-      setPhotoEdits((prevEdits) => {
-        const prevChangeIndex = prevEdits.findIndex(
-          (edit) => edit.listingId === selectedListing.listingId
-        );
-
-        if (prevChangeIndex !== -1) {
-          return [
-            ...prevEdits.slice(0, prevChangeIndex),
-            Object.assign({}, prevEdits[prevChangeIndex], {
-              photoQualityTier,
-            }),
-            ...prevEdits.slice(prevChangeIndex + 1),
-          ];
-        } else {
-          return [
-            ...prevEdits,
-            {
-              listingId: selectedListing.listingId,
-              defaultPhotoId:
-                originalDefaultPhotoId ||
-                updatedDefaultPhotoId ||
-                originalDefaultPhotoId,
-              photoQualityTier,
-            },
-          ];
-        }
-      });
-    } else {
-      // if photo edit exists for the listing, update the photoQualityTier
-      setPhotoEdits((prevEdits) => {
-        const prevChangeIndex = prevEdits.findIndex(
-          (edit) => edit.listingId === selectedListing.listingId
-        );
-
-        if (prevChangeIndex !== -1) {
-          return [
-            ...prevEdits.slice(0, prevChangeIndex),
-            Object.assign({}, prevEdits[prevChangeIndex], {
-              photoQualityTier,
-            }),
-            ...prevEdits.slice(prevChangeIndex + 1),
-          ];
-        }
-        return prevEdits;
-      });
-    }
+      // Selected listing has already been removed, so do nothing
+      return prevEdits;
+    });
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form>
       <label>
         Photo id:
         <input
@@ -196,18 +93,13 @@ export default function LeftPanel({
           }
         />
       </label>
-      <label>
-        <div className="label">Photo quality:</div>
-        <select value={photoQualityTier} onChange={handlePhotoQualityChange}>
-          <option value="Accept">Accept</option>
-          <option value="Remove">Remove</option>
-        </select>
-      </label>
       <div className="left-panel-ctas-wrapper">
-        <button onClick={handleResetChanges} className="cta clear-cta">
+        <button onClick={handleReset} className="cta clear-cta">
           Reset
         </button>
-        <input className="cta save-cta" type="submit" value="Save" />
+        <button onClick={handleRemove} className="cta remove-cta">
+          Remove
+        </button>
       </div>
     </form>
   );

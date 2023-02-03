@@ -8024,167 +8024,76 @@
 	      selectedListing = _ref.selectedListing,
 	      setNewDefaultPhotoId = _ref.setNewDefaultPhotoId,
 	      setPhotoEdits = _ref.setPhotoEdits;
-	  var originalPhotoQualityTier = assetData.qualityTier;
+	  var originalPhotoQualityTier = 'Accept';
 	  var originalDefaultPhotoId = selectedListing.photoId;
 	  var updatedDefaultPhotoInfo = getUpdatedDefaultPhotoInfo(photoEdits, selectedListing);
 	  var updatedDefaultPhotoId = updatedDefaultPhotoInfo === null || updatedDefaultPhotoInfo === void 0 ? void 0 : updatedDefaultPhotoInfo.defaultPhotoId;
 	  var updatedDefaultPhotoQualityTier = updatedDefaultPhotoInfo === null || updatedDefaultPhotoInfo === void 0 ? void 0 : updatedDefaultPhotoInfo.photoQualityTier;
 
 	  var _useState = react.exports.useState(updatedDefaultPhotoQualityTier || originalPhotoQualityTier),
-	      _useState2 = _slicedToArray(_useState, 2),
-	      photoQualityTier = _useState2[0],
-	      setPhotoQualityTier = _useState2[1];
+	      _useState2 = _slicedToArray(_useState, 2);
+	      _useState2[0];
+	      var setPhotoQualityTier = _useState2[1];
 
 	  react.exports.useEffect(function () {
 	    setPhotoQualityTier(updatedDefaultPhotoQualityTier || originalPhotoQualityTier);
 	  }, [selectedListing]);
-
-	  function handlePhotoQualityChange(e) {
-	    setPhotoQualityTier(e.target.value);
-	  }
 
 	  function clearUnsavedChanges() {
 	    setNewDefaultPhotoId('');
 	    setPhotoQualityTier(assetData.qualityTier);
 	  }
 
-	  function handleResetChanges() {
+	  function handleReset() {
 	    clearUnsavedChanges(); // delete saved change entry from photoEdits
 
 	    setPhotoEdits(function (prevEdits) {
 	      var prevChangeIndex = prevEdits.findIndex(function (edit) {
 	        return edit.listingId === selectedListing.listingId;
-	      });
+	      }); // Selected has not been removed, so do nothing to prevEdits
 
-	      if (prevChangeIndex !== -1) {
-	        return [].concat(_toConsumableArray(prevEdits.slice(0, prevChangeIndex)), _toConsumableArray(prevEdits.slice(prevChangeIndex + 1)));
-	      } else {
+	      if (prevChangeIndex === -1) {
 	        return prevEdits;
-	      }
+	      } // Selected listing has been removed before, so remove it from prevEdits
+
+
+	      return [].concat(_toConsumableArray(prevEdits.slice(0, prevChangeIndex)), _toConsumableArray(prevEdits.slice(prevChangeIndex + 1)));
 	    });
 	  }
 
-	  function handleSubmit(e) {
-	    e.preventDefault(); // photo id and quality tier both same as original data
+	  function handleRemove() {
+	    setPhotoEdits(function (prevEdits) {
+	      var prevChangeIndex = prevEdits.findIndex(function (edit) {
+	        return edit.listingId === selectedListing.listingId;
+	      }); // Selected listing has not been removed before, so append it to prevEdits
 
-	    if ((!newDefaultPhotoId || newDefaultPhotoId === originalDefaultPhotoId) && photoQualityTier === originalPhotoQualityTier) {
-	      return setPhotoEdits(function (prevEdits) {
-	        var prevChangeIndex = prevEdits.findIndex(function (edit) {
-	          return edit.listingId === selectedListing.listingId;
-	        });
-
-	        if (prevChangeIndex !== -1) {
-	          // delete previous edit
-	          return [].concat(_toConsumableArray(prevEdits.slice(0, prevChangeIndex)), _toConsumableArray(prevEdits.slice(prevChangeIndex + 1)));
-	        }
-
-	        return prevEdits;
-	      });
-	    } // change in photo id
+	      if (prevChangeIndex === -1) {
+	        return [].concat(_toConsumableArray(prevEdits), [{
+	          listingId: selectedListing.listingId,
+	          defaultPhotoId: originalDefaultPhotoId || updatedDefaultPhotoId,
+	          photoQualityTier: 'Remove'
+	        }]);
+	      } // Selected listing has already been removed, so do nothing
 
 
-	    if (!!newDefaultPhotoId) {
-	      if (newDefaultPhotoId !== originalDefaultPhotoId) {
-	        setPhotoEdits(function (prevEdits) {
-	          var prevChangeIndex = prevEdits.findIndex(function (edit) {
-	            return edit.listingId === selectedListing.listingId;
-	          });
-
-	          if (prevChangeIndex !== -1) {
-	            // override previous edit
-	            return [].concat(_toConsumableArray(prevEdits.slice(0, prevChangeIndex)), [Object.assign({}, prevEdits[prevChangeIndex], {
-	              defaultPhotoId: newDefaultPhotoId
-	            })], _toConsumableArray(prevEdits.slice(prevChangeIndex + 1)));
-	          } else {
-	            // add to photoEdits
-	            return [].concat(_toConsumableArray(prevEdits), [{
-	              listingId: selectedListing.listingId,
-	              defaultPhotoId: newDefaultPhotoId,
-	              photoQualityTier: photoQualityTier
-	            }]);
-	          }
-	        });
-	      } else {
-	        setPhotoEdits(function (prevEdits) {
-	          var prevChangeIndex = prevEdits.findIndex(function (edit) {
-	            return edit.listingId === selectedListing.listingId;
-	          });
-
-	          if (prevChangeIndex !== -1) {
-	            var copy = Object.assign({}, prevEdits[prevChangeIndex], {
-	              defaultPhotoId: newDefaultPhotoId
-	            });
-	            return [].concat(_toConsumableArray(prevEdits.slice(0, prevChangeIndex)), [copy], _toConsumableArray(prevEdits.slice(prevChangeIndex + 1)));
-	          }
-
-	          return prevEdits;
-	        });
-	      }
-	    } // change photo quality tier
-
-
-	    if (photoQualityTier !== originalPhotoQualityTier) {
-	      setPhotoEdits(function (prevEdits) {
-	        var prevChangeIndex = prevEdits.findIndex(function (edit) {
-	          return edit.listingId === selectedListing.listingId;
-	        });
-
-	        if (prevChangeIndex !== -1) {
-	          return [].concat(_toConsumableArray(prevEdits.slice(0, prevChangeIndex)), [Object.assign({}, prevEdits[prevChangeIndex], {
-	            photoQualityTier: photoQualityTier
-	          })], _toConsumableArray(prevEdits.slice(prevChangeIndex + 1)));
-	        } else {
-	          return [].concat(_toConsumableArray(prevEdits), [{
-	            listingId: selectedListing.listingId,
-	            defaultPhotoId: originalDefaultPhotoId || updatedDefaultPhotoId || originalDefaultPhotoId,
-	            photoQualityTier: photoQualityTier
-	          }]);
-	        }
-	      });
-	    } else {
-	      // if photo edit exists for the listing, update the photoQualityTier
-	      setPhotoEdits(function (prevEdits) {
-	        var prevChangeIndex = prevEdits.findIndex(function (edit) {
-	          return edit.listingId === selectedListing.listingId;
-	        });
-
-	        if (prevChangeIndex !== -1) {
-	          return [].concat(_toConsumableArray(prevEdits.slice(0, prevChangeIndex)), [Object.assign({}, prevEdits[prevChangeIndex], {
-	            photoQualityTier: photoQualityTier
-	          })], _toConsumableArray(prevEdits.slice(prevChangeIndex + 1)));
-	        }
-
-	        return prevEdits;
-	      });
-	    }
+	      return prevEdits;
+	    });
 	  }
 
-	  return /*#__PURE__*/React.createElement("form", {
-	    onSubmit: handleSubmit
-	  }, /*#__PURE__*/React.createElement("label", null, "Photo id:", /*#__PURE__*/React.createElement("input", {
+	  return /*#__PURE__*/React.createElement("form", null, /*#__PURE__*/React.createElement("label", null, "Photo id:", /*#__PURE__*/React.createElement("input", {
 	    type: "text",
 	    name: "photo-id",
 	    readOnly: true,
 	    value: newDefaultPhotoId || updatedDefaultPhotoId || originalDefaultPhotoId
-	  })), /*#__PURE__*/React.createElement("label", null, /*#__PURE__*/React.createElement("div", {
-	    className: "label"
-	  }, "Photo quality:"), /*#__PURE__*/React.createElement("select", {
-	    value: photoQualityTier,
-	    onChange: handlePhotoQualityChange
-	  }, /*#__PURE__*/React.createElement("option", {
-	    value: "Accept"
-	  }, "Accept"), /*#__PURE__*/React.createElement("option", {
-	    value: "Remove"
-	  }, "Remove"))), /*#__PURE__*/React.createElement("div", {
+	  })), /*#__PURE__*/React.createElement("div", {
 	    className: "left-panel-ctas-wrapper"
 	  }, /*#__PURE__*/React.createElement("button", {
-	    onClick: handleResetChanges,
+	    onClick: handleReset,
 	    className: "cta clear-cta"
-	  }, "Reset"), /*#__PURE__*/React.createElement("input", {
-	    className: "cta save-cta",
-	    type: "submit",
-	    value: "Save"
-	  })));
+	  }, "Reset"), /*#__PURE__*/React.createElement("button", {
+	    onClick: handleRemove,
+	    className: "cta remove-cta"
+	  }, "Remove")));
 	}
 
 	function AdditionalImage(_ref) {
