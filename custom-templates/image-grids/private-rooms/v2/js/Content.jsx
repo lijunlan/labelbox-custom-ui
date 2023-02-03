@@ -33,8 +33,6 @@ export default function Content({
 
     const formattedData = formatEditDataForSubmission(
       photoEdits,
-      assetData?.attribute,
-      assetData?.qualityTier,
       assetData?.gridImages
     );
 

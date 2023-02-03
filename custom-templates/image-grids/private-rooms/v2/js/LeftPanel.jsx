@@ -1,100 +1,81 @@
 import React, { useEffect, useState } from 'react';
-import getUpdatedDefaultPhotoInfo from './getUpdatedDefaultPhotoInfo';
+import getPhotoEditForListing from './getPhotoEditForListing';
 
 export default function LeftPanel({
   assetData,
-  newDefaultPhotoId,
   photoEdits,
   selectedListing,
-  setNewDefaultPhotoId,
   setPhotoEdits,
 }) {
-  const originalPhotoQualityTier = assetData.qualityTier;
-  const originalDefaultPhotoId = selectedListing.photoId;
+  const originalPhotoQualityTier = 'Accept';
 
-  const updatedDefaultPhotoInfo = getUpdatedDefaultPhotoInfo(
-    photoEdits,
-    selectedListing
-  );
-  const updatedDefaultPhotoId = updatedDefaultPhotoInfo?.defaultPhotoId;
-  const updatedDefaultPhotoQualityTier =
-    updatedDefaultPhotoInfo?.photoQualityTier;
+  const specificPhotoEdit = getPhotoEditForListing(photoEdits, selectedListing);
+  const specificPhotoQualityTier = specificPhotoEdit?.photoQualityTier;
 
   const [photoQualityTier, setPhotoQualityTier] = useState(
-    updatedDefaultPhotoQualityTier || originalPhotoQualityTier
+    specificPhotoQualityTier || originalPhotoQualityTier
   );
 
   useEffect(() => {
-    setPhotoQualityTier(
-      updatedDefaultPhotoQualityTier || originalPhotoQualityTier
-    );
+    setPhotoQualityTier(specificPhotoQualityTier || originalPhotoQualityTier);
   }, [selectedListing]);
 
   function clearUnsavedChanges() {
-    setNewDefaultPhotoId('');
-    setPhotoQualityTier(assetData.qualityTier);
+    setPhotoQualityTier(originalPhotoQualityTier);
   }
 
-  function handleResetChanges() {
+  function handleReset() {
     clearUnsavedChanges();
 
-    // delete saved change entry from photoEdits
     setPhotoEdits((prevEdits) => {
       const prevChangeIndex = prevEdits.findIndex(
         (edit) => edit.listingId === selectedListing.listingId
       );
 
-      if (prevChangeIndex !== -1) {
-        return [
-          ...prevEdits.slice(0, prevChangeIndex),
-          ...prevEdits.slice(prevChangeIndex + 1),
-        ];
-      } else {
+      // Selected has not been removed, so do nothing to prevEdits
+      if (prevChangeIndex === -1) {
         return prevEdits;
       }
+
+      // Selected listing has been removed before, so remove it from prevEdits
+      return [
+        ...prevEdits.slice(0, prevChangeIndex),
+        ...prevEdits.slice(prevChangeIndex + 1),
+      ];
     });
   }
 
-  function handleSubmit(e) {
-    e.preventDefault();
-
-    // change photo quality tier
+  function handleRemove() {
     setPhotoEdits((prevEdits) => {
       const prevChangeIndex = prevEdits.findIndex(
         (edit) => edit.listingId === selectedListing.listingId
       );
 
-      if (prevChangeIndex !== -1) {
-        return [
-          ...prevEdits.slice(0, prevChangeIndex),
-          Object.assign({}, prevEdits[prevChangeIndex], {
-            photoQualityTier: 'Remove',
-          }),
-          ...prevEdits.slice(prevChangeIndex + 1),
-        ];
-      } else {
+      // Selected listing has not been removed before, so append it to prevEdits
+      if (prevChangeIndex === -1) {
         return [
           ...prevEdits,
           {
             listingId: selectedListing.listingId,
-            defaultPhotoId:
-              originalDefaultPhotoId ||
-              updatedDefaultPhotoId ||
-              originalDefaultPhotoId,
             photoQualityTier: 'Remove',
           },
         ];
       }
+
+      // Selected listing has already been removed, so do nothing
+      return prevEdits;
     });
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form>
       <div className="left-panel-ctas-wrapper">
-        <button onClick={handleResetChanges} className="cta clear-cta">
+        <button onClick={handleReset} className="cta clear-cta">
           Reset
         </button>
-        <input className="cta save-cta" type="submit" value="Remove" />
+        <button onClick={handleRemove} className="cta remove-cta">
+          Remove
+        </button>
       </div>
     </form>
   );
