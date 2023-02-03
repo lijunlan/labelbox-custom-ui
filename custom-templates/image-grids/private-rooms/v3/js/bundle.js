@@ -8018,25 +8018,25 @@
 	}
 
 	function LeftPanel(_ref) {
-	  var assetData = _ref.assetData,
-	      newDefaultPhotoId = _ref.newDefaultPhotoId,
-	      photoEdits = _ref.photoEdits,
+	  var assetData = _ref.assetData;
+	      _ref.newDefaultPhotoId;
+	      var photoEdits = _ref.photoEdits,
 	      selectedListing = _ref.selectedListing,
 	      setNewDefaultPhotoId = _ref.setNewDefaultPhotoId,
 	      setPhotoEdits = _ref.setPhotoEdits;
 	  var originalPhotoQualityTier = 'Accept';
 	  var originalDefaultPhotoId = selectedListing.photoId;
-	  var updatedDefaultPhotoInfo = getPhotoEditForListing(photoEdits, selectedListing);
-	  var updatedDefaultPhotoId = updatedDefaultPhotoInfo === null || updatedDefaultPhotoInfo === void 0 ? void 0 : updatedDefaultPhotoInfo.defaultPhotoId;
-	  var updatedDefaultPhotoQualityTier = updatedDefaultPhotoInfo === null || updatedDefaultPhotoInfo === void 0 ? void 0 : updatedDefaultPhotoInfo.photoQualityTier;
+	  var specificPhotoEdit = getPhotoEditForListing(photoEdits, selectedListing);
+	  var updatedDefaultPhotoId = specificPhotoEdit === null || specificPhotoEdit === void 0 ? void 0 : specificPhotoEdit.defaultPhotoId;
+	  var specificPhotoQualityTier = specificPhotoEdit === null || specificPhotoEdit === void 0 ? void 0 : specificPhotoEdit.photoQualityTier;
 
-	  var _useState = react.exports.useState(updatedDefaultPhotoQualityTier || originalPhotoQualityTier),
+	  var _useState = react.exports.useState(specificPhotoQualityTier || originalPhotoQualityTier),
 	      _useState2 = _slicedToArray(_useState, 2);
 	      _useState2[0];
 	      var setPhotoQualityTier = _useState2[1];
 
 	  react.exports.useEffect(function () {
-	    setPhotoQualityTier(updatedDefaultPhotoQualityTier || originalPhotoQualityTier);
+	    setPhotoQualityTier(specificPhotoQualityTier || originalPhotoQualityTier);
 	  }, [selectedListing]);
 
 	  function clearUnsavedChanges() {
@@ -8082,12 +8082,7 @@
 	    });
 	  }
 
-	  return /*#__PURE__*/React.createElement("form", null, /*#__PURE__*/React.createElement("label", null, "Photo id:", /*#__PURE__*/React.createElement("input", {
-	    type: "text",
-	    name: "photo-id",
-	    readOnly: true,
-	    value: newDefaultPhotoId || updatedDefaultPhotoId || originalDefaultPhotoId
-	  })), /*#__PURE__*/React.createElement("div", {
+	  return /*#__PURE__*/React.createElement("form", null, /*#__PURE__*/React.createElement("div", {
 	    className: "left-panel-ctas-wrapper"
 	  }, /*#__PURE__*/React.createElement("button", {
 	    onClick: handleReset,

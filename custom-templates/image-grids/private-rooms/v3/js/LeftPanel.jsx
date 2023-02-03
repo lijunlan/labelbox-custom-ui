@@ -12,22 +12,16 @@ export default function LeftPanel({
   const originalPhotoQualityTier = 'Accept';
   const originalDefaultPhotoId = selectedListing.photoId;
 
-  const updatedDefaultPhotoInfo = getPhotoEditForListing(
-    photoEdits,
-    selectedListing
-  );
-  const updatedDefaultPhotoId = updatedDefaultPhotoInfo?.defaultPhotoId;
-  const updatedDefaultPhotoQualityTier =
-    updatedDefaultPhotoInfo?.photoQualityTier;
+  const specificPhotoEdit = getPhotoEditForListing(photoEdits, selectedListing);
+  const updatedDefaultPhotoId = specificPhotoEdit?.defaultPhotoId;
+  const specificPhotoQualityTier = specificPhotoEdit?.photoQualityTier;
 
   const [photoQualityTier, setPhotoQualityTier] = useState(
-    updatedDefaultPhotoQualityTier || originalPhotoQualityTier
+    specificPhotoQualityTier || originalPhotoQualityTier
   );
 
   useEffect(() => {
-    setPhotoQualityTier(
-      updatedDefaultPhotoQualityTier || originalPhotoQualityTier
-    );
+    setPhotoQualityTier(specificPhotoQualityTier || originalPhotoQualityTier);
   }, [selectedListing]);
 
   function clearUnsavedChanges() {
@@ -86,17 +80,6 @@ export default function LeftPanel({
 
   return (
     <form>
-      <label>
-        Photo id:
-        <input
-          type="text"
-          name="photo-id"
-          readOnly
-          value={
-            newDefaultPhotoId || updatedDefaultPhotoId || originalDefaultPhotoId
-          }
-        />
-      </label>
       <div className="left-panel-ctas-wrapper">
         <button onClick={handleReset} className="cta clear-cta">
           Reset
