@@ -35,7 +35,9 @@ export default function LeftPanel({
     setPhotoQualityTier(assetData.qualityTier);
   }
 
-  function handleReset() {
+  function handleReset(e) {
+    e.preventDefault();
+
     clearUnsavedChanges();
 
     // delete saved change entry from photoEdits
@@ -57,7 +59,9 @@ export default function LeftPanel({
     });
   }
 
-  function handleRemove() {
+  function handleRemove(e) {
+    e.preventDefault();
+
     setPhotoEdits((prevEdits) => {
       const prevChangeIndex = prevEdits.findIndex(
         (edit) => edit.listingId === selectedListing.listingId

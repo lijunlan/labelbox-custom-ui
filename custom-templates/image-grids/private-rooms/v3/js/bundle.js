@@ -8044,7 +8044,8 @@
 	    setPhotoQualityTier(assetData.qualityTier);
 	  }
 
-	  function handleReset() {
+	  function handleReset(e) {
+	    e.preventDefault();
 	    clearUnsavedChanges(); // delete saved change entry from photoEdits
 
 	    setPhotoEdits(function (prevEdits) {
@@ -8061,7 +8062,8 @@
 	    });
 	  }
 
-	  function handleRemove() {
+	  function handleRemove(e) {
+	    e.preventDefault();
 	    setPhotoEdits(function (prevEdits) {
 	      var prevChangeIndex = prevEdits.findIndex(function (edit) {
 	        return edit.listingId === selectedListing.listingId;
