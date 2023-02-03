@@ -7913,20 +7913,24 @@
 	}
 
 	function formatEditDataForSubmission(photoEdits, gridImages) {
-	  var formatted = photoEdits.map(function (edit) {
-	    var listingId = edit.listingId;
-	        edit.defaultPhotoId;
-	        var photoQualityTier = edit.photoQualityTier;
-	    gridImages.find(function (listing) {
-	      return listing.listingId === listingId;
-	    });
-	    var data = {
-	      id_listing: listingId,
-	      photo_quality: photoQualityTier
-	    };
-	    return data;
+	  // Create a dict from removal photoEdits
+	  var removeDict = {};
+	  photoEdits.filter(function (edit) {
+	    return edit.photoQualityTier === 'Remove';
+	  }).forEach(function (edit) {
+	    var listingId = edit.listingId,
+	        photoQualityTier = edit.photoQualityTier;
+	    removeDict[listingId] = photoQualityTier;
 	  });
-	  return JSON.stringify(formatted);
+	  var formattedData = gridImages.map(function (img) {
+	    var listingId = img.listingId;
+	    var elem = {
+	      id_listing: listingId,
+	      photo_quality: removeDict[listingId] || 'Accept'
+	    };
+	    return elem;
+	  });
+	  return JSON.stringify(formattedData);
 	}
 
 	function Content(_ref) {
@@ -8210,7 +8214,7 @@
 	// }]
 	function convertLabelToPhotoEditFormat(labels) {
 	  if (!Array.isArray(labels)) return [];
-	  return labels.map(function (label) {
+	  var removalLabels = labels.map(function (label) {
 	    var id_listing = label.id_listing,
 	        photo_id = label.photo_id,
 	        photo_quality = label.photo_quality;
@@ -8221,7 +8225,10 @@
 	    } : undefined), photo_quality ? {
 	      photoQualityTier: photo_quality
 	    } : undefined);
+	  }).filter(function (label) {
+	    return label.photoQualityTier === 'Remove';
 	  });
+	  return removalLabels;
 	}
 
 	var EMPTY_ARR = [];

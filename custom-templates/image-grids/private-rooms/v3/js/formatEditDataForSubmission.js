@@ -1,16 +1,23 @@
 export default function formatEditDataForSubmission(photoEdits, gridImages) {
-  const formatted = photoEdits.map((edit) => {
-    const { listingId, defaultPhotoId, photoQualityTier } = edit;
-    const listingInfo = gridImages.find(
-      (listing) => listing.listingId === listingId
-    );
+  // Create a dict from removal photoEdits
+  var removeDict = {};
+  photoEdits
+    .filter((edit) => {
+      return edit.photoQualityTier === 'Remove';
+    })
+    .forEach((edit) => {
+      const { listingId, photoQualityTier } = edit;
+      removeDict[listingId] = photoQualityTier;
+    });
 
-    const data = {
+  const formattedData = gridImages.map((img) => {
+    const listingId = img.listingId;
+    const elem = {
       id_listing: listingId,
-      photo_quality: photoQualityTier,
+      photo_quality: removeDict[listingId] || 'Accept',
     };
-    return data;
+    return elem;
   });
 
-  return JSON.stringify(formatted);
+  return JSON.stringify(formattedData);
 }

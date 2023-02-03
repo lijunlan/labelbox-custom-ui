@@ -8,13 +8,19 @@
 export default function convertLabelToPhotoEditFormat(labels) {
   if (!Array.isArray(labels)) return [];
 
-  return labels.map((label) => {
-    const { id_listing, photo_id, photo_quality } = label;
+  const removalLabels = labels
+    .map((label) => {
+      const { id_listing, photo_id, photo_quality } = label;
 
-    return {
-      listingId: id_listing,
-      ...(photo_id ? { defaultPhotoId: photo_id } : undefined),
-      ...(photo_quality ? { photoQualityTier: photo_quality } : undefined),
-    };
-  });
+      return {
+        listingId: id_listing,
+        ...(photo_id ? { defaultPhotoId: photo_id } : undefined),
+        ...(photo_quality ? { photoQualityTier: photo_quality } : undefined),
+      };
+    })
+    .filter((label) => {
+      return label.photoQualityTier === 'Remove';
+    });
+
+  return removalLabels;
 }
