@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import getUpdatedDefaultPhotoInfo from './getUpdatedDefaultPhotoInfo';
+import getPhotoEditForListing from './getPhotoEditForListing';
 
 export default function LeftPanel({
   assetData,
@@ -12,7 +12,7 @@ export default function LeftPanel({
   const originalPhotoQualityTier = 'Accept';
   const originalDefaultPhotoId = selectedListing.photoId;
 
-  const updatedDefaultPhotoInfo = getUpdatedDefaultPhotoInfo(
+  const updatedDefaultPhotoInfo = getPhotoEditForListing(
     photoEdits,
     selectedListing
   );

@@ -8011,7 +8011,7 @@
 	  }, "Submit")));
 	}
 
-	function getUpdatedDefaultPhotoInfo(photoEdits, listing) {
+	function getPhotoEditForListing(photoEdits, listing) {
 	  return photoEdits.find(function (edit) {
 	    return edit.listingId === listing.listingId;
 	  });
@@ -8026,7 +8026,7 @@
 	      setPhotoEdits = _ref.setPhotoEdits;
 	  var originalPhotoQualityTier = 'Accept';
 	  var originalDefaultPhotoId = selectedListing.photoId;
-	  var updatedDefaultPhotoInfo = getUpdatedDefaultPhotoInfo(photoEdits, selectedListing);
+	  var updatedDefaultPhotoInfo = getPhotoEditForListing(photoEdits, selectedListing);
 	  var updatedDefaultPhotoId = updatedDefaultPhotoInfo === null || updatedDefaultPhotoInfo === void 0 ? void 0 : updatedDefaultPhotoInfo.defaultPhotoId;
 	  var updatedDefaultPhotoQualityTier = updatedDefaultPhotoInfo === null || updatedDefaultPhotoInfo === void 0 ? void 0 : updatedDefaultPhotoInfo.photoQualityTier;
 
