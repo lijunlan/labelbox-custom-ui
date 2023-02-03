@@ -29,9 +29,7 @@ export default function LeftPanel({
     setPhotoQualityTier(assetData.qualityTier);
   }
 
-  function handleReset(e) {
-    e.preventDefault();
-
+  function handleReset() {
     clearUnsavedChanges();
 
     // delete saved change entry from photoEdits
@@ -53,9 +51,7 @@ export default function LeftPanel({
     });
   }
 
-  function handleRemove(e) {
-    e.preventDefault();
-
+  function handleRemove() {
     setPhotoEdits((prevEdits) => {
       const prevChangeIndex = prevEdits.findIndex(
         (edit) => edit.listingId === selectedListing.listingId
@@ -79,15 +75,13 @@ export default function LeftPanel({
   }
 
   return (
-    <form>
-      <div className="left-panel-ctas-wrapper">
-        <button onClick={handleReset} className="cta clear-cta">
-          Reset
-        </button>
-        <button onClick={handleRemove} className="cta remove-cta">
-          Remove
-        </button>
-      </div>
-    </form>
+    <div className="left-panel-ctas-wrapper">
+      <button onClick={handleReset} className="cta clear-cta">
+        Reset
+      </button>
+      <button onClick={handleRemove} className="cta remove-cta">
+        Remove
+      </button>
+    </div>
   );
 }

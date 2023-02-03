@@ -8044,8 +8044,7 @@
 	    setPhotoQualityTier(assetData.qualityTier);
 	  }
 
-	  function handleReset(e) {
-	    e.preventDefault();
+	  function handleReset() {
 	    clearUnsavedChanges(); // delete saved change entry from photoEdits
 
 	    setPhotoEdits(function (prevEdits) {
@@ -8062,8 +8061,7 @@
 	    });
 	  }
 
-	  function handleRemove(e) {
-	    e.preventDefault();
+	  function handleRemove() {
 	    setPhotoEdits(function (prevEdits) {
 	      var prevChangeIndex = prevEdits.findIndex(function (edit) {
 	        return edit.listingId === selectedListing.listingId;
@@ -8082,7 +8080,7 @@
 	    });
 	  }
 
-	  return /*#__PURE__*/React.createElement("form", null, /*#__PURE__*/React.createElement("div", {
+	  return /*#__PURE__*/React.createElement("div", {
 	    className: "left-panel-ctas-wrapper"
 	  }, /*#__PURE__*/React.createElement("button", {
 	    onClick: handleReset,
@@ -8090,7 +8088,7 @@
 	  }, "Reset"), /*#__PURE__*/React.createElement("button", {
 	    onClick: handleRemove,
 	    className: "cta remove-cta"
-	  }, "Remove")));
+	  }, "Remove"));
 	}
 
 	function AdditionalImage(_ref) {
