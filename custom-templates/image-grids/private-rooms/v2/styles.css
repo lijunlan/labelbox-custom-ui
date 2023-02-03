@@ -207,7 +207,7 @@ select:focus {
   padding: 12px 24px;
 }
 
-.save-cta {
+.remove-cta {
   background-image: linear-gradient(to right, #E61E4D 0%, #E31C5F 50%, #D70466 100%);
   border: 1px solid transparent;
   color: white;

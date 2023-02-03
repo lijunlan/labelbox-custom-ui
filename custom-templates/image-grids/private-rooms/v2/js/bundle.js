@@ -7912,46 +7912,13 @@
 	  }));
 	}
 
-	function getUpdateReason(edit, originalDefaultPhotoId, originalPhotoQualityTier) {
-	  var defaultPhotoId = edit.defaultPhotoId,
-	      photoQualityTier = edit.photoQualityTier;
-	  var defaultPhotoIdChanged = !!defaultPhotoId && defaultPhotoId !== originalDefaultPhotoId;
-	  var photoQualityTierChanged = !!photoQualityTier && photoQualityTier !== originalPhotoQualityTier;
-
-	  if (photoQualityTierChanged && photoQualityTier === 'Remove') {
-	    return 'remove category';
-	  }
-
-	  if (defaultPhotoIdChanged && photoQualityTierChanged) {
-	    return 'update photo + quality';
-	  }
-
-	  if (photoQualityTierChanged) {
-	    return 'update quality';
-	  }
-
-	  if (defaultPhotoIdChanged) {
-	    return 'update photo';
-	  }
-
-	  return '';
-	}
-
-	function formatEditDataForSubmission(photoEdits, attribute, originalPhotoQualityTier, gridImages) {
+	function formatEditDataForSubmission(photoEdits, gridImages) {
 	  var formatted = photoEdits.map(function (edit) {
 	    var listingId = edit.listingId,
-	        defaultPhotoId = edit.defaultPhotoId,
 	        photoQualityTier = edit.photoQualityTier;
-	    var listingInfo = gridImages.find(function (listing) {
-	      return listing.listingId === listingId;
-	    });
-	    var originalDefaultPhotoId = listingInfo === null || listingInfo === void 0 ? void 0 : listingInfo.photoId;
 	    var data = {
 	      id_listing: listingId,
-	      listing_category: attribute,
-	      photo_id: defaultPhotoId,
-	      photo_quality: photoQualityTier,
-	      update_reason: getUpdateReason(edit, originalDefaultPhotoId, originalPhotoQualityTier)
+	      photo_quality: photoQualityTier
 	    };
 	    return data;
 	  });
@@ -7982,7 +7949,7 @@
 	  var handleSubmit = react.exports.useCallback(function () {
 	    setSelectedListing();
 	    setSelectedImageIdx();
-	    var formattedData = formatEditDataForSubmission(photoEdits, assetData === null || assetData === void 0 ? void 0 : assetData.attribute, assetData === null || assetData === void 0 ? void 0 : assetData.qualityTier, assetData === null || assetData === void 0 ? void 0 : assetData.gridImages);
+	    var formattedData = formatEditDataForSubmission(photoEdits, assetData === null || assetData === void 0 ? void 0 : assetData.gridImages);
 	    Labelbox.setLabelForAsset(formattedData, 'ANY').then(function () {
 	      setPhotoEdits([]);
 	      Labelbox.fetchNextAssetToLabel();
@@ -8011,89 +7978,77 @@
 	  }, "Submit")));
 	}
 
-	function getUpdatedDefaultPhotoInfo(photoEdits, listing) {
+	function getPhotoEditForListing(photoEdits, listing) {
 	  return photoEdits.find(function (edit) {
 	    return edit.listingId === listing.listingId;
 	  });
 	}
 
 	function LeftPanel(_ref) {
-	  var assetData = _ref.assetData;
-	      _ref.newDefaultPhotoId;
+	  _ref.assetData;
 	      var photoEdits = _ref.photoEdits,
 	      selectedListing = _ref.selectedListing,
-	      setNewDefaultPhotoId = _ref.setNewDefaultPhotoId,
 	      setPhotoEdits = _ref.setPhotoEdits;
-	  var originalPhotoQualityTier = assetData.qualityTier;
-	  var originalDefaultPhotoId = selectedListing.photoId;
-	  var updatedDefaultPhotoInfo = getUpdatedDefaultPhotoInfo(photoEdits, selectedListing);
-	  var updatedDefaultPhotoId = updatedDefaultPhotoInfo === null || updatedDefaultPhotoInfo === void 0 ? void 0 : updatedDefaultPhotoInfo.defaultPhotoId;
-	  var updatedDefaultPhotoQualityTier = updatedDefaultPhotoInfo === null || updatedDefaultPhotoInfo === void 0 ? void 0 : updatedDefaultPhotoInfo.photoQualityTier;
+	  var originalPhotoQualityTier = 'Accept';
+	  var specificPhotoEdit = getPhotoEditForListing(photoEdits, selectedListing);
+	  var specificPhotoQualityTier = specificPhotoEdit === null || specificPhotoEdit === void 0 ? void 0 : specificPhotoEdit.photoQualityTier;
 
-	  var _useState = react.exports.useState(updatedDefaultPhotoQualityTier || originalPhotoQualityTier),
+	  var _useState = react.exports.useState(specificPhotoQualityTier || originalPhotoQualityTier),
 	      _useState2 = _slicedToArray(_useState, 2);
 	      _useState2[0];
 	      var setPhotoQualityTier = _useState2[1];
 
 	  react.exports.useEffect(function () {
-	    setPhotoQualityTier(updatedDefaultPhotoQualityTier || originalPhotoQualityTier);
+	    setPhotoQualityTier(specificPhotoQualityTier || originalPhotoQualityTier);
 	  }, [selectedListing]);
 
 	  function clearUnsavedChanges() {
-	    setNewDefaultPhotoId('');
-	    setPhotoQualityTier(assetData.qualityTier);
+	    setPhotoQualityTier(originalPhotoQualityTier);
 	  }
 
-	  function handleResetChanges() {
-	    clearUnsavedChanges(); // delete saved change entry from photoEdits
-
+	  function handleReset() {
+	    clearUnsavedChanges();
 	    setPhotoEdits(function (prevEdits) {
 	      var prevChangeIndex = prevEdits.findIndex(function (edit) {
 	        return edit.listingId === selectedListing.listingId;
-	      });
+	      }); // Selected has not been removed, so do nothing to prevEdits
 
-	      if (prevChangeIndex !== -1) {
-	        return [].concat(_toConsumableArray(prevEdits.slice(0, prevChangeIndex)), _toConsumableArray(prevEdits.slice(prevChangeIndex + 1)));
-	      } else {
+	      if (prevChangeIndex === -1) {
 	        return prevEdits;
-	      }
+	      } // Selected listing has been removed before, so remove it from prevEdits
+
+
+	      return [].concat(_toConsumableArray(prevEdits.slice(0, prevChangeIndex)), _toConsumableArray(prevEdits.slice(prevChangeIndex + 1)));
 	    });
 	  }
 
-	  function handleSubmit(e) {
-	    e.preventDefault(); // change photo quality tier
-
+	  function handleRemove() {
 	    setPhotoEdits(function (prevEdits) {
 	      var prevChangeIndex = prevEdits.findIndex(function (edit) {
 	        return edit.listingId === selectedListing.listingId;
-	      });
+	      }); // Selected listing has not been removed before, so append it to prevEdits
 
-	      if (prevChangeIndex !== -1) {
-	        return [].concat(_toConsumableArray(prevEdits.slice(0, prevChangeIndex)), [Object.assign({}, prevEdits[prevChangeIndex], {
-	          photoQualityTier: 'Remove'
-	        })], _toConsumableArray(prevEdits.slice(prevChangeIndex + 1)));
-	      } else {
+	      if (prevChangeIndex === -1) {
 	        return [].concat(_toConsumableArray(prevEdits), [{
 	          listingId: selectedListing.listingId,
-	          defaultPhotoId: originalDefaultPhotoId || updatedDefaultPhotoId || originalDefaultPhotoId,
 	          photoQualityTier: 'Remove'
 	        }]);
-	      }
+	      } // Selected listing has already been removed, so do nothing
+
+
+	      return prevEdits;
 	    });
 	  }
 
-	  return /*#__PURE__*/React.createElement("form", {
-	    onSubmit: handleSubmit
-	  }, /*#__PURE__*/React.createElement("div", {
+	  return /*#__PURE__*/React.createElement("form", null, /*#__PURE__*/React.createElement("div", {
 	    className: "left-panel-ctas-wrapper"
 	  }, /*#__PURE__*/React.createElement("button", {
-	    onClick: handleResetChanges,
+	    onClick: handleReset,
 	    className: "cta clear-cta"
-	  }, "Reset"), /*#__PURE__*/React.createElement("input", {
-	    className: "cta save-cta",
-	    type: "submit",
-	    value: "Remove"
-	  })));
+	  }, "Reset"), /*#__PURE__*/React.createElement("button", {
+	    onClick: handleRemove,
+	    className: "cta remove-cta"
+	  }, "Remove")));
 	}
 
 	function AdditionalImage(_ref) {
@@ -8291,7 +8246,6 @@
 	  var assetPrev = react.exports.useRef(); // photoEdits data structure
 	  // [{
 	  //   listingId: 123,
-	  //   defaultPhotoId: 345,
 	  //   photoQualityTier: 'High',
 	  // }]
 
@@ -8345,10 +8299,8 @@
 	    className: "flex-column left-side-panel"
 	  }, selectedListing ? /*#__PURE__*/React.createElement(LeftPanel, {
 	    assetData: assetData,
-	    newDefaultPhotoId: newDefaultPhotoId,
 	    photoEdits: photoEdits,
 	    selectedListing: selectedListing,
-	    setNewDefaultPhotoId: setNewDefaultPhotoId,
 	    setPhotoEdits: setPhotoEdits
 	  }) : null), /*#__PURE__*/React.createElement("div", {
 	    className: "flex-grow flex-column"
