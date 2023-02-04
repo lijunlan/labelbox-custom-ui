@@ -22,6 +22,7 @@ export default function App() {
   // photoEdits data structure
   // [{
   //   listingId: 123,
+  //   defaultPhotoId: 345,
   //   photoQualityTier: 'High',
   // }]
   const [photoEdits, setPhotoEdits] = useState(EMPTY_ARR);
@@ -93,8 +94,10 @@ export default function App() {
         {selectedListing ? (
           <LeftPanel
             assetData={assetData}
+            newDefaultPhotoId={newDefaultPhotoId}
             photoEdits={photoEdits}
             selectedListing={selectedListing}
+            setNewDefaultPhotoId={setNewDefaultPhotoId}
             setPhotoEdits={setPhotoEdits}
           />
         ) : null}
