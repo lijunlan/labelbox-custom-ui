@@ -7913,16 +7913,24 @@
 	}
 
 	function formatEditDataForSubmission(photoEdits, gridImages) {
-	  var formatted = photoEdits.map(function (edit) {
+	  // Create a dict from removal photoEdits
+	  var removeDict = {};
+	  photoEdits.filter(function (edit) {
+	    return edit.photoQualityTier === 'Remove';
+	  }).forEach(function (edit) {
 	    var listingId = edit.listingId,
 	        photoQualityTier = edit.photoQualityTier;
-	    var data = {
-	      id_listing: listingId,
-	      photo_quality: photoQualityTier
-	    };
-	    return data;
+	    removeDict[listingId] = photoQualityTier;
 	  });
-	  return JSON.stringify(formatted);
+	  var formattedData = gridImages.map(function (img) {
+	    var listingId = img.listingId;
+	    var elem = {
+	      id_listing: listingId,
+	      photo_quality: removeDict[listingId] || 'Accept'
+	    };
+	    return elem;
+	  });
+	  return JSON.stringify(formattedData);
 	}
 
 	function Content(_ref) {
@@ -7985,12 +7993,16 @@
 	}
 
 	function LeftPanel(_ref) {
-	  _ref.assetData;
+	  var assetData = _ref.assetData;
+	      _ref.newDefaultPhotoId;
 	      var photoEdits = _ref.photoEdits,
 	      selectedListing = _ref.selectedListing,
+	      setNewDefaultPhotoId = _ref.setNewDefaultPhotoId,
 	      setPhotoEdits = _ref.setPhotoEdits;
 	  var originalPhotoQualityTier = 'Accept';
+	  var originalDefaultPhotoId = selectedListing.photoId;
 	  var specificPhotoEdit = getPhotoEditForListing(photoEdits, selectedListing);
+	  var updatedDefaultPhotoId = specificPhotoEdit === null || specificPhotoEdit === void 0 ? void 0 : specificPhotoEdit.defaultPhotoId;
 	  var specificPhotoQualityTier = specificPhotoEdit === null || specificPhotoEdit === void 0 ? void 0 : specificPhotoEdit.photoQualityTier;
 
 	  var _useState = react.exports.useState(specificPhotoQualityTier || originalPhotoQualityTier),
@@ -8003,11 +8015,13 @@
 	  }, [selectedListing]);
 
 	  function clearUnsavedChanges() {
-	    setPhotoQualityTier(originalPhotoQualityTier);
+	    setNewDefaultPhotoId('');
+	    setPhotoQualityTier(assetData.qualityTier);
 	  }
 
 	  function handleReset() {
-	    clearUnsavedChanges();
+	    clearUnsavedChanges(); // delete saved change entry from photoEdits
+
 	    setPhotoEdits(function (prevEdits) {
 	      var prevChangeIndex = prevEdits.findIndex(function (edit) {
 	        return edit.listingId === selectedListing.listingId;
@@ -8031,6 +8045,7 @@
 	      if (prevChangeIndex === -1) {
 	        return [].concat(_toConsumableArray(prevEdits), [{
 	          listingId: selectedListing.listingId,
+	          defaultPhotoId: originalDefaultPhotoId || updatedDefaultPhotoId,
 	          photoQualityTier: 'Remove'
 	        }]);
 	      } // Selected listing has already been removed, so do nothing
@@ -8040,7 +8055,7 @@
 	    });
 	  }
 
-	  return /*#__PURE__*/React.createElement("form", null, /*#__PURE__*/React.createElement("div", {
+	  return /*#__PURE__*/React.createElement("div", {
 	    className: "left-panel-ctas-wrapper"
 	  }, /*#__PURE__*/React.createElement("button", {
 	    onClick: handleReset,
@@ -8048,7 +8063,7 @@
 	  }, "Reset"), /*#__PURE__*/React.createElement("button", {
 	    onClick: handleRemove,
 	    className: "cta remove-cta"
-	  }, "Remove")));
+	  }, "Remove"));
 	}
 
 	function AdditionalImage(_ref) {
@@ -8199,7 +8214,7 @@
 	// }]
 	function convertLabelToPhotoEditFormat(labels) {
 	  if (!Array.isArray(labels)) return [];
-	  return labels.map(function (label) {
+	  var removalLabels = labels.map(function (label) {
 	    var id_listing = label.id_listing,
 	        photo_id = label.photo_id,
 	        photo_quality = label.photo_quality;
@@ -8210,7 +8225,10 @@
 	    } : undefined), photo_quality ? {
 	      photoQualityTier: photo_quality
 	    } : undefined);
+	  }).filter(function (label) {
+	    return label.photoQualityTier === 'Remove';
 	  });
+	  return removalLabels;
 	}
 
 	var EMPTY_ARR = [];
@@ -8246,6 +8264,7 @@
 	  var assetPrev = react.exports.useRef(); // photoEdits data structure
 	  // [{
 	  //   listingId: 123,
+	  //   defaultPhotoId: 345,
 	  //   photoQualityTier: 'High',
 	  // }]
 
@@ -8299,8 +8318,10 @@
 	    className: "flex-column left-side-panel"
 	  }, selectedListing ? /*#__PURE__*/React.createElement(LeftPanel, {
 	    assetData: assetData,
+	    newDefaultPhotoId: newDefaultPhotoId,
 	    photoEdits: photoEdits,
 	    selectedListing: selectedListing,
+	    setNewDefaultPhotoId: setNewDefaultPhotoId,
 	    setPhotoEdits: setPhotoEdits
 	  }) : null), /*#__PURE__*/React.createElement("div", {
 	    className: "flex-grow flex-column"

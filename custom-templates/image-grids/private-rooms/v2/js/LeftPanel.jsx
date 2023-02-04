@@ -3,13 +3,17 @@ import getPhotoEditForListing from './getPhotoEditForListing';
 
 export default function LeftPanel({
   assetData,
+  newDefaultPhotoId,
   photoEdits,
   selectedListing,
+  setNewDefaultPhotoId,
   setPhotoEdits,
 }) {
   const originalPhotoQualityTier = 'Accept';
+  const originalDefaultPhotoId = selectedListing.photoId;
 
   const specificPhotoEdit = getPhotoEditForListing(photoEdits, selectedListing);
+  const updatedDefaultPhotoId = specificPhotoEdit?.defaultPhotoId;
   const specificPhotoQualityTier = specificPhotoEdit?.photoQualityTier;
 
   const [photoQualityTier, setPhotoQualityTier] = useState(
@@ -21,12 +25,14 @@ export default function LeftPanel({
   }, [selectedListing]);
 
   function clearUnsavedChanges() {
-    setPhotoQualityTier(originalPhotoQualityTier);
+    setNewDefaultPhotoId('');
+    setPhotoQualityTier(assetData.qualityTier);
   }
 
   function handleReset() {
     clearUnsavedChanges();
 
+    // delete saved change entry from photoEdits
     setPhotoEdits((prevEdits) => {
       const prevChangeIndex = prevEdits.findIndex(
         (edit) => edit.listingId === selectedListing.listingId
@@ -57,6 +63,7 @@ export default function LeftPanel({
           ...prevEdits,
           {
             listingId: selectedListing.listingId,
+            defaultPhotoId: originalDefaultPhotoId || updatedDefaultPhotoId,
             photoQualityTier: 'Remove',
           },
         ];
@@ -68,15 +75,13 @@ export default function LeftPanel({
   }
 
   return (
-    <form>
-      <div className="left-panel-ctas-wrapper">
-        <button onClick={handleReset} className="cta clear-cta">
-          Reset
-        </button>
-        <button onClick={handleRemove} className="cta remove-cta">
-          Remove
-        </button>
-      </div>
-    </form>
+    <div className="left-panel-ctas-wrapper">
+      <button onClick={handleReset} className="cta clear-cta">
+        Reset
+      </button>
+      <button onClick={handleRemove} className="cta remove-cta">
+        Remove
+      </button>
+    </div>
   );
 }
