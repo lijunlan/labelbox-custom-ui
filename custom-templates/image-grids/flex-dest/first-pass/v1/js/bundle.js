@@ -9056,6 +9056,9 @@
 	      return document.removeEventListener('keyup', handleKeyupEvent);
 	    };
 	  }, [listingId, photoId, photoQualityTier, handleKeyupEvent]);
+	  react.exports.useEffect(function () {
+	    setPhotoQualityTier('');
+	  }, [listingId]);
 	  return /*#__PURE__*/React.createElement("form", null, /*#__PURE__*/React.createElement("label", null, "Listing ID:", /*#__PURE__*/React.createElement("input", {
 	    type: "text",
 	    name: "listing-id",

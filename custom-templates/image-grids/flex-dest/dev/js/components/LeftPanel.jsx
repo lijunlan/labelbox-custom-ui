@@ -105,6 +105,10 @@ export default function LeftPanel({
     return () => document.removeEventListener('keyup', handleKeyupEvent);
   }, [listingId, photoId, photoQualityTier, handleKeyupEvent]);
 
+  useEffect(() => {
+    setPhotoQualityTier('');
+  }, [listingId]);
+
   return (
     <form>
       <label>
