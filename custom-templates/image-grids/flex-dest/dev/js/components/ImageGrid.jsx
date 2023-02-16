@@ -19,7 +19,22 @@ export default function ImageGrid({ images, onClickImage, selectedImageIdx }) {
     if (images.length === 0) {
       return;
     }
+
     const key = e.key.toLowerCase();
+
+    if (selectedImageIdx === undefined) {
+      if (key === ' ') {
+        return;
+      }
+      if (
+        key === 'arrowright' ||
+        key === 'arrowleft' ||
+        key === 'arrowup' ||
+        key === 'arrowdown'
+      ) {
+        onClickImage(0);
+      }
+    }
     const currentId = `image-container-${images[selectedImageIdx].photoId}`;
     if (key === 'arrowright') {
       e.preventDefault();

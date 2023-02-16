@@ -8764,6 +8764,17 @@
 	    }
 
 	    var key = e.key.toLowerCase();
+
+	    if (selectedImageIdx === undefined) {
+	      if (key === ' ') {
+	        return;
+	      }
+
+	      if (key === 'arrowright' || key === 'arrowleft' || key === 'arrowup' || key === 'arrowdown') {
+	        _onClickImage(0);
+	      }
+	    }
+
 	    var currentId = "image-container-".concat(images[selectedImageIdx].photoId);
 
 	    if (key === 'arrowright') {
