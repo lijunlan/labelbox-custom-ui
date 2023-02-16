@@ -7,7 +7,7 @@ export default function LeftPanel({
   labeledPhotoQualityTier,
   onSubmitOrSkip,
 }) {
-  const [photoQualityTier, setPhotoQualityTier] = useState('Most Inspiring');
+  const [photoQualityTier, setPhotoQualityTier] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [isSkipping, setIsSkipping] = useState(false);
 
@@ -24,7 +24,7 @@ export default function LeftPanel({
 
     e.preventDefault();
     Labelbox.skip().then(() => {
-      setPhotoQualityTier('Most Inspiring');
+      setPhotoQualityTier('');
       e.target.blur();
       Labelbox.fetchNextAssetToLabel();
       setIsSkipping(false);
@@ -32,6 +32,11 @@ export default function LeftPanel({
   };
 
   const handleSubmit = (e) => {
+    if (photoQualityTier === '') {
+      e.preventDefault();
+      return;
+    }
+
     setIsSaving(true);
     onSubmitOrSkip();
 
@@ -43,7 +48,7 @@ export default function LeftPanel({
     };
 
     Labelbox.setLabelForAsset(JSON.stringify(formattedData)).then(() => {
-      setPhotoQualityTier('Most Inspiring');
+      setPhotoQualityTier('');
       if (!labeledPhotoId) {
         Labelbox.fetchNextAssetToLabel();
       }
@@ -113,6 +118,9 @@ export default function LeftPanel({
       <label>
         <div className="label">Photo Quality:</div>
         <select value={photoQualityTier} onChange={handlePhotoQualityChange}>
+          <option disabled value="">
+            -- Select a tier --
+          </option>
           <option value="Most Inspiring">Most Inspiring</option>
           <option value="High">High</option>
           <option value="Acceptable">Acceptable</option>
@@ -129,7 +137,7 @@ export default function LeftPanel({
           {isSkipping ? 'Skipping...' : 'Skip Listing'}
         </button>
         <button
-          disabled={isSaving || isSkipping}
+          disabled={isSkipping || isSaving || photoQualityTier === ''}
           className="cta save-cta"
           type="submit"
           onClick={(e) => handleSubmit(e)}
