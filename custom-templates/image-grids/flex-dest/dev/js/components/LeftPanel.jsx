@@ -113,6 +113,7 @@ export default function LeftPanel({
       <label>
         <div className="label">Photo Quality:</div>
         <select value={photoQualityTier} onChange={handlePhotoQualityChange}>
+          <option value=""></option>
           <option value="Most Inspiring">Most Inspiring</option>
           <option value="High">High</option>
           <option value="Acceptable">Acceptable</option>
