@@ -8950,7 +8950,7 @@
 	      labeledPhotoQualityTier = _ref.labeledPhotoQualityTier,
 	      onSubmitOrSkip = _ref.onSubmitOrSkip;
 
-	  var _useState = react.exports.useState('Most Inspiring'),
+	  var _useState = react.exports.useState(''),
 	      _useState2 = _slicedToArray(_useState, 2),
 	      photoQualityTier = _useState2[0],
 	      setPhotoQualityTier = _useState2[1];
@@ -8974,7 +8974,7 @@
 	    onSubmitOrSkip();
 	    e.preventDefault();
 	    Labelbox.skip().then(function () {
-	      setPhotoQualityTier('Most Inspiring');
+	      setPhotoQualityTier('');
 	      e.target.blur();
 	      Labelbox.fetchNextAssetToLabel();
 	      setIsSkipping(false);
@@ -8991,7 +8991,7 @@
 	      photo_quality: photoQualityTier
 	    };
 	    Labelbox.setLabelForAsset(JSON.stringify(formattedData)).then(function () {
-	      setPhotoQualityTier('Most Inspiring');
+	      setPhotoQualityTier('');
 
 	      if (!labeledPhotoId) {
 	        Labelbox.fetchNextAssetToLabel();
@@ -9085,7 +9085,7 @@
 	    },
 	    className: "cta skip-cta"
 	  }, isSkipping ? 'Skipping...' : 'Skip Listing'), /*#__PURE__*/React.createElement("button", {
-	    disabled: isSaving || isSkipping,
+	    disabled: isSkipping || isSaving || photoQualityTier === '',
 	    className: "cta save-cta",
 	    type: "submit",
 	    onClick: function onClick(e) {
