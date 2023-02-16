@@ -9067,6 +9067,8 @@
 	    value: photoQualityTier,
 	    onChange: handlePhotoQualityChange
 	  }, /*#__PURE__*/React.createElement("option", {
+	    value: ""
+	  }), /*#__PURE__*/React.createElement("option", {
 	    value: "Most Inspiring"
 	  }, "Most Inspiring"), /*#__PURE__*/React.createElement("option", {
 	    value: "High"
