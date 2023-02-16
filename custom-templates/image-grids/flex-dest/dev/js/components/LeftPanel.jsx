@@ -32,6 +32,11 @@ export default function LeftPanel({
   };
 
   const handleSubmit = (e) => {
+    if (photoQualityTier === '') {
+      e.preventDefault();
+      return;
+    }
+
     setIsSaving(true);
     onSubmitOrSkip();
 
@@ -113,7 +118,9 @@ export default function LeftPanel({
       <label>
         <div className="label">Photo Quality:</div>
         <select value={photoQualityTier} onChange={handlePhotoQualityChange}>
-          <option value=""></option>
+          <option disabled value="">
+            -- Select a tier --
+          </option>
           <option value="Most Inspiring">Most Inspiring</option>
           <option value="High">High</option>
           <option value="Acceptable">Acceptable</option>

@@ -8982,6 +8982,11 @@
 	  };
 
 	  var handleSubmit = function handleSubmit(e) {
+	    if (photoQualityTier === '') {
+	      e.preventDefault();
+	      return;
+	    }
+
 	    setIsSaving(true);
 	    onSubmitOrSkip();
 	    e.preventDefault();
@@ -9067,8 +9072,9 @@
 	    value: photoQualityTier,
 	    onChange: handlePhotoQualityChange
 	  }, /*#__PURE__*/React.createElement("option", {
+	    disabled: true,
 	    value: ""
-	  }), /*#__PURE__*/React.createElement("option", {
+	  }, "-- Select a tier --"), /*#__PURE__*/React.createElement("option", {
 	    value: "Most Inspiring"
 	  }, "Most Inspiring"), /*#__PURE__*/React.createElement("option", {
 	    value: "High"
