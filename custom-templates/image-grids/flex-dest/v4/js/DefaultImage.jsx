@@ -26,6 +26,7 @@ export default function DefaultImage({
           isSelected ? 'image-selected' : ''
         }`}
       />
+      <figcaption>${listingId}</figcaption>
     </div>
   );
 }
