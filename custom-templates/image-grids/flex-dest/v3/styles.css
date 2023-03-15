@@ -57,10 +57,19 @@ body{
 .image-container{
   cursor: pointer;
   width: 210px;
-  height: 210px;
+  height: 260px;
   padding-top: 5px;
   padding-left: 5px;
   overflow: hidden;
+}
+
+.figcaption{
+    width: 210px;
+    padding-top: 5px;
+    padding-left: 5px;
+    display: block;
+    position: absolute;
+    overflow: visible;
 }
 
 .default-image {
