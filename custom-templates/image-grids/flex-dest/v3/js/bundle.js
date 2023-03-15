@@ -7882,7 +7882,7 @@
 	  }, /*#__PURE__*/React.createElement("img", {
 	    src: imageUrl,
 	    className: "default-image ".concat(hasQualityTierChanged ? 'image-quality-changed' : '', " ").concat(isEdited ? 'image-edited' : '', " ").concat(isSelected ? 'image-selected' : '')
-	  }));
+	  }), /*#__PURE__*/React.createElement("figcaption", null, listingId));
 	}
 
 	function ImageGrid(_ref) {
