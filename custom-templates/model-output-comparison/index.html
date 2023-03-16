@@ -1,0 +1,49 @@
+<script src="https://api.labelbox.com/static/labeling-api.js"></script>
+<div id="form"></div>
+<script>
+  function label(id) {
+    console.log("${id} is the best!")
+    // Labelbox.setLabelForAsset(label).then(() => {
+    //   Labelbox.fetchNextAssetToLabel();
+    // });
+  }
+
+  Labelbox.currentAsset().subscribe(asset => {
+    // if (asset) {
+        const o = [{input: "this input conversation", output: "this is the model output", id:"id", en: "eng"}]
+      drawItem(o);
+    //   drawItem(asset.data);
+    // }
+  });
+  function drawItem(data) {
+    var form = "";
+    data.forEach(element => {
+        form = form + `
+        <div style="display: flex;">
+            <h2>${element.id}</h2>
+            <h4>${element.en}</h4>
+        </div>
+        <div style="display: flex;">
+            <h3>input</h2>
+            <p>${element.input}</p>
+        </div>
+        <div style="display: flex;">
+            <h3>output</h2>
+            <p>${element.output}</p>
+        </div>
+    `
+    });
+    var btn = "";
+    data.forEach((element, index) => {
+        btn = btn + `
+        <button onclick="label('${element.id}')">No.${index + 1} is the best</button>
+        `
+    });
+    const finalForm = form + `
+    <div style="display: flex;">
+      ${btn}
+    </div>
+  `;
+    document.querySelector("#form").innerHTML = labelForm;
+  }
+</script>
