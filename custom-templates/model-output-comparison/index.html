@@ -3,17 +3,17 @@
 <script>
   function label(id) {
     console.log("${id} is the best!")
-    // Labelbox.setLabelForAsset(label).then(() => {
-    //   Labelbox.fetchNextAssetToLabel();
-    // });
+    Labelbox.setLabelForAsset(label).then(() => {
+      Labelbox.fetchNextAssetToLabel();
+    });
   }
 
   Labelbox.currentAsset().subscribe(asset => {
-    // if (asset) {
-        const o = [{input: "this input conversation", output: "this is the model output", id:"id", en: "eng"}]
-      drawItem(o);
-    //   drawItem(asset.data);
-    // }
+    if (asset) {
+        // const o = [{input: "this input conversation", output: "this is the model output", id:"id", en: "eng"}]
+    //   drawItem(o);
+      drawItem(asset.data);
+    }
   });
   function drawItem(data) {
     var form = "";
